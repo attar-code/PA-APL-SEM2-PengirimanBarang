@@ -1,8 +1,12 @@
 #include<iostream>
 #include "user.h"
 #include "admin.h"
+#include "data.h"
 
 using namespace std;
+
+int JumlahUser = 0;
+User user[100];
 
 int inputAngka(string pesan){
     int x;
