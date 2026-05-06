@@ -20,4 +20,5 @@ struct User {
     string password;
 };
 
+#define MAX_PAKET 100
 #endif
