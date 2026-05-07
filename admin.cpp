@@ -1,5 +1,7 @@
 #include<iostream> 
 #include "admin.h"
+#include "TambahPaket_Admin.h"
+
 
 using namespace std;
 
@@ -32,13 +34,28 @@ void MenuAdmin(){
     int admin;
     if(LoginAdmin("admin","123")){
         do{
-            cout << "Menu Admin" << endl;
+            cout << "===========================" << endl;
+            cout << "        Menu Admin         " << endl;
+            cout << "---------------------------" << endl;
+            cout << " 1. Tambah Paket           " << endl;
+            cout << " 2. Lihat Riwayat Paket    " << endl;
+            cout << " 3. Lihat Antrian Paket    " << endl;
+            cout << " 4. Update Status          " << endl;
+            cout << " 5. Hapus Riwayat Paket    " << endl;
+            cout << " 6. Membatalkan Pengiriman " << endl;
+            cout << " 7. Keluar                 " << endl;
+            cout << "===========================" << endl;
             cin >> admin;
+
 
             switch (admin){
                 case 1: {
-                    cout << "cobain";
+                    TambahPaketAdmin(DaftarPaket, jumlahPaket);
+                    break;
+                }
 
+                case 2: {
+                    // LihatRiwayatAdmin();
                 }
             }
         }while(admin != 3);

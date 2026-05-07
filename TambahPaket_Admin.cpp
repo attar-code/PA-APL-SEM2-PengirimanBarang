@@ -5,7 +5,7 @@
 #include "admin.h"
 #include "data.h"
 
-using namespace std;
+using namespace std;    
 
 string generateResi() {
     string kumpulanKarakter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
