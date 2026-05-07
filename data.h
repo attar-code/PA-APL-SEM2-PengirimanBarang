@@ -13,6 +13,7 @@ struct Paket {
     string tipe;
     string status;
     string pemilik;
+    long long ongkir;
 };
 
 struct User {
@@ -23,4 +24,8 @@ struct User {
 #define MAX_PAKET 100
 #endif
 
-void tekanEnter();
+inline void tekanEnter() {
+    cout << "\nTekan ENTER untuk melanjutkan...";
+    cin.ignore();
+    cin.get();
+}

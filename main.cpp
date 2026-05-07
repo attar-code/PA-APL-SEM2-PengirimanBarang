@@ -35,12 +35,12 @@ int inputAngka(string pesan){
     }
 }
 
-void tekanEnter() {
-    cout << "\nTekan ENTER untuk melanjutkan...";
-    cin.get();
-}
+// void tekanEnter() {
+//     cout << "\nTekan ENTER untuk melanjutkan...";
+//     cin.get();
+// }
 
-main(){
+int main(){
 
     int utama;
 
