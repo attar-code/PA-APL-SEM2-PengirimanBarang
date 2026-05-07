@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <limits>
 #include "data.h"
 
 using namespace std;
@@ -23,7 +24,6 @@ void TambahPaket_User() {
     system("cls");
 
     cout << "\n=== TAMBAH PAKET ===\n";
-
     cout << "Nama Pengirim : ";
     getline(cin, paket[jumlahPaket].namaPengirim);
 
@@ -65,11 +65,13 @@ void TambahPaket_User() {
         cout << "\nERROR: Berat barang tidak valid!\n";
 
         cin.clear();
-        cin.ignore(1000, '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         tekanEnter();
         return;
-}
+    }
+
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
     cout << "Tipe Barang : ";
     getline(cin, paket[jumlahPaket].tipe);
@@ -123,11 +125,11 @@ void TambahPaket_User() {
         jumlahPaket++;
 
         cout << "\nPaket berhasil ditambahkan!\n";
+
         cout << "Nomor Resi : "
              << paket[jumlahPaket - 1].resi << endl;
 
         cout << "Status     : Menunggu Diproses\n";
-
         cout << "\nData pengiriman telah ditambahkan dan menunggu diproses admin.\n";
 
         tekanEnter();
@@ -141,7 +143,6 @@ void TambahPaket_User() {
         system("cls");
 
         cout << "=== PEMBAYARAN TRANSFER ===\n";
-
         cout << "No. Virtual Account : 082341154761\n";
 
         int pilih;
@@ -152,7 +153,6 @@ void TambahPaket_User() {
         pilih = inputAngka("Pilih menu : ");
 
         if (pilih == 1) {
-
             paket[jumlahPaket].status = "Menunggu Validasi Admin";
 
             jumlahPaket++;
@@ -166,7 +166,6 @@ void TambahPaket_User() {
         }
 
         else if (pilih == 2) {
-
             cout << "\nData terhapus...\n";
             cout << "Silakan input ulang jika ingin mengirim barang.\n";
 
@@ -175,7 +174,6 @@ void TambahPaket_User() {
         }
 
         else {
-
             cout << "\nMenu tidak valid!\n";
 
             tekanEnter();
@@ -184,7 +182,6 @@ void TambahPaket_User() {
     }
 
     else {
-
         cout << "\nERROR: Metode pembayaran tidak valid!\n";
 
         tekanEnter();
