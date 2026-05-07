@@ -82,7 +82,7 @@ int main(){
 
             default:{
                 cout << "\nMenu tidak valid!\n";
-                tekanEnter();
+                tekanEnter();   
             }
         }
 

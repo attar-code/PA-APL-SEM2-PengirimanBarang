@@ -13,6 +13,7 @@ struct Paket {
     string tipe;
     string status;
     string pemilik;
+    long long ongkir;
 };
 
 struct User {
