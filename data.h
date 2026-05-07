@@ -23,4 +23,7 @@ struct User {
 #define MAX_PAKET 100
 #endif
 
-void tekanEnter();
+void tekanEnter() {
+    cout << "\nTekan ENTER untuk melanjutkan...";
+    cin.get();
+}

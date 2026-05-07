@@ -40,7 +40,7 @@ void tekanEnter() {
     cin.get();
 }
 
-main(){
+int main(){
 
     int utama;
 

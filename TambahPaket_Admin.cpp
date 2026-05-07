@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <string>
+#include <cctype>
 #include "admin.h"
 #include "data.h"
 
@@ -25,10 +26,20 @@ bool cekResi(Paket DaftarPaket[], int jumlahPaket, string Cari) {
     return false;
 }
 
+bool ValidasiInput(string input) {
+    for (char c : input) {
+        // Mengizinkan: Huruf, Angka, Spasi, Titik, dan Koma
+        if (!isalnum(c) && !isspace(c) && c != '.' && c != ',') {
+            return false;
+        }
+    }
+    return true;
+}
+
 void TambahPaketAdmin(Paket DaftarPaket[], int &jumlahPaket) {
     try {
         if (jumlahPaket >= MAX_PAKET) {
-            throw "Jumlah paket sudah mencapai batas maksimum.";
+            throw "Gudang Penuh!";
         }
         cout << "=== TAMBAH PAKET (ADMIN) ===" << endl;
         static bool seeded = false;
@@ -36,7 +47,6 @@ void TambahPaketAdmin(Paket DaftarPaket[], int &jumlahPaket) {
             srand(time(0));
             seeded = true;
         }
-
         string resiBaru = generateResi();
         do {
             resiBaru = generateResi();
@@ -46,24 +56,51 @@ void TambahPaketAdmin(Paket DaftarPaket[], int &jumlahPaket) {
         paketBaru.resi = resiBaru;
         cout << "Resi otomatis: " << paketBaru.resi << endl;
         cout << "Masukkan nama pengirim: ";
-        cin >> paketBaru.namaPengirim;
+        getline(cin, paketBaru.namaPengirim);
+        if (paketBaru.namaPengirim.empty()) {
+            throw "Nama pengirim tidak boleh kosong!";
+        }
+        if (!ValidasiInput(paketBaru.namaPengirim)) {
+            throw "Nama pengirim mengandung karakter tidak valid!";
+        }
         cout << "Masukkan nama penerima: ";
-        cin >> paketBaru.namaPenerima;
+        getline(cin, paketBaru.namaPenerima);
+        if (paketBaru.namaPenerima.empty()) {
+            throw "Nama penerima tidak boleh kosong!";
+        }
+        if (!ValidasiInput(paketBaru.namaPenerima)) {
+            throw "Nama penerima mengandung karakter tidak valid!";
+        }
         cout << "Masukkan alamat: ";
-        cin >> paketBaru.alamat;
-        cout << "Masukkan berat (kg): ";
+        getline(cin, paketBaru.alamat);
+        if (paketBaru.alamat.empty()) {
+            throw "Alamat tidak boleh kosong!";
+        }
+        if (!ValidasiInput(paketBaru.alamat)) {
+            throw "Alamat mengandung karakter tidak valid!";
+        }
+        cout << "Masukkan berat (gram): ";
         cin >> paketBaru.berat;
+        if (cin.fail() || paketBaru.berat <= 0) {
+            throw "Berat harus berupa angka positif!";
+        }
+        cin.ignore();
         cout << "Masukkan tipe (Reguler/Express): ";
         cin >> paketBaru.tipe;
-        cout << "Masukkan status: ";
-        cin >> paketBaru.status;
-        cout << "Masukkan pemilik: ";
-        cin >> paketBaru.pemilik;
+        if (paketBaru.tipe != "Reguler" && paketBaru.tipe != "Express") {
+            throw "Tipe harus 'Reguler' atau 'Express'!";
+        }
+        paketBaru.status = "Diproses";
+        paketBaru.pemilik = "Admin";
         DaftarPaket[jumlahPaket] = paketBaru;
         jumlahPaket++;
         cout << "Paket berhasil ditambahkan." << endl;
+        tekanEnter();
     }
     catch (const char* msg) {
         cerr << "Error: " << msg << endl;
+        cin.clear();
+        cin.ignore(1000, '\n');
+        tekanEnter();
     }
 }
