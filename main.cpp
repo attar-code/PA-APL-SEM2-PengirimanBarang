@@ -8,6 +8,11 @@ using namespace std;
 int JumlahUser = 0;
 User user[100];
 
+Paket paket[MAX_PAKET];
+int jumlahPaket = 0;
+
+string userAktif = "";
+
 int inputAngka(string pesan){
     int x;
     while(true){
@@ -30,23 +35,58 @@ int inputAngka(string pesan){
     }
 }
 
-main(){
-    int utama;
-    do{
+void tekanEnter() {
+    cout << "\nTekan ENTER untuk melanjutkan...";
+    cin.get();
+}
 
-        cout << endl << "Menu Utama" << endl;
-        cout << "Menu Utama" << endl;
-        utama = inputAngka("Pilih 1/2/3/4 :");
+main(){
+
+    int utama;
+
+    do{
+        system("cls");
+
+        cout << "=== SISTEM PENGIRIMAN BARANG ===\n";
+        cout << "1. User\n";
+        cout << "2. Admin\n";
+        cout << "3. Lacak Paket\n";
+        cout << "4. Keluar\n";
+
+        utama = inputAngka("Pilih menu : ");
 
         switch (utama){
+
             case 1:{
                 MenuUser();
+                break;
             }
 
             case 2:{
                 MenuAdmin();
+                break;
+            }
+
+            case 3:{
+                cout << "\n=== LACAK PAKET ===\n";
+                cout << "Fitur lacak paket belum tersedia.\n";
+
+                tekanEnter();
+                break;
+            }
+
+            case 4:{
+                cout << "\nTerima kasih telah menggunakan program.\n";
+                break;
+            }
+
+            default:{
+                cout << "\nMenu tidak valid!\n";
+                tekanEnter();
             }
         }
-    }while(utama != 1);
+
+    } while(utama != 4);
+
     return 0;
 }

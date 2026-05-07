@@ -50,7 +50,7 @@ void MenuAdmin(){
 
             switch (admin){
                 case 1: {
-                    TambahPaketAdmin(DaftarPaket, jumlahPaket);
+                    TambahPaketAdmin();
                     break;
                 }
 

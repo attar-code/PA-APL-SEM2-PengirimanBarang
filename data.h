@@ -22,3 +22,5 @@ struct User {
 
 #define MAX_PAKET 100
 #endif
+
+void tekanEnter();
