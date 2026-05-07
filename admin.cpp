@@ -43,7 +43,7 @@ void MenuAdmin(){
             cout << " 4. Update Status          " << endl;
             cout << " 5. Hapus Riwayat Paket    " << endl;
             cout << " 6. Membatalkan Pengiriman " << endl;
-            cout << " 7. Keluar                 " << endl;
+            cout << " 7. Keluar                 x`" << endl;
             cout << "===========================" << endl;
             cin >> admin;
 
