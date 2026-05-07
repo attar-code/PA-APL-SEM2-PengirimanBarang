@@ -1,5 +1,6 @@
 #include <iostream>
 #include "data.h"
+#include "user.h"
 
 using namespace std;
 
@@ -10,7 +11,7 @@ void MenuUtamaUser();
 int inputAngka(string pesan);
 
 void MenuUser() {
-
+ 
     int pilih;
 
     do {
@@ -57,6 +58,8 @@ void MenuUser() {
 
 void TambahPaket_User();
 void LihatRiwayatPaket_User();
+void UpdatePaket_User();
+void HapusPaket_User();
 
 void MenuUtamaUser() {
 
@@ -88,12 +91,12 @@ void MenuUtamaUser() {
             }
 
             case 3: {
-                
+                UpdatePaket_User();
                 break;
             }
 
             case 4: {
-                
+                HapusRiwayatPaket_User();
                 break;
             }
 
