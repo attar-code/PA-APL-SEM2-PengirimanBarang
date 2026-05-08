@@ -60,6 +60,7 @@ void TambahPaket_User();
 void LihatRiwayatPaket_User();
 void UpdatePaket_User();
 void HapusPaket_User();
+void BatalkanPaket_User();
 
 void MenuUtamaUser() {
 
@@ -101,7 +102,7 @@ void MenuUtamaUser() {
             }
 
             case 5: {
-
+                BatalkanPaket_User();
                 break;
             }
 
