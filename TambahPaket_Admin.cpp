@@ -85,26 +85,38 @@ void TambahPaketAdmin(Paket DaftarPaket[], int &jumlahPaket) {
         getline(cin, paketBaru.namaPengirim);
         if (paketBaru.namaPengirim.empty()) {
             throw "Nama pengirim tidak boleh kosong!";
+            tekanEnter();
+            return;
         }
         if (!ValidasiInput(paketBaru.namaPengirim)) {
             throw "Nama pengirim mengandung karakter tidak valid!";
+            tekanEnter();
+            return;
         }
         
         cout << "Masukkan nama penerima: ";
         getline(cin, paketBaru.namaPenerima);
         if (paketBaru.namaPenerima.empty()) {
             throw "Nama penerima tidak boleh kosong!";
+            tekanEnter();
+            return;
         }
         if (!ValidasiInput(paketBaru.namaPenerima)) {
             throw "Nama penerima mengandung karakter tidak valid!";
+            tekanEnter();
+            return;
         }
         cout << "Masukkan alamat: ";
         getline(cin, paketBaru.alamat);
         if (paketBaru.alamat.empty()) {
             throw "Alamat tidak boleh kosong!";
+            tekanEnter();
+            return;
         }
         if (!ValidasiInput(paketBaru.alamat)) {
             throw "Alamat mengandung karakter tidak valid!";
+            tekanEnter();
+            return;
         }
 
         cout << "OPSI LOKASI TUJUAN:" << endl;
@@ -174,4 +186,36 @@ void TambahPaketAdmin(Paket DaftarPaket[], int &jumlahPaket) {
         cin.ignore(1000, '\n');
         tekanEnter();
     }
+}
+
+void LihatRiwayat(Paket DaftarPaket[], int jumlahPaket){
+
+    system("cls");
+
+    cout << "========== DAFTAR SEMUA PAKET ==========\n";
+
+    if(jumlahPaket == 0){
+        cout << "Belum ada paket.\n";
+        tekanEnter();
+        return;
+    }
+
+    for(int i = 0; i < jumlahPaket; i++){
+
+        cout << "\n====================================\n";
+        cout << "Paket ke-" << i + 1 << endl;
+        cout << "====================================\n";
+
+        cout << "Resi            : " << DaftarPaket[i].resi << endl;
+        cout << "Pengirim        : " << DaftarPaket[i].namaPengirim << endl;
+        cout << "Penerima        : " << DaftarPaket[i].namaPenerima << endl;
+        cout << "Alamat          : " << DaftarPaket[i].alamat << endl;
+        cout << "Berat           : " << DaftarPaket[i].berat << " gram" << endl;
+        cout << "Tipe            : " << DaftarPaket[i].tipe << endl;
+        cout << "Status          : " << DaftarPaket[i].status << endl;
+        cout << "Ongkir          : Rp " << DaftarPaket[i].ongkir << endl;
+        cout << "Ditambahkan oleh: " << DaftarPaket[i].pemilik << endl;
+    }
+
+    tekanEnter();
 }

@@ -2,9 +2,9 @@
 #include "user.h"
 #include "admin.h"
 #include "data.h"
+#include "LacakPaket.h"
 
 using namespace std;
-
 int JumlahUser = 0;
 User user[100];
 
@@ -68,10 +68,7 @@ int main(){
             }
 
             case 3:{
-                cout << "\n=== LACAK PAKET ===\n";
-                cout << "Fitur lacak paket belum tersedia.\n";
-
-                tekanEnter();
+                LacakPaket(paket, jumlahPaket);
                 break;
             }
 
@@ -82,8 +79,8 @@ int main(){
 
             default:{
                 cout << "\nMenu tidak valid!\n";
-                tekanEnter();
-            }
+                tekanEnter();   
+            }   
         }
 
     } while(utama != 4);

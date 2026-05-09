@@ -2,6 +2,7 @@
 #define MODELS_H
 
 #include <string>
+
 using namespace std;
 
 struct Paket {
@@ -22,10 +23,15 @@ struct User {
 };
 
 #define MAX_PAKET 100
-#endif
+
 
 inline void tekanEnter() {
     cout << "\nTekan ENTER untuk melanjutkan...";
     cin.ignore();
     cin.get();
 }
+
+extern Paket paket[100];
+extern int jumlahPaket;
+
+#endif
