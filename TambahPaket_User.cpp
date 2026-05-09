@@ -151,20 +151,20 @@ void TambahPaket_User() {
 
     if (pembayaran == 1) {
         paket[jumlahPaket].pembayaran = "COD";
-        paket[jumlahPaket].status = "Menunggu Diproses";
+        paket[jumlahPaket].status = "Diproses";
 
         cout << "\n=== RINCIAN PENGIRIMAN ===" << endl;
         cout << "Total Ongkir : Rp " << paket[jumlahPaket].ongkir << endl;
         cout << "Nomor Resi   : " << paket[jumlahPaket].resi << endl;
         cout << "Pembayaran   : COD" << endl;
-        cout << "Status       : Menunggu Diproses" << endl;
+        cout << "Status       : Diproses" << endl;
         cout << "==========================" << endl;
 
         savePaketToJson(paket[jumlahPaket]);
 
         jumlahPaket++;
 
-        cout << "\nPaket berhasil ditambahkan! Menunggu diproses admin.\n";
+        cout << "\nPaket berhasil ditambahkan!\n";
 
         tekanEnter();
     }

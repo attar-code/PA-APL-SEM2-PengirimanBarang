@@ -1,1 +1,38 @@
-[]
+[
+    {
+        "alamat": "jl pramuka",
+        "berat": 450,
+        "namaPenerima": "nayla",
+        "namaPengirim": "ghina",
+        "ongkir": 19500,
+        "pembayaran": "Transfer",
+        "pemilik": "ghina",
+        "resi": "F98ER24S",
+        "status": "Menunggu Validasi Admin",
+        "tipe": "Pecah Belah"
+    },
+    {
+        "alamat": "sutomo",
+        "berat": 2454,
+        "namaPenerima": "intan",
+        "namaPengirim": "mariska",
+        "ongkir": 59080,
+        "pembayaran": "COD",
+        "pemilik": "ghina",
+        "resi": "F98ER24S",
+        "status": "Diproses",
+        "tipe": "Lainnya"
+    },
+    {
+        "alamat": "fakultas teknik",
+        "berat": 342,
+        "namaPenerima": "nayla",
+        "namaPengirim": "ghina",
+        "ongkir": 23420,
+        "pembayaran": "COD",
+        "pemilik": "ghina",
+        "resi": "F98ER24S",
+        "status": "Diproses",
+        "tipe": "Elektronik"
+    }
+]

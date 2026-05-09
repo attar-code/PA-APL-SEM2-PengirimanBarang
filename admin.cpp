@@ -58,9 +58,8 @@ void MenuAdmin(){
             cout << " 5. Membatalkan Pengiriman         " << endl;
             cout << " 6. Keluar                         " << endl;
             cout << "===================================" << endl;
-            cout << "INPUT ANGKA 1-7 : ";
+            cout << "INPUT ANGKA 1-6 : ";
             cin >> admin;
-
 
             switch (admin){
                 case 1: {
@@ -76,7 +75,7 @@ void MenuAdmin(){
                 }
 
                 case 3: {
-                    AntriandanUpdateStatus(paket, jumlahPaket);
+                    AntriandanUpdateStatus();
                     system("cls");
                     break;
                 }
