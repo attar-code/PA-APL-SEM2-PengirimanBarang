@@ -533,7 +533,7 @@ void TambahPaket_User() {
         // --- ALUR 1: JIKA MEMILIH COD ---
         if (metodeBayar == 1) {
             paketBaru.pembayaran = "COD";
-            paketBaru.status = "Diproses (COD)";
+            paketBaru.status = "Diproses";
 
             // Generate resi unik untuk COD
             do {

@@ -7,63 +7,50 @@ using json = nlohmann::json;
 extern Paket paket[100];
 extern int jumlahPaket;
 
-void loadPaket() {
+void loadPaket(){
 
-    ifstream inputFile("paket.json");
+    ifstream file("paket.json");
+    json j;
+    file >> j;
 
-    if (!inputFile.is_open()) {
-        return;
-    }
+    jumlahPaket = j.size();
 
-    json data;
+    for(int i = 0; i < jumlahPaket; i++){
 
-    inputFile >> data;
-
-    inputFile.close();
-
-    jumlahPaket = 0;
-
-    for (int i = 0; i < data.size(); i++) {
-
-        paket[i].resi = data[i]["resi"];
-        paket[i].namaPengirim = data[i]["namaPengirim"];
-        paket[i].namaPenerima = data[i]["namaPenerima"];
-        paket[i].alamat = data[i]["alamat"];
-        paket[i].berat = data[i]["berat"];
-        paket[i].tipe = data[i]["tipe"];
-        paket[i].status = data[i]["status"];
-        paket[i].pemilik = data[i]["pemilik"];
-        paket[i].ongkir = data[i]["ongkir"];
-
-        jumlahPaket++;
+        paket[i].resi = j[i]["resi"];
+        paket[i].status = j[i]["status"];
+        paket[i].namaPengirim = j[i]["namaPengirim"];
+        paket[i].namaPenerima = j[i]["namaPenerima"];
+        paket[i].alamat = j[i]["alamat"];
+        paket[i].berat = j[i]["berat"];
+        paket[i].tipe = j[i]["tipe"];
+        paket[i].pembayaran = j[i]["pembayaran"];
+        paket[i].ongkir = j[i]["ongkir"];
+        paket[i].pemilik = j[i]["pemilik"];
     }
 }
 
-void savePaket() {
+void savePaket(){
 
-    json data = json::array();
+    json j = json::array();
 
-    for (int i = 0; i < jumlahPaket; i++) {
+    for(int i = 0; i < jumlahPaket; i++){
 
-        json item = {
-
+        j.push_back({
             {"resi", paket[i].resi},
             {"namaPengirim", paket[i].namaPengirim},
             {"namaPenerima", paket[i].namaPenerima},
             {"alamat", paket[i].alamat},
             {"berat", paket[i].berat},
             {"tipe", paket[i].tipe},
-            {"status", paket[i].status},
+            {"pembayaran", paket[i].pembayaran},
+            {"ongkir", paket[i].ongkir},
             {"pemilik", paket[i].pemilik},
-            {"ongkir", paket[i].ongkir}
-        };
-
-        data.push_back(item);
+            {"status", paket[i].status}
+        });
     }
 
-    ofstream outputFile("paket.json");
-
-    outputFile << data.dump(4);
-
-    outputFile.close();
+    ofstream file("paket.json");
+    file << j.dump(4);
+    file.close();
 }

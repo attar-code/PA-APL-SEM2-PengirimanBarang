@@ -1,26 +1,26 @@
 [
     {
-        "alamat": "jl perjuangan 7 no 101, samarinda",
-        "berat": 1000,
-        "namaPenerima": "nayla",
-        "namaPengirim": "ghina",
-        "ongkir": 20000,
-        "pembayaran": "COD",
-        "pemilik": "ghina",
-        "resi": "Z6F2HRMQ",
-        "status": "Diproses (COD)",
-        "tipe": "Lainnya"
-    },
-    {
-        "alamat": "jl lambung mangkurat",
-        "berat": 1500,
-        "namaPenerima": "karin",
-        "namaPengirim": "hamja",
-        "ongkir": 30000,
+        "alamat": "jl pramuka 6",
+        "berat": 980,
+        "namaPenerima": "ghina",
+        "namaPengirim": "nayla",
+        "ongkir": 19800,
         "pembayaran": "Transfer",
         "pemilik": "ghina",
         "resi": "BELUM_RILIS",
         "status": "Menunggu Validasi Admin",
-        "tipe": "Dokumen"
+        "tipe": "Lainnya"
+    },
+    {
+        "alamat": "gg perjuangan 1 setengah",
+        "berat": 980,
+        "namaPenerima": "nayla",
+        "namaPengirim": "ghina",
+        "ongkir": 29800,
+        "pembayaran": "COD",
+        "pemilik": "ghina",
+        "resi": "69MVWSWB",
+        "status": "Diproses",
+        "tipe": "Elektronik"
     }
 ]
