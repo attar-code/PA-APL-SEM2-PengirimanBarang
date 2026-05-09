@@ -64,13 +64,13 @@ void MenuAdmin(){
 
             switch (admin){
                 case 1: {
-                    TambahPaketAdmin(paket, jumlahPaket);
+                    TambahPaketAdmin();
                     break;
                     system("cls");
                 }
 
                 case 2: {
-                    LihatRiwayat(paket, jumlahPaket);
+                    tampilRiwayatPaket();
                     system("cls");
                     break;
                 }
@@ -82,7 +82,7 @@ void MenuAdmin(){
                 }
                 
                 case 4: {
-                    HapusRiwayatPaket(paket, jumlahPaket);
+                    HapusRiwayatPaket_Admin();
                     system("cls");
                     break;
                 }
