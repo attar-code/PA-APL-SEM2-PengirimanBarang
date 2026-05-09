@@ -97,7 +97,7 @@ void MenuUtamaUser() {
             }
 
             case 4: {
-                HapusRiwayatPaket_User();
+                HapusPaket_User();
                 break;
             }
 

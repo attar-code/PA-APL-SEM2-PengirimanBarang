@@ -9,7 +9,7 @@ extern int jumlahPaket;
 
 extern string userAktif;
 
-void HapusRiwayatPaket_User() {
+void HapusPaket_User() {
 
     system("cls");
 
@@ -77,14 +77,31 @@ void HapusRiwayatPaket_User() {
         return;
     }
 
-    for (int i = nomor; i < jumlahPaket - 1; i++) {
+    int pilihanHapus;
 
-        paket[i] = paket[i + 1];
+    cout << "\nYakin ingin menghapus pesanan?\n";
+    cout << "1. Ya\n";
+    cout << "2. Tidak\n";
+    cout << "Pilih : ";
+    cin >> pilihanHapus;
+    cin.ignore();
+
+    if (pilihanHapus == 1) {
+
+        for (int i = nomor; i < jumlahPaket - 1; i++) {
+
+            paket[i] = paket[i + 1];
+        }
+
+        jumlahPaket--;
+
+        cout << "\nRiwayat paket berhasil dihapus!\n";
     }
 
-    jumlahPaket--;
+    else {
 
-    cout << "\nRiwayat paket berhasil dihapus!\n";
+        cout << "\nPenghapusan dibatalkan.\n";
+    }
 
     tekanEnter();
 }
