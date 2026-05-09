@@ -2,6 +2,7 @@
 #define MODELS_H
 
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -33,5 +34,8 @@ inline void tekanEnter() {
 
 extern Paket paket[100];
 extern int jumlahPaket;
+
+void loadPaket();
+void savePaket();
 
 #endif
