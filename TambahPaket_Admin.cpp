@@ -85,26 +85,38 @@ void TambahPaketAdmin(Paket DaftarPaket[], int &jumlahPaket) {
         getline(cin, paketBaru.namaPengirim);
         if (paketBaru.namaPengirim.empty()) {
             throw "Nama pengirim tidak boleh kosong!";
+            tekanEnter();
+            return;
         }
         if (!ValidasiInput(paketBaru.namaPengirim)) {
             throw "Nama pengirim mengandung karakter tidak valid!";
+            tekanEnter();
+            return;
         }
         
         cout << "Masukkan nama penerima: ";
         getline(cin, paketBaru.namaPenerima);
         if (paketBaru.namaPenerima.empty()) {
             throw "Nama penerima tidak boleh kosong!";
+            tekanEnter();
+            return;
         }
         if (!ValidasiInput(paketBaru.namaPenerima)) {
             throw "Nama penerima mengandung karakter tidak valid!";
+            tekanEnter();
+            return;
         }
         cout << "Masukkan alamat: ";
         getline(cin, paketBaru.alamat);
         if (paketBaru.alamat.empty()) {
             throw "Alamat tidak boleh kosong!";
+            tekanEnter();
+            return;
         }
         if (!ValidasiInput(paketBaru.alamat)) {
             throw "Alamat mengandung karakter tidak valid!";
+            tekanEnter();
+            return;
         }
 
         cout << "OPSI LOKASI TUJUAN:" << endl;
