@@ -6,13 +6,8 @@
 #include "admin.h"
 #include "data.h"
 
-<<<<<<< HEAD
-using namespace std;    
-
-=======
 using namespace std;
 // Fungsi untuk menghasilkan nomor resi unik
->>>>>>> b271ada80cd257805a49b4a7030d1ce2b89e203e
 string generateResi() {
     string kumpulanKarakter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     string resi = "";
@@ -179,4 +174,36 @@ void TambahPaketAdmin(Paket DaftarPaket[], int &jumlahPaket) {
         cin.ignore(1000, '\n');
         tekanEnter();
     }
+}
+
+void LihatRiwayat(Paket DaftarPaket[], int jumlahPaket){
+
+    system("cls");
+
+    cout << "========== DAFTAR SEMUA PAKET ==========\n";
+
+    if(jumlahPaket == 0){
+        cout << "Belum ada paket.\n";
+        tekanEnter();
+        return;
+    }
+
+    for(int i = 0; i < jumlahPaket; i++){
+
+        cout << "\n====================================\n";
+        cout << "Paket ke-" << i + 1 << endl;
+        cout << "====================================\n";
+
+        cout << "Resi            : " << DaftarPaket[i].resi << endl;
+        cout << "Pengirim        : " << DaftarPaket[i].namaPengirim << endl;
+        cout << "Penerima        : " << DaftarPaket[i].namaPenerima << endl;
+        cout << "Alamat          : " << DaftarPaket[i].alamat << endl;
+        cout << "Berat           : " << DaftarPaket[i].berat << " gram" << endl;
+        cout << "Tipe            : " << DaftarPaket[i].tipe << endl;
+        cout << "Status          : " << DaftarPaket[i].status << endl;
+        cout << "Ongkir          : Rp " << DaftarPaket[i].ongkir << endl;
+        cout << "Ditambahkan oleh: " << DaftarPaket[i].pemilik << endl;
+    }
+
+    tekanEnter();
 }

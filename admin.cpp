@@ -1,5 +1,6 @@
 #include<iostream> 
 #include "admin.h"
+#include "data.h"
 #include "TambahPaket_Admin.h"
 
 
@@ -9,9 +10,12 @@ string username, password;
 bool LoginAdmin(string namaadmin, string passwordadmin){
     int login = 0;
 
-    cout << "LOGIN ADMIN (MAKSIMAL 3 KALI)" << endl;
-
     while(login < 3){
+        cout << "===============================" << endl;
+        cout << " LOGIN ADMIN (MAKSIMAL 3 KALI) " << endl;
+        cout << "===============================" << endl;
+        cout << "Sisa kesempatan : " << 3 - login << endl;
+
         cout << "Username : ";
         cin >> username;
 
@@ -19,46 +23,87 @@ bool LoginAdmin(string namaadmin, string passwordadmin){
         cin >> password;
 
         if(username == namaadmin && password == passwordadmin){
-            cout << "BERHASIL MASUK" << endl;
+            cout << endl << "==============================" << endl;
+            cout << " BERHASIL LOGIN SEBAGAI ADMIN " << endl;
+            cout << "==============================" << endl;
+            tekanEnter();
             return true;
         }
 
-        cout << "USERNAME ATAU PASSWORD SALAH" << endl;
         login++;
+
+        cout << "USERNAME ATAU PASSWORD SALAH" << endl;
+        tekanEnter();
+        system("cls");
     }
+
+    cout << "\nANDA TELAH MELEBIHI BATAS LOGIN!\n";
+    tekanEnter();
 
     return false;
 }
 
 void MenuAdmin(){
+    system("cls");
     int admin;
     if(LoginAdmin("admin","123")){
+        system("cls");
         do{
-            cout << "===========================" << endl;
-            cout << "        Menu Admin         " << endl;
-            cout << "---------------------------" << endl;
-            cout << " 1. Tambah Paket           " << endl;
-            cout << " 2. Lihat Riwayat Paket    " << endl;
-            cout << " 3. Lihat Antrian Paket    " << endl;
-            cout << " 4. Update Status          " << endl;
-            cout << " 5. Hapus Riwayat Paket    " << endl;
-            cout << " 6. Membatalkan Pengiriman " << endl;
-            cout << " 7. Keluar                 x`" << endl;
-            cout << "===========================" << endl;
+            cout << "===================================" << endl;
+            cout << "            Menu Admin             " << endl;
+            cout << "-----------------------------------" << endl;
+            cout << " 1. Tambah Paket                   " << endl;
+            cout << " 2. Lihat Riwayat Paket            " << endl;
+            cout << " 3. Lihat Antrian dan Status Paket " << endl;
+            cout << " 4. Hapus Riwayat Paket            " << endl;
+            cout << " 5. Membatalkan Pengiriman         " << endl;
+            cout << " 6. Keluar                         " << endl;
+            cout << "===================================" << endl;
+            cout << "INPUT ANGKA 1-7 : ";
             cin >> admin;
 
 
             switch (admin){
                 case 1: {
-                    TambahPaketAdmin();
+                    TambahPaketAdmin(paket, jumlahPaket);
                     break;
+                    system("cls");
                 }
 
                 case 2: {
-                    // LihatRiwayatAdmin();
+                    LihatRiwayat(paket, jumlahPaket);
+                    system("cls");
+                    break;
                 }
+
+                case 3: {
+                    AntriandanUpdateStatus(paket, jumlahPaket);
+                    system("cls");
+                    break;
+                }
+                
+                case 4: {
+                    HapusRiwayatPaket(paket, jumlahPaket);
+                    system("cls");
+                    break;
+                }
+                
+                case 5: {
+                    BatalkanPaket(paket, jumlahPaket);
+                    system("cls");
+                    break;
+                }
+                
+                case 6: {
+                    system("cls");
+                    cout << "LOGOUT DARI ADMIN" << endl;
+                    tekanEnter();
+                    system("cls");
+                    break;
+                } 
+
             }
-        }while(admin != 3);
+        }while(admin != 6);
     }else{
         cout << "salah";
     }

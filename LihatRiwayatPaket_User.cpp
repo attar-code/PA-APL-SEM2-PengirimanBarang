@@ -28,6 +28,7 @@ void LihatRiwayatPaket_User() {
             cout << "Alamat Tujuan  : " << paket[i].alamat << endl;
             cout << "Berat Barang   : " << paket[i].berat << " gram" << endl;
             cout << "Tipe Barang    : " << paket[i].tipe << endl;
+            cout << "Total Ongkir   : Rp " << paket[i].ongkir << endl; 
             cout << "Status Paket   : " << paket[i].status << endl;
         }
     }
