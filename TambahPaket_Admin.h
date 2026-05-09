@@ -4,8 +4,9 @@
 
 void TambahPaketAdmin();
 void tampilRiwayatPaket();
-void AntriandanUpdateStatus(Paket DaftarPaket[], int jumlahPaket);
+void AntriandanUpdateStatus();
 void HapusRiwayatPaket_Admin();
 void BatalkanPaket(Paket DaftarPaket[], int &jumlahPaket);
+bool cekResiDiJson(const string& Cari);
 
 #endif
