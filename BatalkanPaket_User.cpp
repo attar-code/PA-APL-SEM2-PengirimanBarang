@@ -1,13 +1,14 @@
 #include <iostream>
-#include <string>
+#include <fstream>
 #include "data.h"
+#include "Database/json.hpp"
 
+using json = nlohmann::json;
 using namespace std;
 
-extern Paket paket[MAX_PAKET];
-extern int jumlahPaket;
-
 extern string userAktif;
+
+void tekanEnter();
 
 void BatalkanPaket_User() {
 
@@ -15,78 +16,70 @@ void BatalkanPaket_User() {
 
     cout << "=== BATALKAN PAKET ===\n";
 
+    ifstream inputFile("Database/paket.json");
+
+    json data;
+
+    inputFile >> data;
+
+    inputFile.close();
+
+    string resiCari;
+
+    cout << "Masukkan nomor resi : ";
+    getline(cin, resiCari);
+
     bool ditemukan = false;
 
-    for (int i = 0; i < jumlahPaket; i++) {
+    for (auto &paket : data) {
 
-        if (paket[i].pemilik == userAktif) {
-
-            cout << "\nData Paket Ke-" << i + 1 << endl;
-
-            cout << "Resi           : "
-                 << paket[i].resi << endl;
-
-            cout << "Nama Pengirim  : "
-                 << paket[i].namaPengirim << endl;
-
-            cout << "Nama Penerima  : "
-                 << paket[i].namaPenerima << endl;
-
-            cout << "Alamat         : "
-                 << paket[i].alamat << endl;
-
-            cout << "Berat          : "
-                 << paket[i].berat << " gram" << endl;
-
-            cout << "Tipe Barang    : "
-                 << paket[i].tipe << endl;
-
-            cout << "Status         : "
-                 << paket[i].status << endl;
+        if (paket["resi"] == resiCari &&
+            paket["pemilik"] == userAktif) {
 
             ditemukan = true;
+
+            if (paket["status"] != "Menunggu Diproses") {
+
+                cout << "\nPaket tidak bisa dibatalkan!\n";
+
+                tekanEnter();
+                return;
+            }
+
+            int pilihan;
+
+            cout << "\n1. Ya\n";
+            cout << "2. Tidak\n";
+            cout << "Pilih : ";
+            cin >> pilihan;
+            cin.ignore();
+
+            if (pilihan == 1) {
+
+                paket["status"] = "Dibatalkan";
+
+                ofstream outputFile("Database/paket.json");
+
+                outputFile << data.dump(4);
+
+                outputFile.close();
+
+                cout << "\nPaket berhasil dibatalkan!\n";
+            }
+
+            else {
+
+                cout << "\nPembatalan dibatalkan.\n";
+            }
+
+            break;
         }
     }
 
     if (!ditemukan) {
 
-        cout << "\nBelum ada paket!\n";
-        tekanEnter();
-        return;
+        cout << "\nPaket tidak ditemukan!\n";
     }
-
-    int nomor;
-
-    cout << "\nPilih nomor paket yang ingin dibatalkan : ";
-    cin >> nomor;
-    cin.ignore();
-
-    nomor--;
-
-    if (nomor < 0 || nomor >= jumlahPaket) {
-
-        cout << "\nNomor paket tidak valid!\n";
-        tekanEnter();
-        return;
-    }
-
-    if (paket[nomor].pemilik != userAktif) {
-
-        cout << "\nAnda tidak dapat membatalkan paket ini!\n";
-        tekanEnter();
-        return;
-    }
-
-    if (paket[nomor].status != "Menunggu Diproses") {
-
-        cout << "\nPaket tidak dapat dibatalkan karena sudah diproses admin!\n";
-        tekanEnter();
-        return;
-    }
-
-    paket[nomor].status = "Dibatalkan";
-
-    cout << "\nPaket berhasil dibatalkan!\n";
 
     tekanEnter();
 }

@@ -1,6 +1,9 @@
 #include <iostream>
 #include "admin.h"
 #include "data.h"
+#include "Database/json.hpp"
+
+using json = nlohmann::json;
 
 using namespace std;
 
@@ -10,7 +13,7 @@ int HitungStatus(Paket DaftarPaket[], int jumlahPaket, string status){
 
     for(int i = 0; i < jumlahPaket; i++){
 
-        if(DaftarPaket[i].status == status){
+        if(paket[i].status == status){
             jumlah++;
         }
     }
@@ -18,7 +21,8 @@ int HitungStatus(Paket DaftarPaket[], int jumlahPaket, string status){
     return jumlah;
 }
 
-void AntriandanUpdateStatus(Paket DaftarPaket[], int jumlahPaket){
+void AntriandanUpdateStatus(){
+    loadPaket();
 
     system("cls");
 
@@ -31,15 +35,15 @@ void AntriandanUpdateStatus(Paket DaftarPaket[], int jumlahPaket){
     // HITUNG JUMLAH STATUS
     for(int i = 0; i < jumlahPaket; i++){
 
-        if(DaftarPaket[i].status == "Diproses"){
+        if(paket[i].status == "Diproses"){
             jumlahDiproses++;
         }
 
-        else if(DaftarPaket[i].status == "Dikirim"){
+        else if(paket[i].status == "Dikirim"){
             jumlahDikirim++;
         }
 
-        else if(DaftarPaket[i].status == "Selesai"){
+        else if(paket[i].status == "Selesai"){
             jumlahSelesai++;
         }
     }
@@ -61,15 +65,15 @@ void AntriandanUpdateStatus(Paket DaftarPaket[], int jumlahPaket){
     for(int i = 0; i < jumlahPaket; i++){
 
         if(
-            DaftarPaket[i].status == "Diproses" ||
-            DaftarPaket[i].status == "Dikirim"
+            paket[i].status == "Diproses" ||
+            paket[i].status == "Dikirim"
         ){
 
             adaPaket = true;
 
-            cout << "\nResi     : " << DaftarPaket[i].resi << endl;
-            cout << "Pengirim : " << DaftarPaket[i].namaPengirim << endl;
-            cout << "Status   : " << DaftarPaket[i].status << endl;
+            cout << "\nResi     : " << paket[i].resi << endl;
+            cout << "Pengirim : " << paket[i].namaPengirim << endl;
+            cout << "Status   : " << paket[i].status << endl;
         }
     }
 
@@ -86,10 +90,10 @@ void AntriandanUpdateStatus(Paket DaftarPaket[], int jumlahPaket){
     // CARI PAKET
     for(int i = 0; i < jumlahPaket; i++){
 
-        if(DaftarPaket[i].resi == resiCari){
+        if(paket[i].resi == resiCari){
 
             // DIPROSES -> DIKIRIM
-            if(DaftarPaket[i].status == "Diproses"){
+            if(paket[i].status == "Diproses"){
 
                 if(jumlahDikirim >= 5){
 
@@ -102,7 +106,8 @@ void AntriandanUpdateStatus(Paket DaftarPaket[], int jumlahPaket){
                     return;
                 }
 
-                DaftarPaket[i].status = "Dikirim";
+                paket[i].status = "Dikirim";
+                savePaket();
 
                 cout << "\n====================================\n";
                 cout << "Status berhasil diubah menjadi DIKIRIM\n";
@@ -113,9 +118,10 @@ void AntriandanUpdateStatus(Paket DaftarPaket[], int jumlahPaket){
             }
 
             // DIKIRIM -> SELESAI
-            else if(DaftarPaket[i].status == "Dikirim"){
+            else if(paket[i].status == "Dikirim"){
 
-                DaftarPaket[i].status = "Selesai";
+                paket[i].status = "Selesai";
+                savePaket();
 
                 cout << "\n====================================\n";
                 cout << "Status berhasil diubah menjadi SELESAI\n";

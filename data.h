@@ -1,7 +1,9 @@
 #ifndef MODELS_H
 #define MODELS_H
+#include <iostream>
 
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -15,6 +17,7 @@ struct Paket {
     string status;
     string pemilik;
     long long ongkir;
+    string pembayaran;
 };
 
 struct User {
@@ -33,5 +36,8 @@ inline void tekanEnter() {
 
 extern Paket paket[100];
 extern int jumlahPaket;
+
+void loadPaket();
+void savePaket();
 
 #endif

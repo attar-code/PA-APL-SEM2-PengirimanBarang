@@ -2,10 +2,11 @@
 #define TambahPaketAdmin_h
 #include "data.h"
 
-void TambahPaketAdmin(Paket DaftarPaket[], int &jumlahPaket);
-void LihatRiwayat(Paket DaftarPaket[], int jumlahPaket);
-void AntriandanUpdateStatus(Paket DaftarPaket[], int jumlahPaket);
-void HapusRiwayatPaket(Paket DaftarPaket[], int &jumlahPaket);
+void TambahPaketAdmin();
+void tampilRiwayatPaket();
+void AntriandanUpdateStatus();
+void HapusRiwayatPaket_Admin();
 void BatalkanPaket(Paket DaftarPaket[], int &jumlahPaket);
+bool cekResiDiJson(const string& Cari);
 
 #endif
