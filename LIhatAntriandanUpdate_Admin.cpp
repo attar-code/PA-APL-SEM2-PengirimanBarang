@@ -19,6 +19,7 @@ int HitungStatus(Paket DaftarPaket[], int jumlahPaket, string status){
 }
 
 void AntriandanUpdateStatus(Paket DaftarPaket[], int jumlahPaket){
+    loadPaket();
 
     system("cls");
 
@@ -103,6 +104,7 @@ void AntriandanUpdateStatus(Paket DaftarPaket[], int jumlahPaket){
                 }
 
                 DaftarPaket[i].status = "Dikirim";
+                savePaket();
 
                 cout << "\n====================================\n";
                 cout << "Status berhasil diubah menjadi DIKIRIM\n";
@@ -116,6 +118,7 @@ void AntriandanUpdateStatus(Paket DaftarPaket[], int jumlahPaket){
             else if(DaftarPaket[i].status == "Dikirim"){
 
                 DaftarPaket[i].status = "Selesai";
+                savePaket();
 
                 cout << "\n====================================\n";
                 cout << "Status berhasil diubah menjadi SELESAI\n";

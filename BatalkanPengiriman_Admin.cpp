@@ -3,6 +3,7 @@
 #include "data.h"
 
 void BatalkanPaket(Paket DaftarPaket[], int &jumlahPaket){
+    loadPaket();
 
     system("cls");
 
@@ -57,6 +58,7 @@ void BatalkanPaket(Paket DaftarPaket[], int &jumlahPaket){
             }
 
             jumlahPaket--;
+            savePaket();
 
             cout << "\nPaket berhasil dibatalkan.\n";
             tekanEnter();
