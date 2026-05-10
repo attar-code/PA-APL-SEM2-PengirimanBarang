@@ -22,5 +22,17 @@
         "resi": "69MVWSWB",
         "status": "Selesai",
         "tipe": "Elektronik"
+    },
+    {
+        "alamat": "jl rumbia",
+        "berat": 900,
+        "namaPenerima": "jaki",
+        "namaPengirim": "attar",
+        "ongkir": 29000,
+        "pembayaran": "COD",
+        "pemilik": "attar",
+        "resi": "6OY1T7BF",
+        "status": "Diproses",
+        "tipe": "Elektronik"
     }
 ]
