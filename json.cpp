@@ -9,7 +9,7 @@ extern int jumlahPaket;
 
 void loadPaket(){
 
-    ifstream file("paket.json");
+    ifstream file("database/paket.json");
     json j;
     file >> j;
 
@@ -50,7 +50,7 @@ void savePaket(){
         });
     }
 
-    ofstream file("paket.json");
+    ofstream file("database/paket.json");
     file << j.dump(4);
     file.close();
 }

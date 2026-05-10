@@ -8,7 +8,7 @@
         "pembayaran": "Transfer",
         "pemilik": "ghina",
         "resi": "BELUM_RILIS",
-        "status": "Menunggu Validasi Admin",
+        "status": "Selesai",
         "tipe": "Lainnya"
     },
     {
@@ -20,7 +20,7 @@
         "pembayaran": "COD",
         "pemilik": "ghina",
         "resi": "69MVWSWB",
-        "status": "Diproses",
+        "status": "Selesai",
         "tipe": "Elektronik"
     }
 ]
