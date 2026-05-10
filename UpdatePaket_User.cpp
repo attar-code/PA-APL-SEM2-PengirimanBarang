@@ -1,13 +1,15 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "data.h"
+#include "Database/json.hpp"
 
+using json = nlohmann::json;
 using namespace std;
 
-extern Paket paket[MAX_PAKET];
-extern int jumlahPaket;
-
 extern string userAktif;
+
+void tekanEnter();
 
 void UpdatePaket_User() {
 
@@ -15,105 +17,100 @@ void UpdatePaket_User() {
 
     cout << "=== UPDATE PAKET ===\n";
 
+    ifstream inputFile("Database/paket.json");
+
+    if (!inputFile.is_open()) {
+
+        cout << "\nFile paket.json tidak ditemukan!\n";
+
+        tekanEnter();
+        return;
+    }
+
+    json data;
+
+    if (inputFile.peek() == ifstream::traits_type::eof()) {
+
+        cout << "\nBelum ada data paket!\n";
+
+        inputFile.close();
+
+        tekanEnter();
+        return;
+    }
+
+    inputFile >> data;
+
+    inputFile.close();
+
+    string resiCari;
+
+    cout << "Masukkan nomor resi : ";
+    getline(cin, resiCari);
+
     bool ditemukan = false;
 
-    for (int i = 0; i < jumlahPaket; i++) {
+    for (auto &paket : data) {
 
-        if (paket[i].pemilik == userAktif) {
-
-            cout << "\nData Paket Ke-" << i + 1 << endl;
-
-            cout << "Resi           : "
-                 << paket[i].resi << endl;
-
-            cout << "Nama Pengirim  : "
-                 << paket[i].namaPengirim << endl;
-
-            cout << "Nama Penerima  : "
-                 << paket[i].namaPenerima << endl;
-
-            cout << "Alamat         : "
-                 << paket[i].alamat << endl;
-
-            cout << "Berat          : "
-                 << paket[i].berat << " gram" << endl;
-
-            cout << "Tipe Barang    : "
-                 << paket[i].tipe << endl;
-
-            cout << "Status         : "
-                 << paket[i].status << endl;
+        if (paket["resi"] == resiCari &&
+            paket["pemilik"] == userAktif) {
 
             ditemukan = true;
+
+            if (paket["status"] != "Menunggu Diproses") {
+
+                cout << "\nPaket tidak bisa diupdate!\n";
+                cout << "Status paket sudah diproses admin.\n";
+
+                tekanEnter();
+                return;
+            }
+
+            string namaPengirimBaru;
+            string namaPenerimaBaru;
+            string alamatBaru;
+            string tipeBaru;
+            int beratBaru;
+
+            cout << "\nNama Pengirim Baru : ";
+            getline(cin, namaPengirimBaru);
+
+            cout << "Nama Penerima Baru : ";
+            getline(cin, namaPenerimaBaru);
+
+            cout << "Alamat Baru : ";
+            getline(cin, alamatBaru);
+
+            cout << "Tipe Barang Baru : ";
+            getline(cin, tipeBaru);
+
+            cout << "Berat Baru : ";
+            cin >> beratBaru;
+            cin.ignore();
+
+            paket["namaPengirim"] = namaPengirimBaru;
+            paket["namaPenerima"] = namaPenerimaBaru;
+            paket["alamat"] = alamatBaru;
+            paket["tipe"] = tipeBaru;
+            paket["berat"] = beratBaru;
+
+            break;
         }
     }
 
     if (!ditemukan) {
 
-        cout << "\nBelum ada paket!\n";
+        cout << "\nPaket tidak ditemukan!\n";
+
         tekanEnter();
         return;
     }
 
-    int nomor;
+    ofstream outputFile("Database/paket.json");
 
-    cout << "\nPilih nomor paket yang ingin diupdate : ";
-    cin >> nomor;
-    cin.ignore();
+    outputFile << data.dump(4);
 
-    nomor--;
-
-    if (nomor < 0 || nomor >= jumlahPaket) {
-
-        cout << "\nNomor paket tidak valid!\n";
-        tekanEnter();
-        return;
-    }
-
-    if (paket[nomor].pemilik != userAktif) {
-
-        cout << "\nAnda tidak dapat mengubah paket ini!\n";
-        tekanEnter();
-        return;
-    }
-
-    if (paket[nomor].status != "Menunggu Diproses") {
-
-        cout << "\nPaket sudah diproses admin dan tidak bisa diupdate!\n";
-        tekanEnter();
-        return;
-    }
-
-    cout << "\n=== UPDATE DATA PAKET ===\n";
-
-    cout << "Nama Pengirim Baru : ";
-    getline(cin, paket[nomor].namaPengirim);
-
-    cout << "Nama Penerima Baru : ";
-    getline(cin, paket[nomor].namaPenerima);
-
-    cout << "Alamat Baru : ";
-    getline(cin, paket[nomor].alamat);
-
-    cout << "Berat Baru : ";
-    cin >> paket[nomor].berat;
-    cin.ignore();
-
-    cout << "Tipe Barang Baru : ";
-    getline(cin, paket[nomor].tipe);
-
-    if (
-        paket[nomor].namaPengirim.empty() ||
-        paket[nomor].namaPenerima.empty() ||
-        paket[nomor].alamat.empty() ||
-        paket[nomor].tipe.empty() ||
-        paket[nomor].berat <= 0
-    ) {
-
-        cout << "\nERROR: Data tidak valid!\n";
-        tekanEnter();
-        return;
-    }
+    outputFile.close();
 
     cout << "\nData paket berhasil diupdate!\n";
 

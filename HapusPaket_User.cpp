@@ -1,106 +1,76 @@
 #include <iostream>
-#include <string>
+#include <fstream>
 #include "data.h"
+#include "Database/json.hpp"
 
+using json = nlohmann::json;
 using namespace std;
-
-extern Paket paket[MAX_PAKET];
-extern int jumlahPaket;
 
 extern string userAktif;
 
-void HapusPaket_User() {
+void tekanEnter();
+
+void HapusRiwayatPaket_User() {
 
     system("cls");
 
     cout << "=== HAPUS RIWAYAT PAKET ===\n";
 
+    ifstream inputFile("Database/paket.json");
+
+    json data;
+
+    inputFile >> data;
+
+    inputFile.close();
+
+    string resiCari;
+
+    cout << "Masukkan nomor resi : ";
+    getline(cin, resiCari);
+
     bool ditemukan = false;
 
-    for (int i = 0; i < jumlahPaket; i++) {
+    for (int i = 0; i < data.size(); i++) {
 
-        if (paket[i].pemilik == userAktif) {
-
-            cout << "\nData Paket Ke-" << i + 1 << endl;
-
-            cout << "Resi           : "
-                 << paket[i].resi << endl;
-
-            cout << "Nama Pengirim  : "
-                 << paket[i].namaPengirim << endl;
-
-            cout << "Nama Penerima  : "
-                 << paket[i].namaPenerima << endl;
-
-            cout << "Alamat         : "
-                 << paket[i].alamat << endl;
-
-            cout << "Berat          : "
-                 << paket[i].berat << " gram" << endl;
-
-            cout << "Tipe Barang    : "
-                 << paket[i].tipe << endl;
-
-            cout << "Status         : "
-                 << paket[i].status << endl;
+        if (data[i]["resi"] == resiCari &&
+            data[i]["pemilik"] == userAktif) {
 
             ditemukan = true;
+
+            int pilihan;
+
+            cout << "\n1. Ya\n";
+            cout << "2. Tidak\n";
+            cout << "Pilih : ";
+            cin >> pilihan;
+            cin.ignore();
+
+            if (pilihan == 1) {
+
+                data.erase(data.begin() + i);
+
+                ofstream outputFile("Database/paket.json");
+
+                outputFile << data.dump(4);
+
+                outputFile.close();
+
+                cout << "\nRiwayat paket berhasil dihapus!\n";
+            }
+
+            else {
+
+                cout << "\nPenghapusan dibatalkan.\n";
+            }
+
+            break;
         }
     }
 
     if (!ditemukan) {
 
-        cout << "\nBelum ada riwayat paket!\n";
-        tekanEnter();
-        return;
-    }
-
-    int nomor;
-
-    cout << "\nPilih nomor paket yang ingin dihapus : ";
-    cin >> nomor;
-    cin.ignore();
-
-    nomor--;
-
-    if (nomor < 0 || nomor >= jumlahPaket) {
-
-        cout << "\nNomor paket tidak valid!\n";
-        tekanEnter();
-        return;
-    }
-
-    if (paket[nomor].pemilik != userAktif) {
-
-        cout << "\nAnda tidak dapat menghapus paket ini!\n";
-        tekanEnter();
-        return;
-    }
-
-    int pilihanHapus;
-
-    cout << "\nYakin ingin menghapus pesanan?\n";
-    cout << "1. Ya\n";
-    cout << "2. Tidak\n";
-    cout << "Pilih : ";
-    cin >> pilihanHapus;
-    cin.ignore();
-
-    if (pilihanHapus == 1) {
-
-        for (int i = nomor; i < jumlahPaket - 1; i++) {
-
-            paket[i] = paket[i + 1];
-        }
-
-        jumlahPaket--;
-
-        cout << "\nRiwayat paket berhasil dihapus!\n";
-    }
-
-    else {
-
-        cout << "\nPenghapusan dibatalkan.\n";
+        cout << "\nPaket tidak ditemukan!\n";
     }
 
     tekanEnter();
