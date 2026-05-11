@@ -1,6 +1,6 @@
 #include <iostream>
 #include "include/data.h"
-#include "include/Admin.h"
+#include "include/admin.h"
 #include "database/json.hpp"
 
 using json = nlohmann::json;
