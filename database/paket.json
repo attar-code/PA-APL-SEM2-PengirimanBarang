@@ -10,5 +10,16 @@
         "resi": "SE4F43R4",
         "status": "Selesai",
         "tipe": "Elektronik"
+    },
+    {
+        "alamat": "jka",
+        "berat": 100,
+        "namaPenerima": "jaki",
+        "namaPengirim": "jaki",
+        "ongkir": 11000,
+        "pemilik": "Admin",
+        "resi": "MUZK5YVQ",
+        "status": "Diproses (COD)",
+        "tipe": "Lainnya"
     }
 ]
