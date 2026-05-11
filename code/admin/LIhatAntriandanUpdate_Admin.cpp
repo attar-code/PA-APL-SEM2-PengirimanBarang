@@ -1,7 +1,6 @@
 #include <iostream>
-#include "admin.h"
-#include "data.h"
-#include "TambahPaket_Admin.h"
+#include "include/data.h"
+#include "include/Admin.h"
 #include "database/json.hpp"
 
 using json = nlohmann::json;

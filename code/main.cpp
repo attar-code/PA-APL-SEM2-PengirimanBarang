@@ -1,15 +1,14 @@
 #include<iostream>
-#include "user.h"
-#include "admin.h"
-#include "data.h"
-#include "LacakPaket.h"
-#include "cekResi.h"
+#include "include/user.h"
+#include "include/admin.h"
+#include "include/data.h"
+#include "include/LacakPaket.h"
+#include "include/cekResi.h"
 
 using namespace std;
 int JumlahUser = 0;
 User user[100];
-
-Paket paket[MAX_PAKET];
+Paket paket[100];
 int jumlahPaket = 0;
 
 string userAktif = "";

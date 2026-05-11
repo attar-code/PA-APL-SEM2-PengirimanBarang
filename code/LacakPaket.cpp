@@ -1,5 +1,5 @@
 #include <iostream>
-#include "data.h"
+#include "include/data.h"
 
 void LacakPaket(Paket DaftarPaket[], int jumlahPaket){
 
