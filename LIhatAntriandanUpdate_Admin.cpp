@@ -5,66 +5,66 @@
 #include "database/json.hpp"
 
 using json = nlohmann::json;
-
 using namespace std;
 
-int HitungStatus(Paket DaftarPaket[], int jumlahPaket, string status){
-
-    int jumlah = 0;
-
-    for(int i = 0; i < jumlahPaket; i++){
-
-        if(paket[i].status == status){
-            jumlah++;
-        }
-    }
-
-    return jumlah;
+bool isDiproses(string status) {
+    return (
+        status == "Diproses" ||
+        status == "Diproses (COD)" ||
+        status == "Diproses (Lunas)"
+    );
 }
 
-void AntriandanUpdateStatus(){
+bool isAktif(string status) {
+    return (
+        status == "Menunggu Validasi Admin" ||
+        status == "Diproses" ||
+        status == "Diproses (COD)" ||
+        status == "Diproses (Lunas)" ||
+        status == "Dikirim"
+    );
+}
+
+void AntriandanUpdateStatus() {
+
     loadPaket();
     system("cls");
 
     string resiCari;
 
-    int jumlahDikonfirmasi= 0;
-    int jumlahDiproses = 0;
-    int jumlahDikirim = 0;
-    int jumlahSelesai = 0;
+    int menunggu = 0;
+    int diproses = 0;
+    int dikirim = 0;
+    int selesai = 0;
 
-    for(int i = 0; i < jumlahPaket; i++){
+    // HITUNG STATUS
+    for (int i = 0; i < jumlahPaket; i++) {
 
-        if(paket[i].status == "Menunggu Validasi Admin"){
-            jumlahDikonfirmasi++;
+        if (paket[i].status == "Menunggu Validasi Admin") {
+            menunggu++;
         }
-
-        else if(paket[i].status == "Diproses" || "Diproses (COD)" || "Diproses (Lunas)"){
-            jumlahDiproses++;
+        else if (isDiproses(paket[i].status)) {
+            diproses++;
         }
-
-        else if(paket[i].status == "Dikirim"){
-            jumlahDikirim++;
+        else if (paket[i].status == "Dikirim") {
+            dikirim++;
         }
-
-        else if(paket[i].status == "Selesai"){
-            jumlahSelesai++;
+        else if (paket[i].status == "Selesai") {
+            selesai++;
         }
     }
 
     cout << "=========== STATUS GUDANG ===========\n\n";
-
-    cout << "Menunggu Validasi Admin : " << jumlahDikonfirmasi << " paket\n";
-    cout << "Diproses                : " << jumlahDiproses << " paket\n";
-    cout << "Dikirim                 : " << jumlahDikirim << "/5 paket\n";
-    cout << "Selesai                 : " << jumlahSelesai << " paket\n";
+    cout << "Menunggu Validasi Admin : " << menunggu << " paket\n";
+    cout << "Diproses                : " << diproses << " paket\n";
+    cout << "Dikirim                 : " << dikirim << " paket\n";
+    cout << "Selesai                 : " << selesai << " paket\n";
 
     cout << "\n=====================================\n";
-    cout << "        SEMUA PAKET (DATABASE)\n";
+    cout << "        SEMUA PAKET\n";
     cout << "=====================================\n";
 
     for (int i = 0; i < jumlahPaket; i++) {
-
         cout << "\nResi       : " << paket[i].resi << endl;
         cout << "Pengirim   : " << paket[i].namaPengirim << endl;
         cout << "Penerima   : " << paket[i].namaPenerima << endl;
@@ -73,22 +73,18 @@ void AntriandanUpdateStatus(){
         cout << "-------------------------------------";
     }
 
-    // TAMPILKAN PAKET AKTIF
+    // DAFTAR AKTIF
     cout << "\n=====================================\n";
-    cout << "        DAFTAR PAKET AKTIF\n";
+    cout << "        PAKET AKTIF\n";
     cout << "=====================================\n";
 
-    bool adaPaket = false;
+    bool ada = false;
 
-    for(int i = 0; i < jumlahPaket; i++){
+    for (int i = 0; i < jumlahPaket; i++) {
 
-        if(
-            paket[i].status == "Menunggu Validasi Admin" ||
-            "Diproses" || "Diproses (COD)" || 
-            "Diproses (Lunas)" || "Dikirim"
-        ){
+        if (isAktif(paket[i].status)) {
 
-            adaPaket = true;
+            ada = true;
 
             cout << "\nResi     : " << paket[i].resi << endl;
             cout << "Pengirim : " << paket[i].namaPengirim << endl;
@@ -96,58 +92,60 @@ void AntriandanUpdateStatus(){
         }
     }
 
-    if(!adaPaket){
+    if (!ada) {
         cout << "\nTidak ada paket aktif.\n";
         tekanEnter();
         return;
     }
 
-    cout << "\nMasukkan resi paket : ";
+    // INPUT RESI
+    cout << "\nMasukkan resi paket: ";
     cin >> resiCari;
 
-    for(int i = 0; i < jumlahPaket; i++) {
+    for (int i = 0; i < jumlahPaket; i++) {
 
-        if(paket[i].resi == resiCari) {
+        if (paket[i].resi == resiCari) {
 
             string statusLama = paket[i].status;
 
-            // vaidasi admin ke diproses
-            if(paket[i].status == "Menunggu Validasi Admin") {
+            // ===============================
+            // 1. VALIDASI ADMIN (TRANSFER)
+            // ===============================
+            if (paket[i].status == "Menunggu Validasi Admin") {
 
-                string resiBaru;
-                resiBaru = generateResi();
-                paket[i].resi = resiBaru;
+                if (paket[i].pembayaran == "Transfer") {
 
-                paket[i].status = "Diproses";
+                    paket[i].status = "Diproses";
 
-                cout << "\nStatus berubah: MENUNGGU → DIPROSES\n";
-                jumlahDiproses++;
+                    // RESI BARU DI GENERATE DI SINI
+                    paket[i].resi = generateResi();
+
+                    cout << "\nVALIDASI BERHASIL → DIPROSES\n";
+                    cout << "Resi baru: " << paket[i].resi << endl;
+                }
+                else {
+                    cout << "\nCOD tidak perlu validasi admin.\n";
+                }
             }
 
-            // proses ke dikirim
-            else if(paket[i].status == "Diproses" || "Diproses (COD)" || "Diproses (Lunas)") {
-
-                if(jumlahDikirim >= 10) {
-                    cout << "\nANTRIAN PENUH!\n";
-                    tekanEnter();
-                    return;
-                }
+            // ===============================
+            // 2. DIPROSES → DIKIRIM
+            // ===============================
+            else if (isDiproses(paket[i].status)) {
 
                 paket[i].status = "Dikirim";
 
                 cout << "\nStatus berubah: DIPROSES → DIKIRIM\n";
-                jumlahDiproses--;
-                jumlahDikirim++;
             }
 
-            // dikirim ke selesai
-            else if(paket[i].status == "Dikirim") {
+            // ===============================
+            // 3. DIKIRIM → SELESAI
+            // ===============================
+            else if (paket[i].status == "Dikirim") {
 
                 paket[i].status = "Selesai";
 
                 cout << "\nStatus berubah: DIKIRIM → SELESAI\n";
-                jumlahDikirim--;
-                jumlahSelesai++;
             }
 
             else {
@@ -158,12 +156,12 @@ void AntriandanUpdateStatus(){
 
             savePaket();
 
-            cout << "Update berhasil untuk resi: " << resiCari << endl;
-
+            cout << "\nUpdate berhasil untuk resi: " << resiCari << endl;
             tekanEnter();
             return;
         }
     }
+
     cout << "\nResi tidak ditemukan!\n";
     tekanEnter();
 }

@@ -1,62 +1,14 @@
 [
     {
         "alamat": "jl rumbia",
-        "berat": 900,
+        "berat": 3444,
         "namaPenerima": "jaki",
         "namaPengirim": "attar",
-        "ongkir": 29000,
-        "pembayaran": "COD",
-        "pemilik": "attar",
-        "resi": "6OY1T7BF",
-        "status": "Diproses",
-        "tipe": "Elektronik"
-    },
-    {
-        "alamat": "big mall",
-        "berat": 3333,
-        "namaPenerima": "attar",
-        "namaPengirim": "rega",
-        "ongkir": 53330,
+        "ongkir": 54440,
         "pembayaran": "Transfer",
         "pemilik": "attar",
-        "resi": "F98ER24S",
-        "status": "Dikirim",
-        "tipe": "Elektronik"
-    },
-    {
-        "alamat": "penajam",
-        "berat": 8888,
-        "namaPenerima": "ali",
-        "namaPengirim": "ahnaf ahnaf",
-        "ongkir": 197760,
-        "pembayaran": "COD",
-        "pemilik": "admin",
-        "resi": "HCB12QP7",
-        "status": "Diproses",
-        "tipe": "Elektronik"
-    },
-    {
-        "alamat": "berau",
-        "berat": 3333,
-        "namaPenerima": "rega",
-        "namaPengirim": "jaki",
-        "ongkir": 86660,
-        "pembayaran": "Transfer",
-        "pemilik": "admin",
-        "resi": "BELUM_RILIS",
-        "status": "Menunggu Validasi Admin",
-        "tipe": "Elektronik"
-    },
-    {
-        "alamat": "berau",
-        "berat": 4343,
-        "namaPenerima": "rega",
-        "namaPengirim": "jaki",
-        "ongkir": 106860,
-        "pembayaran": "",
-        "pemilik": "Admin",
-        "resi": "84BQW84R",
-        "status": "Diproses (COD)",
+        "resi": "SE4F43R4",
+        "status": "Selesai",
         "tipe": "Elektronik"
     }
 ]
