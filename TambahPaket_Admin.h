@@ -6,7 +6,8 @@ void TambahPaketAdmin();
 void tampilRiwayatPaket();
 void AntriandanUpdateStatus();
 void HapusRiwayatPaket_Admin();
-void BatalkanPaket(Paket DaftarPaket[], int &jumlahPaket);
+void BatalkanPaket_Admin();
 bool cekResiDiJson(const string& Cari);
+string generateResi();
 
 #endif

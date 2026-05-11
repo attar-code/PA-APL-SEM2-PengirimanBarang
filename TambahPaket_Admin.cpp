@@ -53,7 +53,8 @@ void savePaketToJson(const Paket& paket) {
         {"tipe", paket.tipe},
         {"status", paket.status},
         {"pemilik", paket.pemilik},
-        {"ongkir", paket.ongkir}
+        {"ongkir", paket.ongkir},
+        {"pembayaran", paket.pembayaran}
     };
 
     data.push_back(paketBaru);

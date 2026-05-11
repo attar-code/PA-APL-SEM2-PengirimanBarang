@@ -1,71 +1,84 @@
 #include <iostream>
-#include "admin.h"
+#include <fstream>
 #include "data.h"
+#include "Database/json.hpp"
 
-void BatalkanPaket(Paket DaftarPaket[], int &jumlahPaket){
-    loadPaket();
+using json = nlohmann::json;
+using namespace std;
+
+extern string userAktif;
+
+void tekanEnter();
+
+void BatalkanPaket_Admin() {
 
     system("cls");
 
+    cout << "=== BATALKAN PAKET ===\n";
+
+    ifstream inputFile("Database/paket.json");
+
+    json data;
+
+    inputFile >> data;
+
+    inputFile.close();
+
     string resiCari;
 
-    cout << "========== PEMBATALAN PAKET ==========\n";
+    cout << "Masukkan nomor resi : ";
+    getline(cin, resiCari);
 
-    bool adaPaket = false;
+    bool ditemukan = false;
 
-    // TAMPILKAN PAKET YANG MASIH DIPROSES
-    for(int i = 0; i < jumlahPaket; i++){
+    for (auto &paket : data) {
 
-        if(DaftarPaket[i].status == "Diproses"){
+        if (paket["resi"] == resiCari) {
 
-            adaPaket = true;
+            ditemukan = true;
 
-            cout << "\nResi     : " << DaftarPaket[i].resi << endl;
-            cout << "Pengirim : " << DaftarPaket[i].namaPengirim << endl;
-            cout << "Penerima : " << DaftarPaket[i].namaPenerima << endl;
-            cout << "Status   : " << DaftarPaket[i].status << endl;
-        }
-    }
+            if (paket["status"] != "Menunggu Diproses") {
 
-    if(!adaPaket){
+                cout << "\nPaket tidak bisa dibatalkan!\n";
 
-        cout << "\nTidak ada paket yang bisa dibatalkan.\n";
-        tekanEnter();
-        return;
-    }
-
-    // INPUT RESI
-    cout << "\nMasukkan resi paket yang ingin dibatalkan : ";
-    cin >> resiCari;
-
-    // CARI PAKET
-    for(int i = 0; i < jumlahPaket; i++){
-
-        if(DaftarPaket[i].resi == resiCari){
-
-            // CEK STATUS
-            if(DaftarPaket[i].status != "Diproses"){
-
-                cout << "\nPaket sudah dikirim dan tidak bisa dibatalkan.\n";
                 tekanEnter();
                 return;
             }
 
-            // HAPUS DATA
-            for(int j = i; j < jumlahPaket - 1; j++){
+            int pilihan;
 
-                DaftarPaket[j] = DaftarPaket[j + 1];
+            cout << "\n1. Ya\n";
+            cout << "2. Tidak\n";
+            cout << "Pilih : ";
+            cin >> pilihan;
+            cin.ignore();
+
+            if (pilihan == 1) {
+
+                paket["status"] = "Dibatalkan";
+
+                ofstream outputFile("Database/paket.json");
+
+                outputFile << data.dump(4);
+
+                outputFile.close();
+
+                cout << "\nPaket berhasil dibatalkan!\n";
             }
 
-            jumlahPaket--;
-            savePaket();
+            else {
 
-            cout << "\nPaket berhasil dibatalkan.\n";
-            tekanEnter();
-            return;
+                cout << "\nPembatalan dibatalkan.\n";
+            }
+
+            break;
         }
     }
 
-    cout << "\nResi tidak ditemukan.\n";
+    if (!ditemukan) {
+
+        cout << "\nPaket tidak ditemukan!\n";
+    }
+
     tekanEnter();
 }

@@ -28,7 +28,7 @@ void tampilRiwayatPaket() {
 
     // Header Tabel (Ditambahkan kolom Pemilik)
     cout << left 
-        << setw(10) << "Resi" 
+        << setw(12) << "Resi" 
         << setw(15) << "Pengirim" 
         << setw(15) << "Penerima" 
         << setw(10) << "Berat" 
@@ -42,7 +42,7 @@ void tampilRiwayatPaket() {
     // Looping data dari JSON untuk ditampilkan
     for (const auto& item : data) {
         cout << left 
-            << setw(10) << item["resi"].get<string>()
+            << setw(12) << item["resi"].get<string>()
             << setw(15) << item["namaPengirim"].get<string>()
             << setw(15) << item["namaPenerima"].get<string>()
             << setw(10) << to_string(item["berat"].get<int>()) + "g"

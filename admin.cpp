@@ -48,6 +48,7 @@ void MenuAdmin(){
     if(LoginAdmin("admin","123")){
         system("cls");
         do{
+            system("cls");
             cout << "===================================" << endl;
             cout << "            Menu Admin             " << endl;
             cout << "-----------------------------------" << endl;
@@ -87,7 +88,7 @@ void MenuAdmin(){
                 }
                 
                 case 5: {
-                    BatalkanPaket(paket, jumlahPaket);
+                    BatalkanPaket_Admin();
                     system("cls");
                     break;
                 }
