@@ -34,5 +34,16 @@
         "resi": "6OY1T7BF",
         "status": "Diproses",
         "tipe": "Elektronik"
+    },
+    {
+        "alamat": "jka",
+        "berat": 100,
+        "namaPenerima": "jaki",
+        "namaPengirim": "jaki",
+        "ongkir": 11000,
+        "pemilik": "Admin",
+        "resi": "MUZK5YVQ",
+        "status": "Diproses (COD)",
+        "tipe": "Lainnya"
     }
 ]

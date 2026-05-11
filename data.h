@@ -12,7 +12,7 @@ struct Paket {
     string namaPengirim;
     string namaPenerima;
     string alamat;
-    int berat;
+    long long berat;
     string tipe;
     string status;
     string pemilik;
