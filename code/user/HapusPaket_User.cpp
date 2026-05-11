@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "data.h"
+#include "include/data.h"
 #include "database/json.hpp"
 
 using json = nlohmann::json;
@@ -10,11 +10,11 @@ extern string userAktif;
 
 void tekanEnter();
 
-void BatalkanPaket_User() {
+void HapusRiwayatPaket_User() {
 
     system("cls");
 
-    cout << "=== BATALKAN PAKET ===\n";
+    cout << "=== HAPUS RIWAYAT PAKET ===\n";
 
     ifstream inputFile("Database/paket.json");
 
@@ -31,20 +31,12 @@ void BatalkanPaket_User() {
 
     bool ditemukan = false;
 
-    for (auto &paket : data) {
+    for (int i = 0; i < data.size(); i++) {
 
-        if (paket["resi"] == resiCari &&
-            paket["pemilik"] == userAktif) {
+        if (data[i]["resi"] == resiCari &&
+            data[i]["pemilik"] == userAktif) {
 
             ditemukan = true;
-
-            if (paket["status"] != "Menunggu Diproses") {
-
-                cout << "\nPaket tidak bisa dibatalkan!\n";
-
-                tekanEnter();
-                return;
-            }
 
             int pilihan;
 
@@ -56,7 +48,7 @@ void BatalkanPaket_User() {
 
             if (pilihan == 1) {
 
-                paket["status"] = "Dibatalkan";
+                data.erase(data.begin() + i);
 
                 ofstream outputFile("Database/paket.json");
 
@@ -64,12 +56,12 @@ void BatalkanPaket_User() {
 
                 outputFile.close();
 
-                cout << "\nPaket berhasil dibatalkan!\n";
+                cout << "\nRiwayat paket berhasil dihapus!\n";
             }
 
             else {
 
-                cout << "\nPembatalan dibatalkan.\n";
+                cout << "\nPenghapusan dibatalkan.\n";
             }
 
             break;

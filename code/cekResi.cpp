@@ -1,8 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "data.h"
-#include "cekResi.h"
+#include "include/data.h"
+#include "include/cekResi.h"
 #include "Database/json.hpp"
 
 using json = nlohmann::json;

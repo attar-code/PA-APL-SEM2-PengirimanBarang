@@ -1,7 +1,6 @@
 #include<iostream> 
-#include "admin.h"
-#include "data.h"
-#include "TambahPaket_Admin.h"
+#include "include/admin.h"
+#include "include/data.h"
 
 using namespace std;
 
