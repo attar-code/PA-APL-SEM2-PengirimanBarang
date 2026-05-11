@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
+#include <limits>
 #include "data.h"
-#include "Database/json.hpp"
+#include "TambahPaket_Admin.h"
+#include "database/json.hpp"
 
 using json = nlohmann::json;
 using namespace std;
@@ -22,33 +24,49 @@ bool bisaDibatalkan(string status) {
 
 void BatalkanPaket_Admin() {
 
+
     system("cls");
+    tampilRiwayatPaket();
+    
 
     cout << "=== BATALKAN PAKET ===\n";
+    cout << "Ketik 'batal' untuk kembali ke menu admin\n\n";
 
     ifstream inputFile("database/paket.json");
 
-    json data;
+    if (!inputFile.is_open()) {
+        cout << "Gagal membuka database!\n";
+        tekanEnter();
+        return;
+    }
 
+    json data;
     inputFile >> data;
     inputFile.close();
 
     string resiCari;
 
     cout << "Masukkan nomor resi : ";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     getline(cin, resiCari);
+
+    // 🔥 FITUR EXIT
+    if (resiCari == "batal") {
+        cout << "\nKembali ke menu admin...\n";
+        return;
+    }
 
     bool ditemukan = false;
 
     for (auto &paket : data) {
 
-        if (paket["resi"] == resiCari) {
+        if (paket["resi"].get<string>() == resiCari) {
 
             ditemukan = true;
 
-            string status = paket["status"];
+            string status = paket["status"].get<string>();
 
-            // ❌ TIDAK BISA DIBATALKAN
+            // ❌ LOCK STATUS
             if (status == "Dikirim" || status == "Selesai") {
 
                 cout << "\nPaket sudah dikirim/selesai, tidak bisa dibatalkan!\n";
@@ -63,7 +81,6 @@ void BatalkanPaket_Admin() {
                 return;
             }
 
-            // KONFIRMASI
             int pilihan;
 
             cout << "\nStatus saat ini: " << status << endl;

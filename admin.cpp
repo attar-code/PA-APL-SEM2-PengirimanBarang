@@ -71,6 +71,7 @@ void MenuAdmin(){
 
                 case 2: {
                     tampilRiwayatPaket();
+                    tekanEnter();
                     system("cls");
                     break;
                 }
