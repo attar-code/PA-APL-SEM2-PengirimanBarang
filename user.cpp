@@ -59,7 +59,7 @@ void MenuUser() {
 void TambahPaket_User();
 void LihatRiwayatPaket_User();
 void UpdatePaket_User();
-void HapusPaket_User();
+void HapusRiwayatPaket_User();
 void BatalkanPaket_User();
 
 void MenuUtamaUser() {
@@ -97,7 +97,7 @@ void MenuUtamaUser() {
             }
 
             case 4: {
-                HapusPaket_User();
+                HapusRiwayatPaket_User();
                 break;
             }
 

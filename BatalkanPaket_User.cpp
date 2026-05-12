@@ -24,23 +24,53 @@ void BatalkanPaket_User() {
 
     inputFile.close();
 
+    bool ditemukan = false;
+
+    cout << "\n=== DAFTAR PAKET ===\n";
+
+    for (auto paket : data) {
+
+        if (paket["pemilik"] == userAktif) {
+
+            ditemukan = true;
+
+            cout << "\n============================\n";
+            cout << "Nomor Resi     : " << paket["resi"] << endl;
+            cout << "Nama Pengirim  : " << paket["namaPengirim"] << endl;
+            cout << "Nama Penerima  : " << paket["namaPenerima"] << endl;
+            cout << "Alamat Tujuan  : " << paket["alamat"] << endl;
+            cout << "Berat Barang   : " << paket["berat"] << " gram" << endl;
+            cout << "Tipe Barang    : " << paket["tipe"] << endl;
+            cout << "Status Paket   : " << paket["status"] << endl;
+        }
+    }
+
+    if (!ditemukan) {
+
+        cout << "\nBelum ada paket!\n";
+
+        tekanEnter();
+        return;
+    }
+
     string resiCari;
 
-    cout << "Masukkan nomor resi : ";
+    cout << "\nMasukkan nomor resi yang ingin dibatalkan : ";
     getline(cin, resiCari);
 
-    bool ditemukan = false;
+    bool paketDitemukan = false;
 
     for (auto &paket : data) {
 
         if (paket["resi"] == resiCari &&
             paket["pemilik"] == userAktif) {
 
-            ditemukan = true;
+            paketDitemukan = true;
 
             if (paket["status"] != "Menunggu Diproses") {
 
                 cout << "\nPaket tidak bisa dibatalkan!\n";
+                cout << "Status paket sudah diproses admin.\n";
 
                 tekanEnter();
                 return;
@@ -48,7 +78,8 @@ void BatalkanPaket_User() {
 
             int pilihan;
 
-            cout << "\n1. Ya\n";
+            cout << "\nApakah yakin ingin membatalkan paket?\n";
+            cout << "1. Ya\n";
             cout << "2. Tidak\n";
             cout << "Pilih : ";
             cin >> pilihan;
@@ -76,7 +107,7 @@ void BatalkanPaket_User() {
         }
     }
 
-    if (!ditemukan) {
+    if (!paketDitemukan) {
 
         cout << "\nPaket tidak ditemukan!\n";
     }

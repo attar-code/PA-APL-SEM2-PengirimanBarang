@@ -22,5 +22,52 @@
         "resi": "69MVWSWB",
         "status": "Diproses",
         "tipe": "Elektronik"
+    },
+    {
+        "alamat": "bandung",
+        "berat": 69,
+        "namaPenerima": "meishaa",
+        "namaPengirim": "ikan",
+        "ongkir": 11380,
+        "pemilik": "Admin",
+        "resi": "OJ77L0LG",
+        "status": "Diproses (Lunas)",
+        "tipe": "Lainnya"
+    },
+    {
+        "alamat": "wdq",
+        "berat": 31111,
+        "namaPenerima": "iqq",
+        "namaPengirim": "djij",
+        "ongkir": 326110,
+        "pembayaran": "COD",
+        "pemilik": "koko",
+        "resi": "E4QC76H7",
+        "status": "Diproses",
+        "tipe": "Pecah Belah"
+    },
+    {
+        "alamat": "fq",
+        "berat": 131,
+        "namaPenerima": "qfwwf",
+        "namaPengirim": "iofiw",
+        "ongkir": 16310,
+        "pembayaran": "COD",
+        "pemilik": "koko",
+        "resi": "TC0RI99D",
+        "status": "Diproses",
+        "tipe": "Pecah Belah"
+    },
+    {
+        "alamat": "fv",
+        "berat": 24356,
+        "namaPenerima": "ffqf",
+        "namaPengirim": "ofokf",
+        "ongkir": 258560,
+        "pembayaran": "COD",
+        "pemilik": "jojo",
+        "resi": "AW822FH6",
+        "status": "Diproses",
+        "tipe": "Pecah Belah"
     }
 ]
