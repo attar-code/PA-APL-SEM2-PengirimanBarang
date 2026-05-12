@@ -1,9 +1,9 @@
 #include<iostream>
-#include "include/user.h"
-#include "include/admin.h"
-#include "include/data.h"
-#include "include/LacakPaket.h"
-#include "include/cekResi.h"
+#include "../include/user.h"
+#include "../include/admin.h"
+#include "../include/data.h"
+#include "../include/LacakPaket.h"
+#include "../include/cekResi.h"
 
 using namespace std;
 int JumlahUser = 0;

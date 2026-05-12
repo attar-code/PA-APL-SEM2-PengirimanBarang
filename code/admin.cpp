@@ -1,6 +1,6 @@
 #include<iostream> 
-#include "include/admin.h"
-#include "include/data.h"
+#include "../include/admin.h"
+#include "../include/data.h"
 
 using namespace std;
 

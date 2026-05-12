@@ -1,8 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "include/data.h"
-#include "database/json.hpp"
+#include "../include/data.h"
+#include "../database/json.hpp"
 
 using json = nlohmann::json;
 using namespace std;

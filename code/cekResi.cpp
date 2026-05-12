@@ -1,9 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "include/data.h"
-#include "include/cekResi.h"
-#include "database/json.hpp"
+#include "../include/data.h"
+#include "../include/cekResi.h"
+#include "../database/json.hpp"
 
 using json = nlohmann::json;
 using namespace std;
@@ -18,7 +18,7 @@ void cekResi() {
 
     cout << "=== CEK RESI ===\n";
 
-    ifstream inputFile("Database/paket.json");
+    ifstream inputFile("database/paket.json");
 
     if (!inputFile.is_open()) {
 
@@ -112,7 +112,7 @@ void cekResi() {
         return;
     }
 
-    ofstream outputFile("Database/paket.json");
+    ofstream outputFile("database/paket.json");
 
     outputFile << data.dump(4);
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include "include/data.h"
-#include "database/json.hpp"
+#include "../include/data.h"
+#include "../database/json.hpp"
 
 using json = nlohmann::json;
 using namespace std;
@@ -18,7 +18,7 @@ void LihatRiwayatPaket_User() {
 
     bool ditemukan = false;
 
-    ifstream inputFile("Database/paket.json");
+    ifstream inputFile("database/paket.json");
 
     json data;
 

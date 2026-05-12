@@ -1,9 +1,9 @@
 #include <iomanip>
 #include <iostream>
 #include <fstream>
-#include "include/admin.h"
-#include "include/data.h"
-#include "database/json.hpp"
+#include "../include/admin.h"
+#include "../include/data.h"
+#include "../database/json.hpp"
 
 using namespace std;
 using json = nlohmann::json;

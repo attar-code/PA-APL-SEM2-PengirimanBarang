@@ -1,7 +1,7 @@
 #include <iostream>
-#include "include/data.h"
-#include "include/admin.h"
-#include "database/json.hpp"
+#include "../include/data.h"
+#include "../include/admin.h"
+#include "../database/json.hpp"
 
 using json = nlohmann::json;
 using namespace std;
