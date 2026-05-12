@@ -43,19 +43,48 @@ void UpdatePaket_User() {
 
     inputFile.close();
 
+    bool ditemukan = false;
+
+    cout << "\n=== DAFTAR PAKET ===\n";
+
+    for (auto paket : data) {
+
+        if (paket["pemilik"] == userAktif) {
+
+            ditemukan = true;
+
+            cout << "\n============================\n";
+            cout << "Nomor Resi     : " << paket["resi"] << endl;
+            cout << "Nama Pengirim  : " << paket["namaPengirim"] << endl;
+            cout << "Nama Penerima  : " << paket["namaPenerima"] << endl;
+            cout << "Alamat Tujuan  : " << paket["alamat"] << endl;
+            cout << "Berat Barang   : " << paket["berat"] << " gram" << endl;
+            cout << "Tipe Barang    : " << paket["tipe"] << endl;
+            cout << "Status Paket   : " << paket["status"] << endl;
+        }
+    }
+
+    if (!ditemukan) {
+
+        cout << "\nBelum ada paket!\n";
+
+        tekanEnter();
+        return;
+    }
+
     string resiCari;
 
-    cout << "Masukkan nomor resi : ";
+    cout << "\nMasukkan nomor resi yang ingin diupdate : ";
     getline(cin, resiCari);
 
-    bool ditemukan = false;
+    bool paketDitemukan = false;
 
     for (auto &paket : data) {
 
         if (paket["resi"] == resiCari &&
             paket["pemilik"] == userAktif) {
 
-            ditemukan = true;
+            paketDitemukan = true;
 
             if (paket["status"] != "Menunggu Diproses") {
 
@@ -98,7 +127,7 @@ void UpdatePaket_User() {
         }
     }
 
-    if (!ditemukan) {
+    if (!paketDitemukan) {
 
         cout << "\nPaket tidak ditemukan!\n";
 
