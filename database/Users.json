@@ -1,11 +1,14 @@
 [
     {
-<<<<<<< HEAD
         "password": "054",
         "username": "ghina"
-=======
+    },
+    {
         "password": "123",
-        "username": "attar"
->>>>>>> bd5c1c4b944594e6d3c5520d6f5659f8d3d1d3a2
+        "username": "karin"
+    },
+    {
+        "password": "jaki123",
+        "username": "jaki"
     }
 ]

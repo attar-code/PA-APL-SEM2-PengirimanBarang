@@ -11,256 +11,325 @@
 using json = nlohmann::json;
 using namespace std;
 
-// Mengambil variabel global dari sesi login user
+//VARIABEL GLOBAL
+//mengambil data user login
 extern string userAktif;
 
-// Deklarasi fungsi eksternal/pembantu agar sinkron saat kompilasi
+//DEKLARASI FUNGSI
+//Materi: Fungsi
 string generateResi();
 int inputAngka(string pesan);
 bool cekResiDiJson(const string& Cari);
-long long hitungOngkir(int beratGram, int opsiLokasi, int opsiTipe);
+long long hitungOngkir(long beratGram, int opsiLokasi, int opsiTipe);
 void tekanEnter();
 void savePaketToJson(Paket p);
 
-// Fungsi untuk validasi input (hanya mengizinkan huruf, angka, spasi, titik, dan koma)
+//FUNGSI VALIDASI
+//Materi: Fungsi
 bool ValidasiInputUser(const string& input) {
-    if (input.empty()) return false;
+
+    if (input.empty()) {
+        return false;
+    }
+
     for (char c : input) {
-        if (!isalnum(c) && !isspace(c) && c != '.' && c != ',') {
+
+        if (
+            !isalnum(c) &&
+            !isspace(c) &&
+            c != '.' &&
+            c != ','
+        ) {
+
             return false;
         }
     }
+
     return true;
 }
 
-// Fungsi pembantu untuk mempermudah lemparan error validasi teks
-void cekValiditasInputUser(const string& input, const string& namaField) {
+//FUNGSI VALIDASI FIELD
+//Materi: Fungsi
+void cekValiditasInputUser(
+    const string& input,
+    const string& namaField
+) {
+
+    //ERROR HANDLING
     if (input.empty()) {
         throw (namaField + " tidak boleh kosong!").c_str();
     }
+
     if (!ValidasiInputUser(input)) {
         throw (namaField + " mengandung karakter tidak valid!").c_str();
     }
 }
 
-// FUNGSI UTAMA: Tambah Paket sisi Customer/User
+//FUNGSI HITUNG ONGKIR
+//Materi: Fungsi
+long long hitungOngkir(
+    long beratGram,
+    int opsiLokasi,
+    int opsiTipe
+) {
+
+    long long hargaPerKg;
+
+    if (opsiLokasi == 1) {
+        hargaPerKg = 10000;
+    }
+
+    else {
+        hargaPerKg = 20000;
+    }
+
+    long long tambahanTipe = 0;
+
+    switch (opsiTipe) {
+        case 1:
+            tambahanTipe = 0;
+            break;
+
+        case 2:
+            tambahanTipe = 20000;
+            break;
+
+        case 3:
+            tambahanTipe = 15000;
+            break;
+
+        case 4:
+            tambahanTipe = 10000;
+            break;
+    }
+
+    return ((beratGram / 1000.0) * hargaPerKg) + tambahanTipe;
+}
+
+//PROSEDUR TAMBAH PAKET
+//Materi: Prosedur
 void TambahPaket_User() {
+
+    //EXCEPTION HANDLING
     try {
         static bool seeded = false;
+
         if (!seeded) {
             srand(time(0));
             seeded = true;
         }
 
-        // Deteksi Sistem Operasi untuk membersihkan layar terminal
-        #ifdef _WIN32
-            system("cls");
-        #else
-            system("clear");
-        #endif
+        system("cls");
 
-        cout << "=== TAMBAH PAKET (CUSTOMER) ===\n" << endl;
-
+        cout << "=== TAMBAH PAKET ===\n" << endl;
+        //STRUCT + VARIABEL LOKAL
         Paket paketBaru;
 
-        // 1. Input & Validasi Data Pelanggan
+        //INPUT DATA
         cout << "Nama Pengirim : ";
         getline(cin, paketBaru.namaPengirim);
-        cekValiditasInputUser(paketBaru.namaPengirim, "Nama pengirim");
+
+        cekValiditasInputUser(
+            paketBaru.namaPengirim,
+            "Nama pengirim"
+        );
 
         cout << "Nama Penerima : ";
         getline(cin, paketBaru.namaPenerima);
-        cekValiditasInputUser(paketBaru.namaPenerima, "Nama penerima");
+
+        cekValiditasInputUser(
+            paketBaru.namaPenerima,
+            "Nama penerima"
+        );
 
         cout << "Alamat Tujuan : ";
         getline(cin, paketBaru.alamat);
-        cekValiditasInputUser(paketBaru.alamat, "Alamat");
 
-        // 2. Input Lokasi Tujuan
+        cekValiditasInputUser(
+            paketBaru.alamat,
+            "Alamat"
+        );
+
+        //INPUT LOKASI
+
         cout << "\nOPSI LOKASI TUJUAN:" << endl;
         cout << "1. Dalam Kota (10.000 / Kg)" << endl;
         cout << "2. Luar Kota (20.000 / Kg)" << endl;
+
         int opsiLokasi;
+
         while (true) {
+
             cout << "Pilih opsi lokasi tujuan (1-2): ";
             cin >> opsiLokasi;
-            if (cin.fail() || (opsiLokasi != 1 && opsiLokasi != 2)) {
-                cout << "Input tidak valid! Masukkan angka 1 atau 2." << endl;
+
+            //ERROR HANDLING
+            if (
+                cin.fail() ||
+                (opsiLokasi != 1 && opsiLokasi != 2)
+            ) {
+
+                cout << "Input tidak valid!\n";
+
                 cin.clear();
                 cin.ignore(1000, '\n');
-            } else {
+            }
+
+            else {
                 break;
             }
         }
 
-        // 3. Input Berat (Maksimal 50kg)
-        cout << "Masukkan berat (gram) [Maksimal 50.000 gram]: ";
+        //INPUT BERAT
+        cout << "\nMasukkan berat (gram): ";
         cin >> paketBaru.berat;
-        if (cin.fail() || paketBaru.berat <= 0) {
+
+        if (
+            cin.fail() ||
+            paketBaru.berat <= 0
+        ) {
+
             cin.clear();
             cin.ignore(1000, '\n');
-            throw "Berat harus berupa angka positif!";
+
+            throw "Berat harus angka positif!";
         }
+
         if (paketBaru.berat > 50000) {
-            throw "Berat paket melebihi batas maksimal (Maksimal 50.000 gram / 50 kg)!";
+            throw "Berat melebihi batas maksimal!";
         }
 
-        // 4. Input Tipe Barang
+        //INPUT TIPE
         cout << "\nPilihan tipe barang:" << endl;
-        cout << "1. Dokumen (Bebas Biaya Tambahan)" << endl;
-        cout << "2. Elektronik (+Rp 20.000)" << endl;
-        cout << "3. Pecah Belah (+Rp 15.000)" << endl;
-        cout << "4. Lainnya (+Rp 10.000)" << endl;
+        cout << "1. Dokumen" << endl;
+        cout << "2. Elektronik" << endl;
+        cout << "3. Pecah Belah" << endl;
+        cout << "4. Lainnya" << endl;
+
         int opsiTipe;
+
         while (true) {
-            cout << "Pilih opsi tipe barang (1-4): ";
+            cout << "Pilih tipe barang (1-4): ";
             cin >> opsiTipe;
-            if (cin.fail() || opsiTipe < 1 || opsiTipe > 4) {
-                cout << "Input tidak valid! Masukkan angka antara 1 dan 4." << endl;
+
+            if (
+                cin.fail() ||
+                opsiTipe < 1 ||
+                opsiTipe > 4
+            ) {
+
+                cout << "Input tidak valid!\n";
+
                 cin.clear();
                 cin.ignore(1000, '\n');
-            } else {
+            }
+
+            else {
                 break;
             }
         }
 
-        if (opsiTipe == 1)      paketBaru.tipe = "Dokumen";
-        else if (opsiTipe == 2) paketBaru.tipe = "Elektronik";
-        else if (opsiTipe == 3) paketBaru.tipe = "Pecah Belah";
-        else                    paketBaru.tipe = "Lainnya";
+        cin.ignore();
 
-        // Hitung total ongkos kirim
-        paketBaru.ongkir = hitungOngkir(paketBaru.berat, opsiLokasi, opsiTipe);
+        if (opsiTipe == 1) {
+            paketBaru.tipe = "Dokumen";
+        }
 
-        // Menampilkan Ringkasan Biaya sebelum bayar
-        cout << "\n======================================" << endl;
-        cout << "          RINGKASAN TRANSAKSI         " << endl;
-        cout << "======================================" << endl;
-        cout << "Pengirim     : " << paketBaru.namaPengirim << endl;
-        cout << "Penerima     : " << paketBaru.namaPenerima << endl;
-        cout << "Tipe Barang  : " << paketBaru.tipe << endl;
-        cout << "Berat Barang : " << paketBaru.berat << " gram" << endl;
-        cout << "Total Ongkir : Rp " << paketBaru.ongkir << endl;
-        cout << "======================================" << endl;
+        else if (opsiTipe == 2) {
+            paketBaru.tipe = "Elektronik";
+        }
 
-        // 5. Opsi Metode Pembayaran
-        cout << "METODE PEMBAYARAN:" << endl;
-        cout << "1. COD (Bayar di Tujuan)" << endl;
-        cout << "2. Transfer (Virtual Account)" << endl;
+        else if (opsiTipe == 3) {
+            paketBaru.tipe = "Pecah Belah";
+        }
+
+        else {
+            paketBaru.tipe = "Lainnya";
+        }
+
+        //HITUNG ONGKIR
+        paketBaru.ongkir = hitungOngkir(
+            paketBaru.berat,
+            opsiLokasi,
+            opsiTipe
+        );
+
+        //PEMBAYARAN
+        cout << "\n1. COD" << endl;
+        cout << "2. Transfer" << endl;
+
         int metodeBayar;
-        while (true) {
-            cout << "Pilih metode pembayaran (1-2): ";
-            cin >> metodeBayar;
-            if (cin.fail() || (metodeBayar != 1 && metodeBayar != 2)) {
-                cout << "Input tidak valid! Masukkan angka 1 atau 2." << endl;
-                cin.clear();
-                cin.ignore(1000, '\n');
-            } else {
-                break;
-            }
-        }
 
-        // Mengeset otomatis pemilik paket sesuai akun yang sedang login saat ini
+        cin >> metodeBayar;
+
         paketBaru.pemilik = userAktif;
 
-        // --- ALUR 1: JIKA MEMILIH COD ---
+        //COD
         if (metodeBayar == 1) {
             paketBaru.pembayaran = "COD";
             paketBaru.status = "Diproses";
 
-            // Generate resi unik untuk COD
+            //SEARCHING + LINEAR SEARCH
             do {
+
                 paketBaru.resi = generateResi();
+
             } while (cekResiDiJson(paketBaru.resi));
 
-            // Simpan langsung ke database JSON
             savePaketToJson(paketBaru);
 
-            // Tampilkan rincian transaksi & nomor resi ke user
-            cout << "\n======================================" << endl;
-            cout << "     TRANSAKSI COD BERHASIL dibuat!   " << endl;
-            cout << "======================================" << endl;
-            cout << "NOMOR RESI ANDA : " << paketBaru.resi << endl;
-            cout << "Status Paket    : " << paketBaru.status << endl;
-            cout << "======================================" << endl;
-            cout << "Silakan serahkan paket ke kurir/toko terdekat." << endl;
-            
+            cout << "\nTransaksi berhasil!\n";
+            cout << "Nomor Resi : " << paketBaru.resi << endl;
+
             tekanEnter();
-        } 
-        
-        // --- ALUR 2: JIKA MEMILIH TRANSFER ---
+        }
+
+        //TRANSFER
+
         else if (metodeBayar == 2) {
-            #ifdef _WIN32
-                system("cls");
-            #else
-                system("clear");
-            #endif
+            paketBaru.pembayaran = "Transfer";
+            paketBaru.status = "Menunggu Validasi Admin";
+            paketBaru.resi = "BELUM_RILIS";
 
-            cout << "=== PEMBAYARAN VIA TRANSFER ===\n" << endl;
-            cout << "Total Tagihan       : Rp " << paketBaru.ongkir << endl;
-            cout << "No. Virtual Account : 082341154761 (DANA/Bank)" << endl;
-            cout << "--------------------------------------" << endl;
-            cout << "1. Sudah Bayar (Kirim bukti ke Admin)" << endl;
-            cout << "2. Batalkan Transaksi" << endl;
-            
-            int konfirmasi;
-            while (true) {
-                cout << "Pilih status pembayaran (1-2): ";
-                cin >> konfirmasi;
-                if (cin.fail() || (konfirmasi != 1 && konfirmasi != 2)) {
-                    cout << "Input tidak valid! Masukkan angka 1 atau 2." << endl;
-                    cin.clear();
-                    cin.ignore(1000, '\n');
-                } else {
-                    break;
-                }
-            }
+            //PASS BY VALUE
+            savePaketToJson(paketBaru);
 
-            if (konfirmasi == 1) {
-                paketBaru.pembayaran = "Transfer";
-                paketBaru.status = "Menunggu Validasi Admin";
-                
-                // Resi diset "BELUM_RILIS" sampai admin mengonfirmasi pembayaran
-                paketBaru.resi = "BELUM_RILIS"; 
+            cout << "\nTransaksi berhasil dikirim!\n";
 
-                // Simpan data paket ke database agar bisa divalidasi oleh admin
-                savePaketToJson(paketBaru);
-
-                cout << "\n======================================" << endl;
-                cout << "      SUBMIT TRANSAKSI BERHASIL!      " << endl;
-                cout << "======================================" << endl;
-                cout << "Status Paket : Menunggu Validasi Admin" << endl;
-                cout << "======================================" << endl;
-                cout << "(*) Nomor resi akan terbit setelah dikonfirmasi oleh Admin." << endl;
-                cout << "Silakan cek berkala di menu Lihat Riwayat Paket Anda." << endl;
-
-                tekanEnter();
-            } 
-            else {
-                cout << "\n[!] Transaksi dibatalkan. Data tidak disimpan." << endl;
-                tekanEnter();
-                return;
-            }
+            tekanEnter();
         }
     }
+
+    //EXCEPTION HANDLING
     catch (const char* msg) {
-        cerr << "\nError: " << msg << endl;
+        cerr << "\nERROR: " << msg << endl;
+
         tekanEnter();
     }
 }
 
-// Fungsi Simpan ke database/paket.json (Menggunakan folder lowercase 'database')
+//PROSEDUR SIMPAN JSON
+//Materi: Prosedur + Pass by Value
 void savePaketToJson(Paket p) {
+
+    //FILE HANDLING
     ifstream inputFile("database/paket.json");
+
     json data = json::array();
 
     if (inputFile.is_open()) {
-        if (inputFile.peek() != ifstream::traits_type::eof()) {
+        if (
+            inputFile.peek() !=
+            ifstream::traits_type::eof()
+        ) {
+
             inputFile >> data;
         }
+
         inputFile.close();
     }
 
+    //STRUCT
     json paketBaru = {
         {"resi", p.resi},
         {"namaPengirim", p.namaPengirim},
@@ -275,10 +344,7 @@ void savePaketToJson(Paket p) {
     };
 
     data.push_back(paketBaru);
-
     ofstream outputFile("database/paket.json");
-    if (outputFile.is_open()) {
-        outputFile << data.dump(4);
-        outputFile.close();
-    }
+    outputFile << data.dump(4);
+    outputFile.close();
 }
