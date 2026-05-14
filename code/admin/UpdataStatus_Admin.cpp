@@ -1,6 +1,6 @@
 #include<iostream>
-#include "admin.h"
-#include "data.h"
+#include "../include/admin.h"
+#include "../include/data.h"
 
 void UpdateStatusPaket(Paket DaftarPaket[], int jumlahPaket) {
     string cariResi;

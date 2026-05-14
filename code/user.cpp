@@ -1,6 +1,6 @@
 #include <iostream>
-#include "data.h"
-#include "user.h"
+#include "../include/data.h"
+#include "../include/user.h"
 
 using namespace std;
 
@@ -56,12 +56,6 @@ void MenuUser() {
     } while (pilih != 3);
 }
 
-void TambahPaket_User();
-void LihatRiwayatPaket_User();
-void UpdatePaket_User();
-void HapusPaket_User();
-void BatalkanPaket_User();
-
 void MenuUtamaUser() {
 
     int pilih;
@@ -97,7 +91,7 @@ void MenuUtamaUser() {
             }
 
             case 4: {
-                HapusPaket_User();
+                HapusRiwayatPaket_User();
                 break;
             }
 

@@ -4,9 +4,9 @@
 #include <string>
 #include <cctype>
 #include <fstream>
-#include "admin.h"
-#include "data.h"
-#include "database/json.hpp"
+#include "../include/admin.h"
+#include "../include/data.h"
+#include "../database/json.hpp"
 
 using json = nlohmann::json;
 using namespace std;
@@ -53,7 +53,8 @@ void savePaketToJson(const Paket& paket) {
         {"tipe", paket.tipe},
         {"status", paket.status},
         {"pemilik", paket.pemilik},
-        {"ongkir", paket.ongkir}
+        {"ongkir", paket.ongkir},
+        {"pembayaran", paket.pembayaran}
     };
 
     data.push_back(paketBaru);
@@ -110,7 +111,14 @@ long long hitungOngkir(int beratGram, int opsiLokasi, int opsiTipe) {
 // FUNGSI UTAMA: Bersih, Update Status Otomatis & Pemilik Admin
 void TambahPaketAdmin() {
     try {
-        cout << "=== TAMBAH PAKET (ADMIN - TOKO OFFLINE) ===" << endl;
+        // --- TAMBAHAN AUTO-CLEAR DI AWAL MENU ---
+        #ifdef _WIN32
+            system("cls");
+        #else
+            system("clear");
+        #endif
+
+        cout << "=== TAMBAH PAKET (ADMIN - TOKO OFFLINE) ===\n" << endl;
         
         Paket paketBaru;
         cin.ignore(); // Membersihkan sisa buffer input sebelum getline
@@ -184,7 +192,7 @@ void TambahPaketAdmin() {
         // Hitung total ongkir
         paketBaru.ongkir = hitungOngkir(paketBaru.berat, opsiLokasi, opsiTipe);
 
-        // Menampilkan Ringkasan Biaya sebelum bayar (Sesuai update barumu)
+        // Menampilkan Ringkasan Biaya sebelum bayar
         cout << "\n======================================" << endl;
         cout << "          RINGKASAN TRANSAKSI         " << endl;
         cout << "======================================" << endl;
@@ -221,7 +229,16 @@ void TambahPaketAdmin() {
             transaksiSukses = true;
         } 
         else if (metodeBayar == 2) {
-            cout << "\n[KONFIRMASI PEMBAYARAN]" << endl;
+            // --- TAMBAHAN AUTO-CLEAR SEBELUM KONFIRMASI BAYAR CASH ---
+            #ifdef _WIN32
+                system("cls");
+            #else
+                system("clear");
+            #endif
+
+            cout << "=== KONFIRMASI PEMBAYARAN CASH/EDC ===\n" << endl;
+            cout << "Total yang harus dibayar: Rp " << paketBaru.ongkir << endl;
+            cout << "--------------------------------------" << endl;
             cout << "1. Sudah Bayar (Lunas)" << endl;
             cout << "2. Cancel (Batalkan Pesanan)" << endl;
             int konfirmasi;
@@ -266,8 +283,15 @@ void TambahPaketAdmin() {
             // Simpan data langsung ke Database paket.json
             savePaketToJson(paketBaru);
 
+            // --- TAMBAHAN AUTO-CLEAR SEBELUM RESI KELUAR AGAR FOKUS ---
+            #ifdef _WIN32
+                system("cls");
+            #else
+                system("clear");
+            #endif
+
             // Tampilkan Resi Sukses
-            cout << "\n======================================" << endl;
+            cout << "======================================" << endl;
             cout << "   TRANSAKSI SUKSES & DATA DISIMPAN!  " << endl;
             cout << "======================================" << endl;
             cout << "NOMOR RESI ANDA : " << paketBaru.resi << endl;

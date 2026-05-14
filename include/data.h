@@ -1,8 +1,8 @@
 #ifndef MODELS_H
 #define MODELS_H
+#include <iostream>
 
 #include <string>
-#include <iostream>
 
 using namespace std;
 
@@ -11,7 +11,7 @@ struct Paket {
     string namaPengirim;
     string namaPenerima;
     string alamat;
-    int berat;
+    long long berat;
     string tipe;
     string status;
     string pemilik;

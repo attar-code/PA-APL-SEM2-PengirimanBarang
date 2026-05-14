@@ -1,14 +1,14 @@
 #include<iostream>
-#include "user.h"
-#include "admin.h"
-#include "data.h"
-#include "LacakPaket.h"
+#include "../include/user.h"
+#include "../include/admin.h"
+#include "../include/data.h"
+#include "../include/LacakPaket.h"
+#include "../include/cekResi.h"
 
 using namespace std;
 int JumlahUser = 0;
 User user[100];
-
-Paket paket[MAX_PAKET];
+Paket paket[100];
 int jumlahPaket = 0;
 
 string userAktif = "";
@@ -50,7 +50,7 @@ int main(){
         cout << "=== SISTEM PENGIRIMAN BARANG ===\n";
         cout << "1. User\n";
         cout << "2. Admin\n";
-        cout << "3. Lacak Paket\n";
+        cout << "3. Cek Resi\n";
         cout << "4. Keluar\n";
 
         utama = inputAngka("Pilih menu : ");
@@ -68,7 +68,7 @@ int main(){
             }
 
             case 3:{
-                LacakPaket(paket, jumlahPaket);
+                cekResi();
                 break;
             }
 

@@ -1,7 +1,6 @@
 #include<iostream> 
-#include "admin.h"
-#include "data.h"
-#include "TambahPaket_Admin.h"
+#include "../include/admin.h"
+#include "../include/data.h"
 
 using namespace std;
 
@@ -48,6 +47,7 @@ void MenuAdmin(){
     if(LoginAdmin("admin","123")){
         system("cls");
         do{
+            system("cls");
             cout << "===================================" << endl;
             cout << "            Menu Admin             " << endl;
             cout << "-----------------------------------" << endl;
@@ -70,6 +70,7 @@ void MenuAdmin(){
 
                 case 2: {
                     tampilRiwayatPaket();
+                    tekanEnter();
                     system("cls");
                     break;
                 }
@@ -87,7 +88,7 @@ void MenuAdmin(){
                 }
                 
                 case 5: {
-                    BatalkanPaket(paket, jumlahPaket);
+                    BatalkanPaket_Admin();
                     system("cls");
                     break;
                 }
