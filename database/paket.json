@@ -58,5 +58,29 @@
         "resi": "EK72OOE1",
         "status": "Diproses",
         "tipe": "Lainnya"
+    },
+    {
+        "alamat": "jl dayung no 99, sangatta",
+        "berat": 1000,
+        "namaPenerima": "karin",
+        "namaPengirim": "ghina",
+        "ongkir": 30000,
+        "pembayaran": "COD",
+        "pemilik": "karin",
+        "resi": "X96OTWLM",
+        "status": "Diproses",
+        "tipe": "Lainnya"
+    },
+    {
+        "alamat": "jl lambung mangkurat gg annor 1, samarinda utara, kalimantan timur",
+        "berat": 2500,
+        "namaPenerima": "felisa",
+        "namaPengirim": "ansel",
+        "ongkir": 40000,
+        "pembayaran": "Transfer",
+        "pemilik": "karin",
+        "resi": "BELUM_RILIS",
+        "status": "Menunggu Validasi Admin",
+        "tipe": "Pecah Belah"
     }
 ]

@@ -7,39 +7,43 @@
 using json = nlohmann::json;
 using namespace std;
 
+//VARIABEL GLOBAL
 extern int JumlahUser;
 extern User user[100];
 extern string userAktif;
 
+//FUNGSI
+//materi: Fungsi
 bool LoginUser() {
 
+    //FILE HANDLING
     ifstream inputFile("database/Users.json");
     json data;
 
+    //ERROR HANDLING
     if (inputFile.peek() == ifstream::traits_type::eof()) {
-            data = json::array();
-        }
+        data = json::array();
+    }
 
-        else {
-            inputFile >> data;
-        }
+    else {
+        inputFile >> data;
+    }
 
-        inputFile.close();
+    inputFile.close();
 
+    //ERROR HANDLING
     if (data.empty()) {
         cout << "\nBelum ada user yang terdaftar!\n";
-        cout << "Silakan register terlebih dahulu.\n";
-
+        
         tekanEnter();
         return false;
     }
 
+    //VARIABEL LOKAL
     string inputUsername, inputPassword;
-
     int sisa = 3;
 
     while (sisa > 0) {
-
         system("cls");
 
         cout << "\n=== LOGIN USER ===\n";
@@ -65,6 +69,7 @@ bool LoginUser() {
 
         bool loginBerhasil = false;
 
+        //SEARCHING + LINEAR SEARCH
         for (auto akun : data) {
 
             if (
@@ -74,17 +79,14 @@ bool LoginUser() {
 
                 userAktif = inputUsername;
                 loginBerhasil = true;
-
                 break;
             }
         }
 
         if (loginBerhasil) {
             cout << "\nLogin berhasil!\n";
-            cout << "Selamat datang, " << inputUsername << "!\n";
 
             tekanEnter();
-
             return true;
         }
 
@@ -99,8 +101,6 @@ bool LoginUser() {
     }
 
     cout << "\nAnda gagal login 3 kali.\n";
-    cout << "Kembali ke menu utama...\n";
-
     tekanEnter();
 
     return false;
