@@ -12,14 +12,51 @@
         "tipe": "Elektronik"
     },
     {
-        "alamat": "jka",
-        "berat": 100,
-        "namaPenerima": "jaki",
+        "alamat": "berau",
+        "berat": 344,
+        "namaPenerima": "rega",
         "namaPengirim": "jaki",
-        "ongkir": 11000,
-        "pemilik": "Admin",
-        "resi": "MUZK5YVQ",
-        "status": "Diproses (COD)",
+        "ongkir": 26879,
+        "pembayaran": "Transfer",
+        "pemilik": "attar",
+        "resi": "F98ER24S",
+        "status": "Diproses",
+        "tipe": "Elektronik"
+    },
+    {
+        "alamat": "sma 1 samarinda",
+        "berat": 2222,
+        "namaPenerima": "jaki",
+        "namaPengirim": "attar",
+        "ongkir": 32220,
+        "pembayaran": "Transfer",
+        "pemilik": "attar",
+        "resi": "F98ER24S",
+        "status": "Diproses",
+        "tipe": "Lainnya"
+    },
+    {
+        "alamat": "jl merak",
+        "berat": 333,
+        "namaPenerima": "firza",
+        "namaPengirim": "rizal",
+        "ongkir": 23330,
+        "pembayaran": "Transfer",
+        "pemilik": "attar",
+        "resi": "BELUM_RILIS",
+        "status": "Menunggu Validasi Admin",
+        "tipe": "Elektronik"
+    },
+    {
+        "alamat": "jl pramuka",
+        "berat": 222,
+        "namaPenerima": "riza",
+        "namaPengirim": "jaki",
+        "ongkir": 12220,
+        "pembayaran": "COD",
+        "pemilik": "attar",
+        "resi": "EK72OOE1",
+        "status": "Diproses",
         "tipe": "Lainnya"
     }
 ]
