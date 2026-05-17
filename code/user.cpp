@@ -8,8 +8,6 @@ void RegisterUser();
 bool LoginUser();
 void MenuUtamaUser();
 
-int inputAngka(string pesan);
-
 void MenuUser() {
  
     int pilih;

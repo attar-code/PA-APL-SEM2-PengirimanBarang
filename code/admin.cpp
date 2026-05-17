@@ -58,8 +58,9 @@ void MenuAdmin(){
             cout << " 5. Membatalkan Pengiriman         " << endl;
             cout << " 6. Keluar                         " << endl;
             cout << "===================================" << endl;
-            cout << "INPUT ANGKA 1-6 : ";
-            cin >> admin;
+            // cout << "INPUT ANGKA 1-6 : ";
+            admin = inputAngka("INPUT ANGKA 1-6 : ");
+            // cin >> admin;
 
             switch (admin){
                 case 1: {
@@ -101,8 +102,13 @@ void MenuAdmin(){
                     break;
                 } 
 
+                default:{
+                    cout << endl << "Menu tidak valid!" << endl;
+                    tekanEnter();   
+                } 
+
             }
-        }while(admin != 6);
+        }while(admin != 6 || admin == -1);
     }else{
         cout << "salah";
     }

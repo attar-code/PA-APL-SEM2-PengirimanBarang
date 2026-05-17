@@ -31,14 +31,13 @@ int inputAngka(string pesan){
             cout << "ERROR: " << msg << endl;
             cin.clear();
             cin.ignore(1000, '\n');
+            
+            // tekanEnter();
+            // system("cls");
+            return -1;
         }
     }
 }
-
-// void tekanEnter() {
-//     cout << "\nTekan ENTER untuk melanjutkan...";
-//     cin.get();
-// }
 
 int main(){
 
@@ -83,7 +82,7 @@ int main(){
             }   
         }
 
-    } while(utama != 4);
+    } while(utama == -1 || utama != 4);
 
     return 0;
 }

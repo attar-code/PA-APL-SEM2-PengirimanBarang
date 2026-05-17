@@ -38,5 +38,6 @@ extern int jumlahPaket;
 
 void loadPaket();
 void savePaket();
+int inputAngka(string pesan);
 
 #endif
