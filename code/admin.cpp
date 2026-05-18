@@ -19,22 +19,21 @@ bool LoginAdmin(string namaadmin, string passwordadmin){
         cout << "Username : ";
         getline(cin, username);
 
-        while(username.empty()){
-
+        if(username.empty()){
             cout << "Username tidak boleh kosong!\n";
             tekanEnter();
-            break;
+            system("cls");
+            continue;
         }
-
+        
         cout << "Password : ";
         getline(cin, password);
-
-        while(password.empty()){
-
+        
+        if(password.empty()){
             cout << "Password tidak boleh kosong!\n";
-            cout << "Password : ";
-
-            getline(cin, password);
+            tekanEnter();
+            system("cls");
+            continue;
         }
 
         if(username == namaadmin && password == passwordadmin){
