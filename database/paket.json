@@ -82,5 +82,53 @@
         "resi": "BELUM_RILIS",
         "status": "Menunggu Validasi Admin",
         "tipe": "Pecah Belah"
+    },
+    {
+        "alamat": "jl nusantara",
+        "berat": 1222,
+        "namaPenerima": "ainur",
+        "namaPengirim": "jaki",
+        "ongkir": 24440,
+        "pembayaran": "Bayar di Tempat",
+        "pemilik": "Admin",
+        "resi": "8UYXQ089",
+        "status": "Diproses",
+        "tipe": "Dokumen"
+    },
+    {
+        "alamat": "ad",
+        "berat": 123,
+        "namaPenerima": "ada",
+        "namaPengirim": "ad",
+        "ongkir": 21230,
+        "pembayaran": "Bayar di Tempat",
+        "pemilik": "Admin",
+        "resi": "0SJCZ5CV",
+        "status": "Diproses",
+        "tipe": "Elektronik"
+    },
+    {
+        "alamat": "jl unmul",
+        "berat": 1000,
+        "namaPenerima": "jaki",
+        "namaPengirim": "ATTAr",
+        "ongkir": 25000,
+        "pembayaran": "COD (Bayar di Tujuan)",
+        "pemilik": "Admin",
+        "resi": "ZCG2KWE1",
+        "status": "Diproses",
+        "tipe": "Pecah Belah"
+    },
+    {
+        "alamat": "disitu",
+        "berat": 2000,
+        "namaPenerima": "ada",
+        "namaPengirim": "oke",
+        "ongkir": 40000,
+        "pembayaran": "Bayar di Tempat",
+        "pemilik": "Admin",
+        "resi": "UW8BXXV1",
+        "status": "Diproses",
+        "tipe": "Dokumen"
     }
 ]

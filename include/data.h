@@ -1,16 +1,24 @@
 #ifndef MODELS_H
 #define MODELS_H
 #include <iostream>
-
+#include <limits>
 #include <string>
 
 using namespace std;
+
+#ifdef _WIN32
+    #define CLEAR_SCREEN "cls"
+#else
+    #define CLEAR_SCREEN "clear"
+#endif
+
 
 struct Paket {
     string resi;
     string namaPengirim;
     string namaPenerima;
     string alamat;
+    string lokasi;
     long long berat;
     string tipe;
     string status;
@@ -29,8 +37,13 @@ struct User {
 
 inline void tekanEnter() {
     cout << "\nTekan ENTER untuk melanjutkan...";
-    cin.ignore();
-    cin.get();
+    string buang;
+    getline(cin, buang);
+};
+
+inline void bersihkanLayar() {
+    
+    system(CLEAR_SCREEN);
 }
 
 extern Paket paket[100];

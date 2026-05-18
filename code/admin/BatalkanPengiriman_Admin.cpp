@@ -66,7 +66,6 @@ void BatalkanPaket_Admin() {
 
             string status = paket["status"].get<string>();
 
-            // ❌ LOCK STATUS
             if (status == "Dikirim" || status == "Selesai") {
 
                 cout << "\nPaket sudah dikirim/selesai, tidak bisa dibatalkan!\n";
