@@ -38,14 +38,12 @@ void BubbleSortPaket(vector<Paket>& pakets) {
     for (int i = 0; i < n - 1; i++) {
         swapped = false;
         for (int j = 0; j < n - i - 1; j++) {
-            // Kita bandingkan menggunakan fungsi prioritas()
             if (prioritas(pakets[j].status) > prioritas(pakets[j + 1].status)) {
                 // MATERI: Swap objek struct
                 swap(pakets[j], pakets[j + 1]);
                 swapped = true; 
             }
         }
-        // Optimasi sesuai modul: Jika tidak ada pertukaran, berhenti
         if (swapped == false)
             break;
     }
@@ -55,9 +53,7 @@ void tampilRiwayatPaket() {
     ifstream file("database/paket.json");
     json dataJson;
 
-    // Memanggil fungsi dari models.h yang sudah kita buat tadi
     bersihkanLayar();
-
     cout << CYAN << BOLD << setfill('=') << setw(135) << "" << "\n" << setfill(' ');
     cout << "                                     RIWAYAT PENGIRIMAN PAKET                                     \n";
     cout << "                          (Urutan: Diproses -> Dikirim -> Selesai)                                \n";
@@ -73,11 +69,8 @@ void tampilRiwayatPaket() {
     try {
         file >> dataJson;
         file.close();
-
-        // MATERI: Filter Data & Konversi ke Vector of Struct
         vector<Paket> listPaket;
         for (const auto& item : dataJson) {
-            // Sesuai diskusi: Jangan tampilkan yang masih menunggu validasi
             if (item["status"] != "Menunggu Validasi Admin") {
                 Paket p;
                 p.resi         = item.value("resi", "-");
@@ -89,7 +82,7 @@ void tampilRiwayatPaket() {
                 p.tipe         = item.value("tipe", "-");
                 p.ongkir       = item.value("ongkir", 0LL);
                 p.status       = item.value("status", "-");
-                p.pemilik      = item.value("pemilik", "Unknown"); // Admin atau Username User
+                p.pemilik      = item.value("pemilik", "Unknown"); 
                 
                 listPaket.push_back(p);
             }

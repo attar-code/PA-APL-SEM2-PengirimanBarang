@@ -237,7 +237,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <iomanip>   // 🌟 Wajib untuk mengatur spasi tabel (setw, setfill)
+#include <iomanip>   
 #include "../include/data.h"
 #include "../include/admin.h"
 #include "../database/json.hpp"
@@ -253,35 +253,42 @@
 using json = nlohmann::json;
 using namespace std;
 
-// _getch() didefinisikan di file utama kamu (main.cpp)
 int _getch(); 
-
 bool paketdiproses(string status) {
-    return (status == "Diproses" || status == "Diproses (COD)" || status == "Diproses (Lunas)");
+    return (status == "Diproses" || 
+            status == "Diproses (COD)" ||
+            status == "Diproses (Lunas)");
 }
-
 bool paketaktif(string status) {
-    return (status == "Menunggu Validasi Admin" || status == "Diproses" || status == "Diproses (COD)" || status == "Diproses (Lunas)" || status == "Dikirim");
+    return (status == "Menunggu Validasi Admin" || 
+            status == "Diproses" || 
+            status == "Diproses (COD)" ||
+            status == "Diproses (Lunas)" || 
+            status == "Dikirim");
 }
-
 bool resiSudahAda(string resi){
     for(int i = 0; i < jumlahPaket; i++){
-        if(paket[i].resi == resi) return true;
+        if(paket[i].resi == resi) 
+        return true;
     }
     return false;
 }
 
 string generateResiUnik() {
     string resiBaru = generateResi(); 
-    if (!resiSudahAda(resiBaru)) return resiBaru;
+    if (!resiSudahAda(resiBaru))
+    return resiBaru;
     return generateResiUnik(); 
 }
 
 int prioritasStatus(string status){
     if(status == "Menunggu Validasi Admin") return 1;
-    else if(status == "Diproses" || status == "Diproses (COD)" || status == "Diproses (Lunas)") return 2;
-    else if(status == "Dikirim") return 3;
-    else if(status == "Selesai") return 4;
+    else if(status == "Diproses" || status == "Diproses (COD)" || status == "Diproses (Lunas)") 
+        return 2;
+    else if(status == "Dikirim")
+        return 3;
+    else if(status == "Selesai") 
+        return 4;
     return 5;
 }
 
@@ -295,53 +302,39 @@ void bubbleSortStatus(){
     }
 }
 
-// =========================================================================
-// 🌟 PROSEDUR BANTUAN: Menggambar tabel antrean dengan lebar baru (Total 103)
-// =========================================================================
 void cetakTabelAntrean(const vector<int>& indeksPaketAktif) {
-    // Total lebar disesuaikan jadi 103 agar pas menutup semua kolom yang dilebarkan
     cout << CYAN << BOLD << setfill('=') << setw(103) << "" << setfill(' ') << RESET << endl;
     cout << BOLD << "                                      DAFTAR ANTREAN PAKET AKTIF                            " << RESET << endl;
     cout << CYAN << BOLD << setfill('=') << setw(103) << "" << setfill(' ') << RESET << endl;
-    
-    // ✅ Resi diatur setw(12) agar muat "BELUM_RILIS"
-    // ✅ Status diatur setw(24) agar muat "Menunggu Validasi Admin"
     cout << left << setw(4)  << "No" 
-         << "| " << setw(12) << "Resi" 
-         << "| " << setw(12) << "Pengirim" 
-         << "| " << setw(12) << "Penerima" 
-         << "| " << setw(12) << "Lokasi" 
-         << "| " << setw(8)  << "Berat" 
-         << "| " << setw(24) << "Status Saat Ini" << endl;
-         
+        << "| " << setw(12) << "Resi" 
+        << "| " << setw(12) << "Pengirim" 
+        << "| " << setw(12) << "Penerima" 
+        << "| " << setw(12) << "Lokasi" 
+        << "| " << setw(8)  << "Berat" 
+        << "| " << setw(24) << "Status Saat Ini" << endl;
     cout << CYAN << setfill('-') << setw(103) << "" << setfill(' ') << RESET << endl;
 
     int nomorTabel = 1;
     for (int idx : indeksPaketAktif) {
         cout << left << setw(4)  << nomorTabel++
-             << "| " << setw(12) << paket[idx].resi
-             << "| " << setw(12) << paket[idx].namaPengirim
-             << "| " << setw(12) << paket[idx].namaPenerima
-             << "| " << setw(12) << paket[idx].lokasi
-             << "| " << setw(8)  << (to_string(paket[idx].berat) + "g")
-             << "| " << BIRU << BOLD << setw(24) << paket[idx].status << RESET << endl;
+            << "| " << setw(12) << paket[idx].resi
+            << "| " << setw(12) << paket[idx].namaPengirim
+            << "| " << setw(12) << paket[idx].namaPenerima
+            << "| " << setw(12) << paket[idx].lokasi
+            << "| " << setw(8)  << (to_string(paket[idx].berat) + "g")
+            << "| " << BIRU << BOLD << setw(24) << paket[idx].status << RESET << endl;
     }
     cout << CYAN << BOLD << setfill('=') << setw(103) << "" << setfill(' ') << RESET << "\n\n";
 }
 
-// =========================================================================
-// 🌟 FUNGSI NAVIGASI: menuScrollUpdate yang sinkron dengan tabel di atasnya
-// =========================================================================
 int menuScrollUpdate(string judul, vector<string> pilihan, const vector<int>& indeksPaketAktif) {
     int posisi = 0;
     int key;
     
     while (true) {
-        bersihkanLayar(); // Hapus layar total Mac kamu biar tidak menumpuk/bertelur
-        
-        cetakTabelAntrean(indeksPaketAktif); // Gambar ulang tabel di posisi paling atas
-        
-        // Garis pembatas judul menu disamakan lebarnya menjadi 103 agar tegak lurus dengan tabel
+        bersihkanLayar(); 
+        cetakTabelAntrean(indeksPaketAktif); 
         cout << KUNING << BOLD << "=======================================================================================================" << RESET << endl;
         cout << BOLD << "   " << judul << RESET << endl;
         cout << KUNING << BOLD << "=======================================================================================================" << endl;
@@ -355,10 +348,7 @@ int menuScrollUpdate(string judul, vector<string> pilihan, const vector<int>& in
         }
         cout << KUNING << "-------------------------------------------------------------------------------------------------------" << RESET << endl;
         cout << "Gunakan Panah & Enter" << endl;
-
         key = _getch();
-
-        // Deteksi tombol panah lintas platform
         if (key == 27) { 
             _getch(); 
             key = _getch();
@@ -368,9 +358,7 @@ int menuScrollUpdate(string judul, vector<string> pilihan, const vector<int>& in
         else if (key == 224) { 
             key = _getch(); 
         }
-
-        // Logika hitung posisi navigasi
-        if (key == 72) { // Panah Atas
+        if (key == 72) { 
             if (posisi > 0) posisi--;
             else posisi = pilihan.size() - 1;
         } 
@@ -378,15 +366,12 @@ int menuScrollUpdate(string judul, vector<string> pilihan, const vector<int>& in
             if (posisi < pilihan.size() - 1) posisi++;
             else posisi = 0;
         } 
-        else if (key == 13 || key == 10) { // Tombol Enter
+        else if (key == 13 || key == 10) { 
             return posisi + 1; 
         }
     }
 }
 
-// =========================================================================
-// PROSEDUR UTAMA
-// =========================================================================
 void AntriandanUpdateStatus() {
     loadPaket();
     bubbleSortStatus();
@@ -408,7 +393,6 @@ void AntriandanUpdateStatus() {
         return;
     }
 
-    // Meracik teks menu di bawah tabel
     vector<string> listPilihanMenu; 
     int nomorTabel = 1;
     for (int idx : indeksPaketAktif) {
@@ -418,13 +402,11 @@ void AntriandanUpdateStatus() {
         else if (paket[idx].status == "Dikirim") statusBerikutnya = "Selesai";
 
         string teksMenu = "No. " + to_string(nomorTabel) + " [" + paket[idx].resi + "] " 
-                          + paket[idx].namaPengirim + " (" + paket[idx].status + " -> " + statusBerikutnya + ")";
+                        + paket[idx].namaPengirim + " (" + paket[idx].status + " -> " + statusBerikutnya + ")";
         listPilihanMenu.push_back(teksMenu);
         nomorTabel++;
     }
     listPilihanMenu.push_back("Kembali ke Menu Admin");
-
-    // Jalankan menu navigasi scroll update status
     int pilihan = menuScrollUpdate("NAVIGASI PANAH UNTUK MEMILIH PAKET YANG AKAN DI-UPDATE:", listPilihanMenu, indeksPaketAktif);
 
     if (pilihan == listPilihanMenu.size()) {
