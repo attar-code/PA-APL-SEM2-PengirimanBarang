@@ -21,18 +21,54 @@
         "pemilik": "Admin",
         "resi": "R64RB05U",
         "status": "Dikirim",
-        "tipe": "Lainnya"
+        "tipe": "Pecah Belah"
     },
     {
-        "alamat": "jl wahid hasyim",
-        "berat": 322,
-        "namaPenerima": "nayla",
-        "namaPengirim": "ghina",
-        "ongkir": 26440,
-        "pembayaran": "",
+        "alamat": "jl nusantara",
+        "berat": 1222,
+        "namaPenerima": "ainur",
+        "namaPengirim": "jaki",
+        "ongkir": 24440,
+        "pembayaran": "Bayar di Tempat",
         "pemilik": "Admin",
-        "resi": "2XHFPDMQ",
-        "status": "Diproses (Lunas)",
+        "resi": "8UYXQ089",
+        "status": "Diproses",
+        "tipe": "Dokumen"
+    },
+    {
+        "alamat": "ad",
+        "berat": 123,
+        "namaPenerima": "ada",
+        "namaPengirim": "ad",
+        "ongkir": 21230,
+        "pembayaran": "Bayar di Tempat",
+        "pemilik": "Admin",
+        "resi": "0SJCZ5CV",
+        "status": "Diproses",
         "tipe": "Elektronik"
+    },
+    {
+        "alamat": "jl unmul",
+        "berat": 1000,
+        "namaPenerima": "jaki",
+        "namaPengirim": "ATTAr",
+        "ongkir": 25000,
+        "pembayaran": "COD (Bayar di Tujuan)",
+        "pemilik": "Admin",
+        "resi": "ZCG2KWE1",
+        "status": "Diproses",
+        "tipe": "Pecah Belah"
+    },
+    {
+        "alamat": "disitu",
+        "berat": 2000,
+        "namaPenerima": "ada",
+        "namaPengirim": "oke",
+        "ongkir": 40000,
+        "pembayaran": "Bayar di Tempat",
+        "pemilik": "Admin",
+        "resi": "UW8BXXV1",
+        "status": "Diproses",
+        "tipe": "Dokumen"
     }
 ]

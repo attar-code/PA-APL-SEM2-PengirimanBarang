@@ -15,7 +15,6 @@ void MenuUser() {
     };
 
     do{
- 
         int pilihUser1 = menuNavigasi(menu,3,"Menu User");
 
         switch (pilihUser1) {

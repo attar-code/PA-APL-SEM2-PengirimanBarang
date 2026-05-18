@@ -9,6 +9,7 @@ void AntriandanUpdateStatus();
 void HapusRiwayatPaket_Admin();
 void BatalkanPaket_Admin();
 bool cekResiDiJson(const string& Cari);
+int MenuScroll(string judul, vector<string> pilihan);
 string generateResi();
 
 #endif

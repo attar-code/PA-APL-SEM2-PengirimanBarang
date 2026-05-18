@@ -3093,7 +3093,7 @@ namespace detail
 @brief replace all occurrences of a substring by another string
 
 @param[in,out] s  the string to manipulate; changed so that all
-               occurrences of @a f are replaced with @a t
+            occurrences of @a f are replaced with @a t
 @param[in]     f  the substring to replace with @a t
 @param[in]     t  the string to replace @a f
 
@@ -3104,7 +3104,7 @@ enforced with an assertion.**
 */
 template<typename StringType>
 inline void replace_substring(StringType& s, const StringType& f,
-                              const StringType& t)
+                            const StringType& t)
 {
     JSON_ASSERT(!f.empty());
     for (auto pos = s.find(f);                // find the first occurrence of f
