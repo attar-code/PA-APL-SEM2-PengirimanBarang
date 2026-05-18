@@ -1,10 +1,37 @@
 #include<iostream>
-#include<conio.h>
 #include "../include/user.h"
 #include "../include/admin.h"
 #include "../include/data.h"
 #include "../include/LacakPaket.h"
 #include "../include/cekResi.h"
+
+#ifdef _WIN32
+    #include <conio.h>
+    #define CLEAR "cls"
+#else
+    #include <termios.h>
+    #include <unistd.h>
+    #define CLEAR "clear"
+
+    int _getch() {
+        struct termios oldt, newt;
+        int ch;
+
+        tcgetattr(STDIN_FILENO, &oldt);
+        newt = oldt;
+
+        newt.c_lflag &= ~(ICANON | ECHO);
+
+        tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+        ch = getchar();
+
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+
+        return ch;
+    }
+#endif
+
 
 using namespace std;
 int JumlahUser = 0;
@@ -33,8 +60,6 @@ int inputAngka(string pesan){
             cin.clear();
             cin.ignore(1000, '\n');
             
-            // tekanEnter();
-            // system("cls");
             return -1;
         }
     }
@@ -47,7 +72,7 @@ int menuNavigasi(string menu[], int jumlahMenu, string judul){
 
     while(true){
 
-        system("cls");
+        system(CLEAR);
 
         cout << string(lebar, '=') << endl;
         int spasi = (lebar - judul.length()) / 2;
@@ -114,7 +139,7 @@ int main(){
             }
             
             case 3:{
-                system("cls");
+                system(CLEAR);
                 cout << "=========================================" << endl;
                 cout << " Terima Kasih Telah Menggunakan Program. " << endl;
                 cout << "=========================================" << endl;
