@@ -70,5 +70,65 @@
         "resi": "8UR3ZPZX",
         "status": "Dikirim",
         "tipe": "Pecah Belah"
+    },
+    {
+        "alamat": "fvrf",
+        "berat": 4333,
+        "namaPenerima": "effefve",
+        "namaPengirim": "kokotkok",
+        "ongkir": 106660,
+        "pembayaran": "COD",
+        "pemilik": "juni",
+        "resi": "XNQFDYB2",
+        "status": "Diproses",
+        "tipe": "Elektronik"
+    },
+    {
+        "alamat": "kon",
+        "berat": 8654,
+        "namaPenerima": "kjj",
+        "namaPengirim": "uyg",
+        "ongkir": 188080,
+        "pembayaran": "COD",
+        "pemilik": "koi",
+        "resi": "7JKYC82W",
+        "status": "Diproses",
+        "tipe": "Pecah Belah"
+    },
+    {
+        "alamat": "jk",
+        "berat": 2342,
+        "namaPenerima": "swe",
+        "namaPengirim": "fefefvd",
+        "ongkir": 45450,
+        "pembayaran": "COD",
+        "pemilik": "fu",
+        "resi": "TPFMQ43W",
+        "status": "Diproses",
+        "tipe": "lainnya"
+    },
+    {
+        "alamat": "fw",
+        "berat": 542,
+        "namaPenerima": "fwf",
+        "namaPengirim": "df",
+        "ongkir": 44680,
+        "pembayaran": "COD",
+        "pemilik": "fr",
+        "resi": "NMM0SMSI",
+        "status": "Diproses",
+        "tipe": "Lainnya"
+    },
+    {
+        "alamat": "2eru",
+        "berat": 234,
+        "namaPenerima": "32",
+        "namaPengirim": "09",
+        "ongkir": 261900,
+        "pembayaran": "COD",
+        "pemilik": "voik",
+        "resi": "9622D2LF",
+        "status": "Diproses",
+        "tipe": "Elektronik"
     }
 ]

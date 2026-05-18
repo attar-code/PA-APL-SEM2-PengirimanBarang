@@ -171,6 +171,46 @@ void TambahPaket_User() {
 
                 cout << "Input tidak valid!\n";
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
                 cin.clear();
                 cin.ignore(1000, '\n');
             }
