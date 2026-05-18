@@ -5,29 +5,29 @@
 #include "../include/LacakPaket.h"
 #include "../include/cekResi.h"
 
+#define RESET "\033[0m"
+#define MERAH "\033[31m"
+#define HIJAU "\033[32m"
+#define KUNING "\033[33m"
+#define BIRU "\033[34m"
+#define CYAN "\033[36m"
+#define BOLD "\033[1m"
+
+
 #ifdef _WIN32
     #include <conio.h>
-    #define CLEAR "cls"
 #else
     #include <termios.h>
     #include <unistd.h>
-    #define CLEAR "clear"
-
     int _getch() {
         struct termios oldt, newt;
         int ch;
-
         tcgetattr(STDIN_FILENO, &oldt);
         newt = oldt;
-
         newt.c_lflag &= ~(ICANON | ECHO);
-
         tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-
         ch = getchar();
-
         tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-
         return ch;
     }
 #endif
@@ -64,32 +64,50 @@ int inputAngka(string pesan){
         }
     }
 }
-
 int menuNavigasi(string menu[], int jumlahMenu, string judul){
 
     int posisi = 0;
     int lebar = 35;
 
-    while(true){
+    while(true){ // <-- Kurung kurawal buka yang sempat hilang sudah aman di sini
 
-        system(CLEAR);
+        bersihkanLayar();
 
-        cout << string(lebar, '=') << endl;
+        // Kasih warna KUNING & BOLD di pembatas atas
+        cout << KUNING << BOLD << string(lebar, '=') << RESET << endl;
         int spasi = (lebar - judul.length()) / 2;
-        cout << string(spasi, ' ') << judul << endl;
-        cout << string(lebar, '=') << endl;
+        if (spasi > 0) cout << string(spasi, ' ');
+        cout << BOLD << judul << RESET << endl; // Kasih BOLD di judul
+        cout << KUNING << BOLD << string(lebar, '=') << RESET << endl;
         
         for(int i=0;i<jumlahMenu;i++){
             
             if(i == posisi){
-                cout << "> " << menu[i] << endl;
+                // Sesuaikan gaya penanda dengan menu tambah paket: BIRU, BOLD, dan > [ teks ] <
+                cout << BIRU << BOLD << "  > [ " << menu[i] << " ] <" << RESET << endl;
             }
             else{
-                cout << "  " << menu[i] << endl;
+                cout << "      " << menu[i] << endl; // Sesuaikan spasi agar sejajar
             }
         }
+
+        // Tambahkan info petunjuk di bawah menu
+        cout << KUNING << string(lebar, '-') << RESET << endl;
+        cout << "Gunakan Panah & Enter" << endl;
         
-        char tombol = _getch();
+        int tombol = _getch(); // Ubah ke int agar aman menampung kode tombol Mac
+        
+        // --- FILTER PANAH TAMBAHAN UNTUK MACBOOK & WINDOWS ---
+        if (tombol == 27) { // Sinyal escape key khusus di Mac/Linux
+            _getch(); 
+            tombol = _getch();
+            if (tombol == 65) tombol = 72;      // Petakan Panah Atas Mac ke kode Windows
+            else if (tombol == 66) tombol = 80; // Petakan Panah Bawah Mac ke kode Windows
+        }
+        else if (tombol == 224) { // Sinyal tombol extend khusus di Windows
+            tombol = _getch(); 
+        }
+        // -----------------------------------------------------
         
         if(tombol == 72){ // panah atas
             posisi--;
@@ -105,7 +123,7 @@ int menuNavigasi(string menu[], int jumlahMenu, string judul){
             posisi = 0;
         }
         
-        else if(tombol == 13){ // enter
+        else if(tombol == 13 || tombol == 10){ // enter (13 Windows, 10 Mac)
             return posisi;
         }
     }
@@ -139,7 +157,7 @@ int main(){
             }
             
             case 3:{
-                system(CLEAR);
+                bersihkanLayar();
                 cout << "=========================================" << endl;
                 cout << " Terima Kasih Telah Menggunakan Program. " << endl;
                 cout << "=========================================" << endl;
