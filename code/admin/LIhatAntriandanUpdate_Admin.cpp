@@ -1,11 +1,24 @@
 #include <iostream>
 #include <cctype>
+#include <fstream>
 #include "../include/data.h"
 #include "../include/admin.h"
 #include "../database/json.hpp"
 
+// Tambahkan makro warna agar konsisten dengan menu tambah paket
+#define RESET "\033[0m"
+#define MERAH "\033[31m"
+#define HIJAU "\033[32m"
+#define KUNING "\033[33m"
+#define BIRU "\033[34m"
+#define CYAN "\033[36m"
+#define BOLD "\033[1m"
+
 using json = nlohmann::json;
 using namespace std;
+
+extern Paket paket[100];
+extern int jumlahPaket;
 
 bool paketdiproses(string status) {
     return (
@@ -108,11 +121,59 @@ void bubbleSortStatus(){
 
 }
 
+void loadPaket(){
+
+    ifstream file("database/paket.json");
+    json j;
+    file >> j;
+
+    jumlahPaket = j.size();
+
+    for(int i = 0; i < jumlahPaket; i++){
+
+        paket[i].resi = j[i]["resi"];
+        paket[i].status = j[i]["status"];
+        paket[i].namaPengirim = j[i]["namaPengirim"];
+        paket[i].namaPenerima = j[i]["namaPenerima"];
+        paket[i].alamat = j[i]["alamat"];
+        paket[i].berat = j[i]["berat"];
+        paket[i].tipe = j[i]["tipe"];
+        paket[i].pembayaran = j[i]["pembayaran"];
+        paket[i].ongkir = j[i]["ongkir"];
+        paket[i].pemilik = j[i]["pemilik"];
+    }
+}
+
+void savePaket(){
+ 
+    json j = json::array();
+
+    for(int i = 0; i < jumlahPaket; i++){
+
+        j.push_back({
+            {"resi", paket[i].resi},
+            {"namaPengirim", paket[i].namaPengirim},
+            {"namaPenerima", paket[i].namaPenerima},
+            {"alamat", paket[i].alamat},
+            {"berat", paket[i].berat},
+            {"tipe", paket[i].tipe},
+            {"pembayaran", paket[i].pembayaran},
+            {"ongkir", paket[i].ongkir},
+            {"pemilik", paket[i].pemilik},
+            {"status", paket[i].status}
+        });
+    }
+
+    ofstream file("database/paket.json");
+    file << j.dump(4);
+    file.close();
+}
+
 void AntriandanUpdateStatus() {
 
     loadPaket();
     bubbleSortStatus();
-    system("cls");
+    bersihkanLayar(); // Diganti ke fungsi bawaan data.h agar aman di Mac
 
     string resiCari;
 
@@ -140,29 +201,29 @@ void AntriandanUpdateStatus() {
         }
     }
 
-    cout << "=========== STATUS GUDANG ===========\n\n";
-    cout << "Menunggu Validasi Admin : " << menunggu << " paket\n";
-    cout << "Diproses                : " << diproses << " paket\n";
-    cout << "Dikirim                 : " << dikirim << " paket\n";
-    cout << "Selesai                 : " << selesai << " paket\n";
+    cout << KUNING << BOLD << "=========== STATUS GUDANG ===========" << RESET << "\n\n";
+    cout << "Menunggu Validasi Admin : " << BOLD << menunggu << RESET << " paket\n";
+    cout << "Diproses                : " << BOLD << diproses << RESET << " paket\n";
+    cout << "Dikirim                 : " << BOLD << dikirim << RESET << " paket\n";
+    cout << "Selesai                 : " << BOLD << selesai << RESET << " paket\n";
 
-    cout << "=====================================" << endl;
-    cout << "            SEMUA PAKET              " << endl;
-    cout << "=====================================";
+    cout << KUNING << BOLD << "=====================================" << RESET << endl;
+    cout << BOLD << "            SEMUA PAKET              " << RESET << endl;
+    cout << KUNING << BOLD << "=====================================" << RESET << "";
 
     for (int i = 0; i < jumlahPaket; i++) {
-        cout << "\nResi       : " << (ptr + i)->resi << endl;
+        cout << "\n" << CYAN << "Resi       : " << RESET << BOLD << (ptr + i)->resi << RESET << endl;
         cout << "Pengirim   : " << (ptr + i)->namaPengirim << endl;
         cout << "Penerima   : " << (ptr + i)->namaPenerima << endl;
         cout << "Pembayaran : " << (ptr + i)->pembayaran << endl;
-        cout << "Status     : " << (ptr + i)->status << endl;
-        cout << "-------------------------------------" << endl;
+        cout << "Status     : " << BIRU << BOLD << (ptr + i)->status << RESET << endl;
+        cout << KUNING << "-------------------------------------" << RESET << endl;
     }
 
     // DAFTAR AKTIF
-    cout << "=====================================" << endl;
-    cout << "            PAKET AKTIF              " << endl;
-    cout << "=====================================" << endl;
+    cout << KUNING << BOLD << "=====================================" << RESET << endl;
+    cout << BOLD << "            PAKET AKTIF              " << RESET << endl;
+    cout << KUNING << BOLD << "=====================================" << RESET << endl;
 
     bool ada = false;
 
@@ -172,22 +233,22 @@ void AntriandanUpdateStatus() {
 
             ada = true;
 
-            cout << "\nResi     : " << (ptr + i)->resi << endl;
+            cout << "\n" << CYAN << "Resi     : " << RESET << BOLD << (ptr + i)->resi << RESET << endl;
             cout << "Pengirim : " << (ptr + i)->namaPengirim << endl;
-            cout << "Status   : " << (ptr + i)->status << endl;
+            cout << "Status   : " << HIJAU << BOLD << (ptr + i)->status << RESET << endl;
         }
     }
 
     if (!ada) {
-        cout << "\nTidak ada paket aktif.\n";
+        cout << "\n" << KUNING << "Tidak ada paket aktif." << RESET << "\n";
         tekanEnter();
         return;
     }
 
     // INPUT RESI
 
-    cout << endl << "KETIK 'BATAL' UNTUK KELUAR" << endl;
-    cout << "Masukkan resi paket: ";
+    cout << endl << MERAH << BOLD << "KETIK 'BATAL' UNTUK KELUAR" << RESET << endl;
+    cout << BOLD << "Masukkan resi paket: " << RESET;
     cin >> resiCari;
 
     for(char &huruf : resiCari){
@@ -195,9 +256,9 @@ void AntriandanUpdateStatus() {
     }
 
     if (resiCari == "BATAL"){
-        cout << "=====================================" << endl;
-        cout << "         UPDATE STATUS BATAL         " << endl;
-        cout << "=====================================" << endl;
+        cout << KUNING << BOLD << "=====================================" << RESET << endl;
+        cout << MERAH << BOLD << "         UPDATE STATUS BATAL         " << RESET << endl;
+        cout << KUNING << BOLD << "=====================================" << RESET << endl;
         tekanEnter();
         return;
     }
@@ -213,54 +274,50 @@ void AntriandanUpdateStatus() {
 
                     (ptr + i)->status = "Diproses";
 
-                    /*  untuk paket menunggu validasi admin belum mndpt resi
+                    /* untuk paket menunggu validasi admin belum mndpt resi
                         di sini baru dapat resi dengan syarat admin menginput "BELUM_RILIS" 
                         nanti dia akan menyesuaikan antrian (yang input paket dluan yang akan di
                         validasi admin dluan). setelah di vallidasi admin baru akan mendapat resi baru*/
                     (ptr + i)->resi = generateResiUnik();
 
-                    cout << "\nVALIDASI BERHASIL -> DIPROSES\n";
-                    cout << "Resi baru: " << (ptr + i)->resi << endl;
+                    cout << "\n" << HIJAU << BOLD << "VALIDASI BERHASIL -> DIPROSES" << RESET << "\n";
+                    cout << CYAN << "Resi baru: " << RESET << BOLD << (ptr + i)->resi << RESET << endl;
                 }
                 else {
-                    cout << "\nCOD tidak perlu validasi admin.\n";
+                    cout << "\n" << MERAH << "COD tidak perlu validasi admin." << RESET << "\n";
                 }
             }
 
-            // ===============================
-            // 2. DIPROSES → DIKIRIM
-            // ===============================
+            // diproses -> dikirim
             else if (paketdiproses((ptr + i)->status)) {
 
                 (ptr + i)->status = "Dikirim";
 
-                cout << "\nStatus berubah: DIPROSES -> DIKIRIM\n";
+                cout << "\n" << HIJAU << BOLD << "Status berubah: DIPROSES -> DIKIRIM" << RESET << "\n";
             }
 
-            // ===============================
-            // 3. DIKIRIM → SELESAI
-            // ===============================
+            /// dikirim -> selesai
             else if ((ptr + i)->status == "Dikirim") {
 
                 (ptr + i)->status = "Selesai";
 
-                cout << "\nStatus berubah: DIKIRIM -> SELESAI\n";
+                cout << "\n" << HIJAU << BOLD << "Status berubah: DIKIRIM -> SELESAI" << RESET << "\n";
             }
 
             else {
-                cout << "\nStatus tidak bisa diubah lagi!\n";
+                cout << "\n" << MERAH << BOLD << "Status tidak bisa diubah lagi!" << RESET << "\n";
                 tekanEnter();
                 return;
             }
 
             savePaket();
 
-            cout << "\nUpdate berhasil untuk resi: " << resiCari << endl;
+            cout << "\n" << HIJAU << BOLD << "Update berhasil untuk resi: " << RESET << BOLD << resiCari << RESET << endl;
             tekanEnter();
             return;
         }
     }
 
-    cout << "\nResi tidak ditemukan!\n";
+    cout << "\n" << MERAH << BOLD << "Resi tidak ditemukan!" << RESET << "\n";
     tekanEnter();
 }
