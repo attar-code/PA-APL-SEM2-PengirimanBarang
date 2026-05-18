@@ -51,9 +51,64 @@ string generateResiUnik(){
     return resiBaru;
 }
 
+int prioritasStatus(string status){
+
+    if(status == "Menunggu Validasi Admin")
+        return 1;
+
+    else if(
+        status == "Diproses" ||
+        status == "Diproses (COD)" ||
+        status == "Diproses (Lunas)")
+        return 2;
+
+    else if(status == "Dikirim")
+        return 3;
+
+    else if(status == "Selesai")
+        return 4;
+
+    return 999;
+}
+
+
+void bubbleSortStatus(){
+
+    for(int i=0;i<jumlahPaket-1;i++){
+
+        for(int j=0;
+            j<jumlahPaket-i-1;
+            j++)
+        {
+
+            if(
+              prioritasStatus(
+                paket[j].status
+              )
+
+              >
+
+              prioritasStatus(
+                paket[j+1].status
+              )
+            ){
+
+                swap(
+                    paket[j],
+                    paket[j+1]
+                );
+            }
+
+        }
+
+    }
+
+}
+
 void AntriandanUpdateStatus() {
 
     loadPaket();
+    bubbleSortStatus();
     system("cls");
 
     string resiCari;

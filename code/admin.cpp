@@ -52,7 +52,6 @@ void MenuAdmin(){
             string menu[] = {
                 "Tambah Paket",
                 "Lihat Riwayat Paket",
-                "Update Paket",
                 "Lihat Antrian dan Status Paket",
                 "Hapus Riwayat Paket",
                 "Membatalkan Pengiriman",

@@ -1,74 +1,38 @@
 [
     {
-        "alamat": "jl rumbia",
-        "berat": 3444,
-        "namaPenerima": "jaki",
+        "alamat": "samarinda seberang",
+        "berat": 8888,
+        "namaPenerima": "ridho",
         "namaPengirim": "attar",
-        "ongkir": 54440,
+        "ongkir": 88880,
         "pembayaran": "Transfer",
         "pemilik": "attar",
-        "resi": "SE4F43R4",
-        "status": "Selesai",
-        "tipe": "Elektronik"
+        "resi": "BELUM_RILIS",
+        "status": "Menunggu Validasi Admin",
+        "tipe": "Dokumen"
     },
     {
-        "alamat": "berau",
-        "berat": 344,
-        "namaPenerima": "rega",
-        "namaPengirim": "jaki",
-        "ongkir": 26879,
-        "pembayaran": "Transfer",
-        "pemilik": "attar",
-        "resi": "F98ER24S",
-        "status": "Diproses",
-        "tipe": "Elektronik"
-    },
-    {
-        "alamat": "jl merak",
-        "berat": 333,
-        "namaPenerima": "firza",
-        "namaPengirim": "rizal",
-        "ongkir": 23330,
-        "pembayaran": "Transfer",
-        "pemilik": "attar",
-        "resi": "F98ER24S",
-        "status": "Diproses",
-        "tipe": "Elektronik"
-    },
-    {
-        "alamat": "jl pramuka",
-        "berat": 222,
-        "namaPenerima": "riza",
-        "namaPengirim": "jaki",
-        "ongkir": 12220,
-        "pembayaran": "COD",
-        "pemilik": "attar",
-        "resi": "EK72OOE1",
-        "status": "Diproses",
-        "tipe": "Lainnya"
-    },
-    {
-        "alamat": "jl dayung no 99, sangatta",
-        "berat": 1000,
-        "namaPenerima": "karin",
-        "namaPengirim": "ghina",
-        "ongkir": 30000,
-        "pembayaran": "COD",
-        "pemilik": "karin",
-        "resi": "X96OTWLM",
-        "status": "Diproses",
-        "tipe": "Lainnya"
-    },
-    {
-        "alamat": "jl lambung mangkurat gg annor 1, samarinda utara, kalimantan timur",
-        "berat": 2500,
-        "namaPenerima": "felisa",
-        "namaPengirim": "ansel",
-        "ongkir": 40000,
-        "pembayaran": "Transfer",
-        "pemilik": "karin",
-        "resi": "8UR3ZPZX",
+        "alamat": "jl pramuka 99",
+        "berat": 9000,
+        "namaPenerima": "ghina",
+        "namaPengirim": "nayla",
+        "ongkir": 100000,
+        "pembayaran": "",
+        "pemilik": "Admin",
+        "resi": "R64RB05U",
         "status": "Dikirim",
-        "tipe": "Pecah Belah"
+        "tipe": "Lainnya"
+    },
+    {
+        "alamat": "jl wahid hasyim",
+        "berat": 322,
+        "namaPenerima": "nayla",
+        "namaPengirim": "ghina",
+        "ongkir": 26440,
+        "pembayaran": "",
+        "pemilik": "Admin",
+        "resi": "2XHFPDMQ",
+        "status": "Diproses (Lunas)",
+        "tipe": "Elektronik"
     }
 ]

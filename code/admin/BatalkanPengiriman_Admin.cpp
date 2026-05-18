@@ -24,11 +24,9 @@ bool bisaDibatalkan(string status) {
 
 void BatalkanPaket_Admin() {
 
-
     system("cls");
     tampilRiwayatPaket();
     
-
     cout << "=== BATALKAN PAKET ===\n";
     cout << "Ketik 'batal' untuk kembali ke menu admin\n\n";
 
@@ -66,7 +64,6 @@ void BatalkanPaket_Admin() {
 
             string status = paket["status"].get<string>();
 
-            // ❌ LOCK STATUS
             if (status == "Dikirim" || status == "Selesai") {
 
                 cout << "\nPaket sudah dikirim/selesai, tidak bisa dibatalkan!\n";
