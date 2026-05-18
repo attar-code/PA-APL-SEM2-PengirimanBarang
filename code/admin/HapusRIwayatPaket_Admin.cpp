@@ -18,7 +18,6 @@
 
 using namespace std;
 using json = nlohmann::json;
-
 void HapusRiwayatPaket_Admin() {
     ifstream file("database/paket.json");
     json dataJson;
@@ -39,7 +38,7 @@ void HapusRiwayatPaket_Admin() {
 
     // 2. Filter data: Hanya ambil paket yang "Selesai" atau "Dibatalkan"
     vector<Paket> listRiwayat;
-    vector<string> pilihanMenu; // Menampung baris tabel untuk dilempar ke MenuScroll
+    vector<string> pilihanMenu; 
 
     for (const auto& item : dataJson) {
         string status = item.value("status", "-");
@@ -57,25 +56,12 @@ void HapusRiwayatPaket_Admin() {
             p.pemilik      = item.value("pemilik", "-");
             
             listRiwayat.push_back(p);
-
-            // Trik cerdas: Satukan data lengkap menjadi satu baris string dengan format tabel (setw)
-            stringstream ss;
-            ss << left 
-            << setw(10) << p.resi
-            << setw(14) << p.namaPengirim
-            << setw(14) << p.namaPenerima
-            << setw(25) << (p.alamat.length() > 22 ? p.alamat.substr(0, 22) + "..." : p.alamat)
-            << setw(12) << p.lokasi
-            << setw(8)  << (to_string(p.berat) + "g")
-            << setw(12) << p.tipe
-            << "Rp " << setw(9) << p.ongkir
-            << "[" << p.status << "]";
             
-            pilihanMenu.push_back(ss.str());
+            // Menu scroll cukup tampilkan informasi singkat yang manis
+            pilihanMenu.push_back(p.resi + " -> " + p.namaPengirim);
         }
     }
 
-    // Jika tidak ada data riwayat sama sekali
     if (listRiwayat.empty()) {
         bersihkanLayar();
         cout << KUNING << BOLD << "==================================================" << RESET << endl;
@@ -86,58 +72,70 @@ void HapusRiwayatPaket_Admin() {
         return;
     }
 
-    // Tambahkan opsi kembali di paling bawah
+    // Pilihan kembali diletakkan di paling bawah
     pilihanMenu.push_back("<< Kembali ke Menu Utama >>");
 
-    // 3. Buat judul MenuScroll berbentuk Header Tabel agar pas dilempar ke MenuScroll posisinya presisi
+    // 3. SATUKAN TABEL DATA LENGKAP KEDALAM STRINGSTREAM JUDUL
+    // Trik ini memaksa MenuScroll menggambar ulang tabel SETIAP KALI panah ditekan (Anti-Menumpuk!)
     stringstream headerSs;
-    headerSs << "HAPUS RIWAYAT PAKET (Gunakan Panah & Enter)\n"
-            << "   " << setfill('-') << setw(115) << "" << setfill(' ') << "\n"
-            << "   " << left 
-            << setw(10) << "Resi" 
-            << setw(14) << "Pengirim" 
-            << setw(14) << "Penerima" 
-            << setw(25) << "Alamat" 
-            << setw(12) << "Lokasi"
-            << setw(8)  << "Berat" 
-            << setw(12) << "Tipe"
-            << setw(12) << "Ongkir" 
-            << "Status\n"
-            << "   " << setfill('-') << setw(115) << "" << setfill(' ');
+    headerSs << "========================================= DAFTAR RIWAYAT PAKET GUDANG =========================================\n"
+             << left << BOLD
+             << setw(12) << "Resi" 
+             << setw(13) << "Pengirim" 
+             << setw(13) << "Penerima" 
+             << setw(22) << "Alamat" 
+             << setw(10) << "Lokasi"
+             << setw(8)  << "Berat" 
+             << setw(12) << "Tipe"
+             << setw(12) << "Ongkir" 
+             << "Status" << RESET << "\n"
+             << KUNING << string(110, '-') << RESET << "\n";
 
-    // 4. Panggil MenuScroll dengan header tabel lengkap
+    for (const auto& p : listRiwayat) {
+        headerSs << left
+                 << setw(12) << p.resi
+                 << setw(13) << (p.namaPengirim.length() > 11 ? p.namaPengirim.substr(0, 10) + ".." : p.namaPengirim)
+                 << setw(13) << (p.namaPenerima.length() > 11 ? p.namaPenerima.substr(0, 10) + ".." : p.namaPenerima)
+                 << setw(22) << (p.alamat.length() > 19 ? p.alamat.substr(0, 19) + "..." : p.alamat)
+                 << setw(10) << p.lokasi
+                 << setw(8)  << (to_string(p.berat) + "g")
+                 << setw(12) << p.tipe
+                 << "Rp " << setw(9) << p.ongkir
+                 << (p.status == "Selesai" ? HIJAU : MERAH) << "[" << p.status << "]" << RESET << "\n";
+    }
+    headerSs << KUNING << BOLD << "===============================================================================================================\n" << RESET
+             << "\nPILIH PAKET YANG INGIN DIHAPUS PERMANEN:";
+
+    // 4. Panggil MenuScroll dengan judul super lengkap
     int indeksTerpilih = MenuScroll(headerSs.str(), pilihanMenu);
 
-    // Jika user memilih opsi paling bawah (Kembali)
-    if (indeksTerpilih == pilihanMenu.size()) {
+    // FIX LOGIKA KEMBALI: Jika milih paling bawah, langsung keluar tanpa konfirmasi
+    if (indeksTerpilih == pilihanMenu.size() - 1) {
         return;
     }
 
-    // Ambil paket asli yang dipilih berdasarkan indeks
-    Paket paketTarget = listRiwayat[indeksTerpilih - 1];
+    // Ambil target paket asli berdasarkan indeks scroller yang valid
+    Paket paketTarget = listRiwayat[indeksTerpilih];
 
     // 5. Menu Konfirmasi Penghapusan
-    bersihkanLayar();
     vector<string> opsiKonfirmasi = {
-        "Ya, Hapus Permanen dari Riwayat",
+        "Ya, Hapus Permanen",
         "Tidak Jadi (Kembali)"
     };
     
     int konfirmasi = MenuScroll("HAPUS RESI [" + paketTarget.resi + "] DARI RIWAYAT?", opsiKonfirmasi);
 
-    // 6. Eksekusi jika pilih "Ya"
-    if (konfirmasi == 1) {
+    // 6. Eksekusi hapus jika pilih opsi ke-0 ("Ya, Hapus Permanen")
+    if (konfirmasi == 0) {
         json dataBaru = json::array();
 
-        // Cari dan eliminasi paket yang dipilih
         for (const auto& item : dataJson) {
             if (item.contains("resi") && item["resi"] == paketTarget.resi) {
-                continue; // Skip data yang dihapus
+                continue; 
             }
             dataBaru.push_back(item);
         }
 
-        // Tulis kembali ke file paket.json
         ofstream outputFile("database/paket.json");
         if (outputFile.is_open()) {
             outputFile << dataBaru.dump(4);
@@ -148,9 +146,9 @@ void HapusRiwayatPaket_Admin() {
             cout << HIJAU << BOLD << "          RIWAYAT BERHASIL DIHAPUS                " << RESET << endl;
             cout << HIJAU << BOLD << "==================================================" << RESET << endl;
             cout << " Data paket dengan Resi " << CYAN << BOLD << paketTarget.resi << RESET 
-                << " telah dihapus permanen dari riwayat.\n" << endl;
+                 << " telah dihapus permanen dari riwayat.\n" << endl;
         } else {
-            cout << MERAH << BOLD << "\n[EROR] Gagal membuka database untuk menyimpan perubahan!" << RESET << endl;
+            cout << MERAH << BOLD << "\n[EROR] Gagal menyimpan perubahan database!" << RESET << endl;
         }
     } else {
         bersihkanLayar();
