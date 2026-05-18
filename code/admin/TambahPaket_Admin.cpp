@@ -16,27 +16,6 @@
 #define CYAN "\033[36m"
 #define BOLD "\033[1m"
 
-#ifdef _WIN32
-    #include <conio.h>
-    #define _getch getch
-#else
-    #include <termios.h>
-    #include <unistd.h>
-    #include <stdio.h>
-
-    int _getch() {
-        struct termios oldt, newt;
-        int ch;
-        tcgetattr(STDIN_FILENO, &oldt);
-        newt = oldt;
-        newt.c_lflag &= ~(ICANON | ECHO);
-        tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-        ch = getchar();
-        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-        return ch;
-    }
-#endif
-
 using json = nlohmann::json;
 using namespace std;
 
@@ -132,8 +111,7 @@ bool ValidAngka(const string& input) {
     return true;
 }
 
-
-
+extern int _getch();
 int MenuScroll(string judul, vector<string> pilihan) { // 'string' huruf kecil
     int posisi = 0;
     int key;
@@ -329,6 +307,11 @@ void TambahPaketAdmin() {
         "Luar Kota (+Rp20.000)"
     };
     opsiLokasi = MenuScroll("PILIH LOKASI PENGIRIMAN", listLokasi);
+    if (opsiLokasi == 1) {
+        paketBaru.lokasi = "Dalam Kota";
+    } else {
+        paketBaru.lokasi = "Luar Kota";
+    }
     // Input Berat
     do {
         bersihkanLayar();
@@ -336,7 +319,7 @@ void TambahPaketAdmin() {
         cout << BIRU << BOLD << "Nama Pengirim : " << RESET << paketBaru.namaPengirim << endl;
         cout << BIRU << BOLD << "Nama Penerima : " << RESET << paketBaru.namaPenerima << endl;
         cout << BIRU << BOLD << "Alamat        : " << RESET << paketBaru.alamat << endl;
-        cout << BIRU << BOLD << "Lokasi        : " << RESET << (opsiLokasi == 1 ? "Dalam Kota" : "Luar Kota") << endl;
+        cout << BIRU << BOLD << "Lokasi        : " << RESET << paketBaru.lokasi << endl;
         cout << BIRU << BOLD << "--------------------------------------" << RESET << endl;
         cout << HIJAU << BOLD << "Berat (gram) [Maks 50.000g]: " << RESET;
         getline(cin, beratGram);
@@ -369,7 +352,7 @@ void TambahPaketAdmin() {
     cout << BIRU << BOLD << "Nama Pengirim : " << RESET << paketBaru.namaPengirim << endl;
     cout << BIRU << BOLD << "Nama Penerima : " << RESET << paketBaru.namaPenerima << endl;
     cout << BIRU << BOLD << "Alamat        : " << RESET << paketBaru.alamat << endl;
-    cout << BIRU << BOLD << "Lokasi        : " << RESET << (opsiLokasi == 1 ? "Dalam Kota" : "Luar Kota") << endl;
+    cout << BIRU << BOLD << "Lokasi        : " << RESET << paketBaru.lokasi << endl;
     cout << BIRU << BOLD << "Berat         : " << RESET << paketBaru.berat << " gram" << endl;
     cout << BIRU << BOLD << "--------------------------------------" << RESET << endl;
     cout << HIJAU << BOLD << "Pilih Tipe Paket:" << RESET << endl;
@@ -408,7 +391,7 @@ void TambahPaketAdmin() {
     cout << BIRU << BOLD << "Nama Pengirim  : " << RESET << paketBaru.namaPengirim << endl;
     cout << BIRU << BOLD << "Nama Penerima  : " << RESET << paketBaru.namaPenerima << endl;
     cout << BIRU << BOLD << "Alamat         : " << RESET << paketBaru.alamat << endl;
-    cout << BIRU << BOLD << "Lokasi         : " << RESET << (opsiLokasi == 1 ? "Dalam Kota" : "Luar Kota") << endl;
+    cout << BIRU << BOLD << "Lokasi         : " << RESET << paketBaru.lokasi << endl;
     cout << BIRU << BOLD << "Berat          : " << RESET << paketBaru.berat << " gram" << endl;  
     cout << BIRU << BOLD << "Tipe Paket     : " << RESET << paketBaru.tipe << endl;
     cout << BIRU << BOLD << "------------------------------" << RESET << endl;
@@ -442,7 +425,7 @@ bersihkanLayar();
     cout << CYAN << " [2] " << BOLD << "Pengirim       : " << RESET << paketBaru.namaPengirim << endl;
     cout << CYAN << " [3] " << BOLD << "Penerima       : " << RESET << paketBaru.namaPenerima << endl;
     cout << CYAN << " [4] " << BOLD << "Alamat         : " << RESET << paketBaru.alamat << endl;
-    cout << CYAN << " [5] " << BOLD << "Lokasi         : " << RESET << (opsiLokasi == 1 ? "Dalam Kota" : "Luar Kota") << endl;
+    cout << CYAN << " [5] " << BOLD << "Lokasi         : " << RESET << paketBaru.lokasi << endl;
     cout << CYAN << " [6] " << BOLD << "Berat Paket    : " << RESET << paketBaru.berat << " gram" << endl;  
     cout << CYAN << " [7] " << BOLD << "Tipe Barang    : " << RESET << paketBaru.tipe << endl;
     cout << CYAN << " [8] " << BOLD << "Metode Bayar   : " << RESET << paketBaru.pembayaran << endl;

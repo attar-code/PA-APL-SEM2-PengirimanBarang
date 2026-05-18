@@ -7,9 +7,9 @@
 using namespace std;
 
 #ifdef _WIN32
-    #define CLEAR_SCREEN "cls"
+    #define CLEAR "cls"
 #else
-    #define CLEAR_SCREEN "clear"
+    #define CLEAR "clear"
 #endif
 
 
@@ -42,8 +42,7 @@ inline void tekanEnter() {
 };
 
 inline void bersihkanLayar() {
-    
-    system(CLEAR_SCREEN);
+    system(CLEAR);
 }
 
 extern Paket paket[100];
