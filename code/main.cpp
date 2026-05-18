@@ -1,4 +1,5 @@
 #include<iostream>
+#include<conio.h>
 #include "../include/user.h"
 #include "../include/admin.h"
 #include "../include/data.h"
@@ -31,59 +32,142 @@ int inputAngka(string pesan){
             cout << "ERROR: " << msg << endl;
             cin.clear();
             cin.ignore(1000, '\n');
+            
+            // tekanEnter();
+            // system("cls");
+            return -1;
         }
     }
 }
 
-// void tekanEnter() {
-//     cout << "\nTekan ENTER untuk melanjutkan...";
-//     cin.get();
-// }
+int menuNavigasi(string menu[], int jumlahMenu, string judul){
 
-int main(){
+    int posisi = 0;
+    int lebar = 35;
 
-    int utama;
+    while(true){
 
-    do{
         system("cls");
 
-        cout << "=== SISTEM PENGIRIMAN BARANG ===\n";
-        cout << "1. User\n";
-        cout << "2. Admin\n";
-        cout << "3. Cek Resi\n";
-        cout << "4. Keluar\n";
+        cout << string(lebar, '=') << endl;
+        int spasi = (lebar - judul.length()) / 2;
+        cout << string(spasi, ' ') << judul << endl;
+        cout << string(lebar, '=') << endl;
+        
+        for(int i=0;i<jumlahMenu;i++){
+            
+            if(i == posisi){
+                cout << "> " << menu[i] << endl;
+            }
+            else{
+                cout << "  " << menu[i] << endl;
+            }
+        }
+        
+        char tombol = _getch();
+        
+        if(tombol == 72){ // panah atas
+            posisi--;
+            
+            if(posisi < 0)
+            posisi = jumlahMenu - 1;
+        }
+        
+        else if(tombol == 80){ // panah bawah
+            posisi++;
 
-        utama = inputAngka("Pilih menu : ");
+            if(posisi >= jumlahMenu)
+            posisi = 0;
+        }
+        
+        else if(tombol == 13){ // enter
+            return posisi;
+        }
+    }
+}
 
-        switch (utama){
-
-            case 1:{
+int main(){
+    string menu[] = {
+        "User",
+        "Admin",
+        "Cek Resi",
+        "keluar"
+    };
+    
+    do{
+        int utama = menuNavigasi(menu,4,"Menu Utama");
+        
+        switch(utama){
+            case 0:{
                 MenuUser();
                 break;
             }
-
-            case 2:{
+            
+            case 1:{
                 MenuAdmin();
                 break;
             }
-
-            case 3:{
+            
+            case 2:{
                 cekResi();
                 break;
             }
-
-            case 4:{
-                cout << "\nTerima kasih telah menggunakan program.\n";
-                break;
+            
+            case 3:{
+                system("cls");
+                cout << "=========================================" << endl;
+                cout << " Terima Kasih Telah Menggunakan Program. " << endl;
+                cout << "=========================================" << endl;
+                return 0;
             }
-
-            default:{
-                cout << "\nMenu tidak valid!\n";
-                tekanEnter();   
-            }   
         }
-
-    } while(utama != 4);
-
-    return 0;
+    }while(true);
 }
+
+// int main(){
+
+//     int utama;
+
+//     do{
+//         system("cls");
+
+//         cout << "=== SISTEM PENGIRIMAN BARANG ===\n";
+//         cout << "1. User\n";
+//         cout << "2. Admin\n";
+//         cout << "3. Cek Resi\n";
+//         cout << "4. Keluar\n";
+
+//         utama = inputAngka("Pilih menu : ");
+
+//         switch (utama){
+
+//             case 1:{
+//                 MenuUser();
+//                 break;
+//             }
+
+//             case 2:{
+//                 MenuAdmin();
+//                 break;
+//             }
+
+//             case 3:{
+//                 cekResi();
+//                 break;
+//             }
+
+//             case 4:{
+//                 cout << "\nTerima kasih telah menggunakan program.\n";
+//                 break;
+//             }
+
+//             default:{
+//                 cout << "\nMenu tidak valid!\n";
+//                 tekanEnter();   
+//             }   
+//         }
+
+//     } while(utama == -1 || utama != 4);
+
+//     return 0;
+// }

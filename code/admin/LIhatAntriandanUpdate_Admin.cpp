@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cctype>
 #include "../include/data.h"
 #include "../include/admin.h"
 #include "../database/json.hpp"
@@ -22,6 +23,32 @@ bool paketaktif(string status) {
         status == "Diproses (Lunas)" ||
         status == "Dikirim"
     );
+}
+
+bool resiSudahAda(string resi){
+
+    for(int i=0;i<jumlahPaket;i++){
+
+        if(paket[i].resi==resi){
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+string generateResiUnik(){
+
+    string resiBaru;
+
+    do{
+
+        resiBaru = generateResi();
+
+    }while(resiSudahAda(resiBaru));
+
+    return resiBaru;
 }
 
 void AntriandanUpdateStatus() {
@@ -105,6 +132,10 @@ void AntriandanUpdateStatus() {
     cout << "Masukkan resi paket: ";
     cin >> resiCari;
 
+    for(char &huruf : resiCari){
+        huruf = toupper(huruf);
+    }
+
     if (resiCari == "BATAL"){
         cout << "=====================================" << endl;
         cout << "         UPDATE STATUS BATAL         " << endl;
@@ -117,15 +148,18 @@ void AntriandanUpdateStatus() {
         if ((ptr + i)->resi == resiCari) {
             string statusLama = (ptr + i)->status;
 
-            // validasi admin to diproses
+            // validasi admin -> diproses
             if ((ptr + i)->status == "Menunggu Validasi Admin") {
 
                 if ((ptr + i)->pembayaran == "Transfer") {
 
                     (ptr + i)->status = "Diproses";
 
-                    // RESI BARU DI GENERATE DI SINI
-                    (ptr + i)->resi = generateResi();
+                    /*  untuk paket menunggu validasi admin belum mndpt resi
+                        di sini baru dapat resi dengan syarat admin menginput "BELUM_RILIS" 
+                        nanti dia akan menyesuaikan antrian (yang input paket dluan yang akan di
+                        validasi admin dluan). setelah di vallidasi admin baru akan mendapat resi baru*/
+                    (ptr + i)->resi = generateResiUnik();
 
                     cout << "\nVALIDASI BERHASIL -> DIPROSES\n";
                     cout << "Resi baru: " << (ptr + i)->resi << endl;

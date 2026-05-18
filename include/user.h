@@ -8,5 +8,8 @@ void BatalkanPaket_User();
 void TambahPaket_User();
 void LihatRiwayatPaket_User();
 void HapusPaket_User();
+void RegisterUser();
+bool LoginUser();
+void MenuUtamaUser();
 
 #endif

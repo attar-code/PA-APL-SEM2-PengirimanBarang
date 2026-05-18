@@ -24,18 +24,6 @@
         "tipe": "Elektronik"
     },
     {
-        "alamat": "sma 1 samarinda",
-        "berat": 2222,
-        "namaPenerima": "jaki",
-        "namaPengirim": "attar",
-        "ongkir": 32220,
-        "pembayaran": "Transfer",
-        "pemilik": "attar",
-        "resi": "F98ER24S",
-        "status": "Diproses",
-        "tipe": "Lainnya"
-    },
-    {
         "alamat": "jl merak",
         "berat": 333,
         "namaPenerima": "firza",
@@ -43,8 +31,8 @@
         "ongkir": 23330,
         "pembayaran": "Transfer",
         "pemilik": "attar",
-        "resi": "BELUM_RILIS",
-        "status": "Menunggu Validasi Admin",
+        "resi": "F98ER24S",
+        "status": "Diproses",
         "tipe": "Elektronik"
     },
     {
@@ -79,8 +67,8 @@
         "ongkir": 40000,
         "pembayaran": "Transfer",
         "pemilik": "karin",
-        "resi": "BELUM_RILIS",
-        "status": "Menunggu Validasi Admin",
+        "resi": "8UR3ZPZX",
+        "status": "Dikirim",
         "tipe": "Pecah Belah"
     },
     {

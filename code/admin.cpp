@@ -4,6 +4,8 @@
 
 using namespace std;
 
+int menuNavigasi(string menu[], int jumlahMenu, string judul);
+
 string username, password;
 bool LoginAdmin(string namaadmin, string passwordadmin){
     int login = 0;
@@ -47,63 +49,57 @@ void MenuAdmin(){
     if(LoginAdmin("admin","123")){
         system("cls");
         do{
-            system("cls");
-            cout << "===================================" << endl;
-            cout << "            Menu Admin             " << endl;
-            cout << "-----------------------------------" << endl;
-            cout << " 1. Tambah Paket                   " << endl;
-            cout << " 2. Lihat Riwayat Paket            " << endl;
-            cout << " 3. Lihat Antrian dan Status Paket " << endl;
-            cout << " 4. Hapus Riwayat Paket            " << endl;
-            cout << " 5. Membatalkan Pengiriman         " << endl;
-            cout << " 6. Keluar                         " << endl;
-            cout << "===================================" << endl;
-            cout << "INPUT ANGKA 1-6 : ";
-            cin >> admin;
+            string menu[] = {
+                "Tambah Paket",
+                "Lihat Riwayat Paket",
+                "Update Paket",
+                "Lihat Antrian dan Status Paket",
+                "Hapus Riwayat Paket",
+                "Membatalkan Pengiriman",
+                "keluar"
+            };
+            admin = menuNavigasi(menu,6,"Menu Admin");
 
             switch (admin){
-                case 1: {
+                case 0: {
                     TambahPaketAdmin();
                     break;
                     system("cls");
                 }
 
-                case 2: {
+                case 1: {
                     tampilRiwayatPaket();
                     tekanEnter();
                     system("cls");
                     break;
                 }
 
-                case 3: {
+                case 2: {
                     AntriandanUpdateStatus();
                     system("cls");
                     break;
                 }
                 
-                case 4: {
+                case 3: {
                     HapusRiwayatPaket_Admin();
                     system("cls");
                     break;
                 }
                 
-                case 5: {
+                case 4: {
                     BatalkanPaket_Admin();
                     system("cls");
                     break;
                 }
                 
-                case 6: {
+                case 5: {
                     system("cls");
                     cout << "LOGOUT DARI ADMIN" << endl;
                     tekanEnter();
                     system("cls");
-                    break;
-                } 
-
+                    return;
+                }
             }
-        }while(admin != 6);
-    }else{
-        cout << "salah";
+        }while(true);
     }
 }

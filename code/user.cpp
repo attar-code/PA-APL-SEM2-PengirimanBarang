@@ -4,113 +4,150 @@
 
 using namespace std;
 
-void RegisterUser();
-bool LoginUser();
-void MenuUtamaUser();
-
-int inputAngka(string pesan);
+int menuNavigasi(string menu[], int jumlahMenu, string judul);
 
 void MenuUser() {
 
-    int pilih;
+    string menu[] = {
+        "Registrasi",
+        "Login",
+        "keluar"
+    };
 
-    do {
-        system("cls");
+    do{
+        int pilihUser1 = menuNavigasi(menu,3,"Menu User");
 
-        cout << "=== MENU USER ===\n";
-        cout << "1. Register\n";
-        cout << "2. Login\n";
-        cout << "3. Keluar\n";
-
-        pilih = inputAngka("Pilih menu : ");
-
-        switch (pilih) {
-
-            case 1: {
+        switch (pilihUser1) {
+            case 0: {
                 RegisterUser();
                 break;
             }
 
-            case 2: {
+            case 1: {
                 bool berhasil = LoginUser();
-
                 if (berhasil) {
                     MenuUtamaUser();
                 }
-
                 break;
             }
 
-            case 3: {
-                cout << "\nKembali ke menu utama...\n";
+            case 2: {
+                cout << endl << "Kembali ke menu utama..." << endl;
                 tekanEnter();
-                break;
-            }
-
-            default: {
-                cout << "\nMenu tidak valid!\n";
-                tekanEnter();
+                return;
             }
         }
-
-    } while (pilih != 3);
+    }while(true);
 }
+
+
 
 void MenuUtamaUser() {
 
-    int pilih;
+    string menu[] = {
+        "Tambah Paket",
+        "Lihat Riwayat Paket",
+        "Update Paket",
+        "Hapus Riwayat Paket",
+        "Batalkan Paket",
+        "keluar"
+    };
 
-    do {
-        system("cls");
+    do{
+        int pilihUser2 = menuNavigasi(menu,6,"Halaman Utama User");
 
-        cout << "=== HALAMAN UTAMA USER ===\n";
-        cout << "1. Tambah Paket\n";
-        cout << "2. Lihat Riwayat Paket\n";
-        cout << "3. Update Paket\n";
-        cout << "4. Hapus Riwayat Paket\n";
-        cout << "5. Batalkan Paket\n";
-        cout << "6. Keluar\n";
+        switch (pilihUser2) {
 
-        pilih = inputAngka("Pilih menu : ");
-
-        switch (pilih) {
-
-            case 1: {
+            case 0: {
                 TambahPaket_User();
                 break;
             }
 
-            case 2: {
+            case 1: {
                 LihatRiwayatPaket_User();
                 break;
             }
 
-            case 3: {
+            case 2: {
                 UpdatePaket_User();
                 break;
             }
 
-            case 4: {
+            case 3: {
                 HapusRiwayatPaket_User();
                 break;
             }
 
-            case 5: {
+            case 4: {
                 BatalkanPaket_User();
                 break;
             }
 
-            case 6: {
-                cout << "\nLogout berhasil...\n";
+            case 5: {
+                cout << endl << "Logout berhasil..." << endl;
                 tekanEnter();
-                break;
-            }
-
-            default: {
-                cout << "\nMenu tidak valid!\n";
-                tekanEnter();
+                return;
             }
         }
-
-    } while (pilih != 6);
+    }while(true);
 }
+
+
+// void MenuUtamaUser() {
+
+//     int pilih;
+
+//     do {
+//         system("cls");
+
+//         cout << "=== HALAMAN UTAMA USER ===\n";
+//         cout << "1. Tambah Paket\n";
+//         cout << "2. Lihat Riwayat Paket\n";
+//         cout << "3. Update Paket\n";
+//         cout << "4. Hapus Riwayat Paket\n";
+//         cout << "5. Batalkan Paket\n";
+//         cout << "6. Keluar\n";
+
+//         pilih = inputAngka("Pilih menu : ");
+
+//         switch (pilih) {
+
+//             case 1: {
+//                 TambahPaket_User();
+//                 break;
+//             }
+
+//             case 2: {
+//                 LihatRiwayatPaket_User();
+//                 break;
+//             }
+
+//             case 3: {
+//                 UpdatePaket_User();
+//                 break;
+//             }
+
+//             case 4: {
+//                 HapusRiwayatPaket_User();
+//                 break;
+//             }
+
+//             case 5: {
+//                 BatalkanPaket_User();
+//                 break;
+//             }
+
+//             case 6: {
+//                 cout << "\nLogout berhasil...\n";
+//                 tekanEnter();
+//                 break;
+//             }
+
+//             default: {
+//                 cout << "\nMenu tidak valid!\n";
+//                 tekanEnter();
+//             }
+//         }
+
+//     } while (pilih != 6);
+// }
