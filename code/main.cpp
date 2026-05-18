@@ -1,10 +1,31 @@
 #include<iostream>
-#include<conio.h>
 #include "../include/user.h"
 #include "../include/admin.h"
 #include "../include/data.h"
 #include "../include/LacakPaket.h"
 #include "../include/cekResi.h"
+
+#ifdef _WIN32
+    #include <conio.h>
+    #define _getch getch
+#else
+    #include <termios.h>
+    #include <unistd.h>
+    #include <stdio.h>
+
+    int _getch() {
+        struct termios oldt, newt;
+        int ch;
+        tcgetattr(STDIN_FILENO, &oldt);
+        newt = oldt;
+        newt.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+        ch = getchar();
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+        return ch;
+    }
+#endif
+
 
 using namespace std;
 int JumlahUser = 0;

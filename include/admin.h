@@ -1,6 +1,8 @@
 #ifndef admin_h
 #define admin_h
 #include "data.h"
+#include <vector>
+
 
 void MenuAdmin();
 void TambahPaketAdmin();
