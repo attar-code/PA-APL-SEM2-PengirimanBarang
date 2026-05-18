@@ -48,8 +48,6 @@ inline void bersihkanLayar() {
 extern Paket paket[100];
 extern int jumlahPaket;
 
-void loadPaket();
-void savePaket();
 int inputAngka(string pesan);
 
 #endif

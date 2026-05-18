@@ -110,14 +110,14 @@ bool ValidAngka(const string& input) {
     }
     return true;
 }
-
 extern int _getch();
+// _getch() didefinisikan di code/main.cpp (agar link di Windows ucrt64)
 int MenuScroll(string judul, vector<string> pilihan) { // 'string' huruf kecil
     int posisi = 0;
     int key;
     
     while (true) {
-bersihkanLayar();
+        bersihkanLayar();
         cout << KUNING << BOLD << "==============================" << RESET << endl;
         cout << BOLD << "   " << judul << RESET << endl;
         cout << KUNING << BOLD << "==============================" << RESET << endl;

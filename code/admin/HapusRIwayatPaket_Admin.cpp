@@ -1,12 +1,10 @@
 #include <iostream>
-#include <fstream>
-#include <vector>
 #include <string>
-#include <sstream>
-#include <iomanip>
-#include "../database/json.hpp"
-#include "../include/admin.h"
+#include <vector>
+#include <iomanip>   // 🌟 Wajib untuk mengatur spasi tabel (setw, setfill)
 #include "../include/data.h"
+#include "../include/admin.h"
+#include "../database/json.hpp"
 
 #define RESET   "\033[0m"
 #define MERAH   "\033[31m"
@@ -16,144 +14,190 @@
 #define CYAN    "\033[36m"
 #define BOLD    "\033[1m"
 
-using namespace std;
 using json = nlohmann::json;
-void HapusRiwayatPaket_Admin() {
-    ifstream file("database/paket.json");
-    json dataJson;
+using namespace std;
 
-    // 1. Validasi awal jika database kosong
-    if (!file.is_open() || file.peek() == ifstream::traits_type::eof()) {
-        bersihkanLayar();
-        cout << KUNING << BOLD << "==================================================" << RESET << endl;
-        cout << MERAH << BOLD << "            DATABASE RIWAYAT KOSONG!              " << RESET << endl;
-        cout << KUNING << BOLD << "==================================================" << RESET << endl;
-        cout << "Tidak ada riwayat paket yang bisa dihapus.\n" << endl;
-        tekanEnter();
-        return;
-    }
+// _getch() didefinisikan di file utama kamu (main.cpp)
+int _getch(); 
 
-    file >> dataJson;
-    file.close();
+// Fungsi cek apakah paket sudah selesai/batal sehingga riwayatnya boleh dihapus
+bool bisaDihapus(string status) {
+    return (
+        status == "Selesai" ||
+        status == "Dibatalkan"
+    );
+}
 
-    // 2. Filter data: Hanya ambil paket yang "Selesai" atau "Dibatalkan"
-    vector<Paket> listRiwayat;
-    vector<string> pilihanMenu; 
-
-    for (const auto& item : dataJson) {
-        string status = item.value("status", "-");
-        if (status == "Selesai" || status == "Dibatalkan") {
-            Paket p;
-            p.resi         = item.value("resi", "-");
-            p.namaPengirim = item.value("namaPengirim", "-");
-            p.namaPenerima = item.value("namaPenerima", "-");
-            p.alamat       = item.value("alamat", "-");
-            p.lokasi       = item.value("lokasi", "-");
-            p.berat        = item.value("berat", 0LL);
-            p.tipe         = item.value("tipe", "-");
-            p.ongkir       = item.value("ongkir", 0LL);
-            p.status       = status;
-            p.pemilik      = item.value("pemilik", "-");
-            
-            listRiwayat.push_back(p);
-            
-            // Menu scroll cukup tampilkan informasi singkat yang manis
-            pilihanMenu.push_back(p.resi + " -> " + p.namaPengirim);
-        }
-    }
-
-    if (listRiwayat.empty()) {
-        bersihkanLayar();
-        cout << KUNING << BOLD << "==================================================" << RESET << endl;
-        cout << KUNING << BOLD << "         TIDAK ADA RIWAYAT YANG SELESAI           " << RESET << endl;
-        cout << KUNING << BOLD << "==================================================" << RESET << endl;
-        cout << "Belum ada paket dengan status 'Selesai' atau 'Dibatalkan'.\n" << endl;
-        tekanEnter();
-        return;
-    }
-
-    // Pilihan kembali diletakkan di paling bawah
-    pilihanMenu.push_back("<< Kembali ke Menu Utama >>");
-
-    // 3. SATUKAN TABEL DATA LENGKAP KEDALAM STRINGSTREAM JUDUL
-    // Trik ini memaksa MenuScroll menggambar ulang tabel SETIAP KALI panah ditekan (Anti-Menumpuk!)
-    stringstream headerSs;
-    headerSs << "========================================= DAFTAR RIWAYAT PAKET GUDANG =========================================\n"
-             << left << BOLD
-             << setw(12) << "Resi" 
-             << setw(13) << "Pengirim" 
-             << setw(13) << "Penerima" 
-             << setw(22) << "Alamat" 
-             << setw(10) << "Lokasi"
-             << setw(8)  << "Berat" 
-             << setw(12) << "Tipe"
-             << setw(12) << "Ongkir" 
-             << "Status" << RESET << "\n"
-             << KUNING << string(110, '-') << RESET << "\n";
-
-    for (const auto& p : listRiwayat) {
-        headerSs << left
-                 << setw(12) << p.resi
-                 << setw(13) << (p.namaPengirim.length() > 11 ? p.namaPengirim.substr(0, 10) + ".." : p.namaPengirim)
-                 << setw(13) << (p.namaPenerima.length() > 11 ? p.namaPenerima.substr(0, 10) + ".." : p.namaPenerima)
-                 << setw(22) << (p.alamat.length() > 19 ? p.alamat.substr(0, 19) + "..." : p.alamat)
-                 << setw(10) << p.lokasi
-                 << setw(8)  << (to_string(p.berat) + "g")
-                 << setw(12) << p.tipe
-                 << "Rp " << setw(9) << p.ongkir
-                 << (p.status == "Selesai" ? HIJAU : MERAH) << "[" << p.status << "]" << RESET << "\n";
-    }
-    headerSs << KUNING << BOLD << "===============================================================================================================\n" << RESET
-             << "\nPILIH PAKET YANG INGIN DIHAPUS PERMANEN:";
-
-    // 4. Panggil MenuScroll dengan judul super lengkap
-    int indeksTerpilih = MenuScroll(headerSs.str(), pilihanMenu);
-
-    // FIX LOGIKA KEMBALI: Jika milih paling bawah, langsung keluar tanpa konfirmasi
-    if (indeksTerpilih == pilihanMenu.size() - 1) {
-        return;
-    }
-
-    // Ambil target paket asli berdasarkan indeks scroller yang valid
-    Paket paketTarget = listRiwayat[indeksTerpilih];
-
-    // 5. Menu Konfirmasi Penghapusan
-    vector<string> opsiKonfirmasi = {
-        "Ya, Hapus Permanen",
-        "Tidak Jadi (Kembali)"
-    };
+// =========================================================================
+// 🌟 PROSEDUR BANTUAN: Menggambar tabel daftar riwayat secara kokoh (Lebar 103)
+// =========================================================================
+void cetakTabelHapusRiwayat(const vector<int>& indeksBisaHapus) {
+    cout << CYAN << BOLD << setfill('=') << setw(103) << "" << setfill(' ') << RESET << endl;
+    cout << BOLD << "                                   DAFTAR RIWAYAT PAKET (FINAL)                               " << RESET << endl;
+    cout << CYAN << BOLD << setfill('=') << setw(103) << "" << setfill(' ') << RESET << endl;
     
-    int konfirmasi = MenuScroll("HAPUS RESI [" + paketTarget.resi + "] DARI RIWAYAT?", opsiKonfirmasi);
+    cout << left << setw(4)  << "No" 
+         << "| " << setw(12) << "Resi" 
+         << "| " << setw(12) << "Pengirim" 
+         << "| " << setw(12) << "Penerima" 
+         << "| " << setw(12) << "Lokasi" 
+         << "| " << setw(8)  << "Berat" 
+         << "| " << setw(24) << "Status Akhir" << endl;
+         
+    cout << CYAN << setfill('-') << setw(103) << "" << setfill(' ') << RESET << endl;
 
-    // 6. Eksekusi hapus jika pilih opsi ke-0 ("Ya, Hapus Permanen")
-    if (konfirmasi == 0) {
-        json dataBaru = json::array();
+    int nomorTabel = 1;
+    for (int idx : indeksBisaHapus) {
+        string warnaStatus = (paket[idx].status == "Selesai") ? HIJAU : MERAH;
 
-        for (const auto& item : dataJson) {
-            if (item.contains("resi") && item["resi"] == paketTarget.resi) {
-                continue; 
+        // 👍 Proteksi: Potong nama jika terlalu panjang agar tabel tidak melar/patah ke bawah
+        string namaPengirim = paket[idx].namaPengirim;
+        if (namaPengirim.length() > 11) namaPengirim = namaPengirim.substr(0, 9) + "..";
+        
+        string namaPenerima = paket[idx].namaPenerima;
+        if (namaPenerima.length() > 11) namaPenerima = namaPenerima.substr(0, 9) + "..";
+
+        // Murni pakai cara biasa: paket[idx].namaVariabel
+        cout << left << setw(4)  << nomorTabel++
+             << "| " << setw(12) << paket[idx].resi
+             << "| " << setw(12) << namaPengirim
+             << "| " << setw(12) << namaPenerima
+             << "| " << setw(12) << paket[idx].lokasi
+             << "| " << setw(8)  << (to_string(paket[idx].berat) + "g")
+             << "| " << warnaStatus << BOLD << setw(24) << paket[idx].status << RESET << endl;
+    }
+    cout << CYAN << BOLD << setfill('=') << setw(103) << "" << setfill(' ') << RESET << "\n\n";
+}
+
+// =========================================================================
+// 🌟 FUNGSI NAVIGASI: menuScrollHapus agar tabel diam dan tidak bertelur
+// =========================================================================
+int menuScrollHapus(string judul, vector<string> pilihan, const vector<int>& indeksBisaHapus) {
+    int posisi = 0;
+    int key;
+    
+    while (true) {
+        bersihkanLayar(); // Hapus total isi terminal Mac/Windows
+        
+        cetakTabelHapusRiwayat(indeksBisaHapus); // Gambar ulang tabel di posisi teratas
+        
+        cout << KUNING << BOLD << "=======================================================================================================" << RESET << endl;
+        cout << BOLD << "   " << judul << RESET << endl;
+        cout << KUNING << BOLD << "=======================================================================================================" << endl;
+        
+        for (size_t i = 0; i < pilihan.size(); i++) {
+            if (i == posisi) {
+                cout << MERAH << BOLD << "  > [ " << pilihan[i] << " ] <" << RESET << endl;
+            } else {
+                cout << "      " << pilihan[i] << endl;
             }
-            dataBaru.push_back(item);
+        }
+        cout << KUNING << "-------------------------------------------------------------------------------------------------------" << RESET << endl;
+        cout << "Gunakan Panah & Enter" << endl;
+
+        key = _getch();
+
+        if (key == 27) { 
+            _getch(); 
+            key = _getch();
+            if (key == 65) key = 72;      
+            else if (key == 66) key = 80; 
+        }
+        else if (key == 224) { 
+            key = _getch(); 
         }
 
-        ofstream outputFile("database/paket.json");
-        if (outputFile.is_open()) {
-            outputFile << dataBaru.dump(4);
-            outputFile.close();
-
-            bersihkanLayar();
-            cout << HIJAU << BOLD << "==================================================" << RESET << endl;
-            cout << HIJAU << BOLD << "          RIWAYAT BERHASIL DIHAPUS                " << RESET << endl;
-            cout << HIJAU << BOLD << "==================================================" << RESET << endl;
-            cout << " Data paket dengan Resi " << CYAN << BOLD << paketTarget.resi << RESET 
-                << " telah dihapus permanen dari riwayat.\n" << endl;
-        } else {
-            cout << MERAH << BOLD << "\n[EROR] Gagal menyimpan perubahan database!" << RESET << endl;
+        if (key == 72) { // Panah Atas
+            if (posisi > 0) posisi--;
+            else posisi = pilihan.size() - 1;
+        } 
+        else if (key == 80) { // Panah Bawah
+            if (posisi < pilihan.size() - 1) posisi++;
+            else posisi = 0;
+        } 
+        else if (key == 13 || key == 10) { // Enter
+            return posisi + 1; // Mengembalikan angka navigasi 1, 2, dst.
         }
-    } else {
-        bersihkanLayar();
-        cout << KUNING << BOLD << "Penghapusan dibatalkan. Data riwayat tetap aman.\n" << RESET << endl;
+    }
+}
+
+// =========================================================================
+// PROSEDUR UTAMA: HapusRiwayatPaket_Admin (VERSI PERBAIKAN BUG TOTAL)
+// =========================================================================
+void HapusRiwayatPaket_Admin() {
+    loadPaket(); // 1. Sinkronkan data RAM dengan file JSON
+    bersihkanLayar();
+
+    vector<int> indeksBisaHapus;
+
+    // 2. Filter paket yang berstatus final (Selesai / Dibatalkan) dengan array biasa
+    for (int i = 0; i < jumlahPaket; i++) {
+        if (bisaDihapus(paket[i].status)) {
+            indeksBisaHapus.push_back(i); 
+        }
     }
 
+    if (indeksBisaHapus.empty()) {
+        cout << KUNING << BOLD << "=========== HAPUS RIWAYAT PAKET ===========" << RESET << "\n\n";
+        cout << MERAH << BOLD << "TIDAK ADA RIWAYAT PAKET YANG BISA DIHAPUS SAAT INI." << RESET << "\n\n";
+        tekanEnter();
+        return;
+    }
+
+    // 3. Meracik tulisan pilihan menu scroll bawah
+    vector<string> listPilihanMenu;
+    int nomorTabel = 1;
+    for (int idx : indeksBisaHapus) {
+        string teksMenu = "No. " + to_string(nomorTabel) + " [" + paket[idx].resi + "] " 
+                          + paket[idx].namaPengirim + " -> " + paket[idx].namaPenerima;
+        listPilihanMenu.push_back(teksMenu);
+        nomorTabel++;
+    }
+    listPilihanMenu.push_back("Kembali ke Menu Admin");
+
+    // 4. Jalankan scroller navigasi panah
+    int pilihan = menuScrollHapus("PILIH RIWAYAT PAKET YANG INGIN DIHAPUS PERMANEN:", listPilihanMenu, indeksBisaHapus);
+
+    // FIX BUG KEMBALI: Jika milih opsi terakhir ("Kembali ke Menu Admin")
+    if (pilihan == listPilihanMenu.size()) {
+        bersihkanLayar();
+        cout << KUNING << BOLD << "KEMBALI KE MENU ADMIN." << RESET << endl;
+        tekanEnter();
+        return;
+    }
+
+    // FIX BUG INDEXING: Ambil indeks target yang valid dengan mengurangi pilihan dengan 1
+    int targetIndeks = indeksBisaHapus[pilihan - 1];
+
+    bersihkanLayar();
+    cout << MERAH << BOLD << "============= KONFIRMASI HAPUS PERMANEN =============" << RESET << endl;
+    cout << "Resi        : " << paket[targetIndeks].resi << endl;
+    cout << "Pengirim    : " << paket[targetIndeks].namaPengirim << endl;
+    cout << "Penerima    : " << paket[targetIndeks].namaPenerima << endl;
+    cout << "Status Paket: " << BOLD << paket[targetIndeks].status << RESET << endl;
+    cout << MERAH << "-----------------------------------------------------" << RESET << endl;
+    
+    // Konfirmasi ganda menggunakan scroller mini biar tidak ada bug salah ketik input cin
+    vector<string> konfirmasi = {"YA, Hapus Permanen Dari Database", "TIDAK, Batalkan Penghapusan"};
+    int sScroll = menuScrollHapus("YAKIN DATA INI INGIN DIHAPUS? (AKSI TIDAK DAPAT DIURUNGKAN)", konfirmasi, indeksBisaHapus);
+
+    bersihkanLayar();
+    if (sScroll == 1) {
+        // 🌟 MATERI ARRAY: Algoritma Menghapus Elemen Array Statis (Geser data ke Kiri)
+        for (int i = targetIndeks; i < jumlahPaket - 1; i++) {
+            paket[i] = paket[i + 1];
+        }
+        
+        // Kurangi counter jumlah total data di memori
+        jumlahPaket--;
+        
+        savePaket(); // Simpan perubahan secara otomatis ke file JSON database
+        
+        cout << HIJAU << BOLD << "SUKSES! Riwayat paket berhasil dihapus permanen dari database." << RESET << endl;
+    } else {
+        cout << KUNING << BOLD << "Penghapusan dibatalkan. Data riwayat tetap aman." << RESET << endl;
+    }
+
+    cout << MERAH << "-----------------------------------------------------" << endl;
     tekanEnter();
 }

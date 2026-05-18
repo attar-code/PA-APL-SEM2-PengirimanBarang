@@ -234,16 +234,14 @@
 //     cout << "\n" << MERAH << BOLD << "Resi tidak ditemukan!" << RESET << "\n";
 //     tekanEnter();
 // }
-
 #include <iostream>
-#include <cctype>
+#include <string>
 #include <vector>
-#include <iomanip>
+#include <iomanip>   // 🌟 Wajib untuk mengatur spasi tabel (setw, setfill)
 #include "../include/data.h"
 #include "../include/admin.h"
 #include "../database/json.hpp"
 
-// Makro warna agar konsisten
 #define RESET "\033[0m"
 #define MERAH "\033[31m"
 #define HIJAU "\033[32m"
@@ -255,45 +253,27 @@
 using json = nlohmann::json;
 using namespace std;
 
-// Fungsi pembantu MenuScroll (Deklarasi agar bisa dipakai di sini)
-int MenuScroll(string judul, vector<string> pilihan);
+// _getch() didefinisikan di file utama kamu (main.cpp)
+int _getch(); 
 
 bool paketdiproses(string status) {
-    return (
-        status == "Diproses" ||
-        status == "Diproses (COD)" ||
-        status == "Diproses (Lunas)"
-    );
+    return (status == "Diproses" || status == "Diproses (COD)" || status == "Diproses (Lunas)");
 }
 
 bool paketaktif(string status) {
-    return (
-        status == "Menunggu Validasi Admin" ||
-        status == "Diproses" ||
-        status == "Diproses (COD)" ||
-        status == "Diproses (Lunas)" ||
-        status == "Dikirim"
-    );
+    return (status == "Menunggu Validasi Admin" || status == "Diproses" || status == "Diproses (COD)" || status == "Diproses (Lunas)" || status == "Dikirim");
 }
 
 bool resiSudahAda(string resi){
-    for(int i=0; i<jumlahPaket; i++){
-        if(paket[i].resi == resi){
-            return true;
-        }
+    for(int i = 0; i < jumlahPaket; i++){
+        if(paket[i].resi == resi) return true;
     }
     return false;
 }
 
-// =========================================================================
-// FUNGSI REKURSIF: Mengacak resi baru menggunakan pengecekan array global
-// =========================================================================
 string generateResiUnik() {
     string resiBaru = generateResi(); 
-    if (!resiSudahAda(resiBaru)) {
-        return resiBaru;
-    }
-    cout << KUNING << "[Sistem] Resi kembar terdeteksi di memori RAM! Melakukan rekursi..." << RESET << endl;
+    if (!resiSudahAda(resiBaru)) return resiBaru;
     return generateResiUnik(); 
 }
 
@@ -302,19 +282,111 @@ int prioritasStatus(string status){
     else if(status == "Diproses" || status == "Diproses (COD)" || status == "Diproses (Lunas)") return 2;
     else if(status == "Dikirim") return 3;
     else if(status == "Selesai") return 4;
-    else if(status == "Dibatalkan") return 5;
-    return 999;
+    return 5;
 }
 
 void bubbleSortStatus(){
-    for(int i=0; i<jumlahPaket-1; i++){
-        for(int j=0; j<jumlahPaket-i-1; j++){
+    for(int i = 0; i < jumlahPaket-1; i++){
+        for(int j = 0; j < jumlahPaket-i-1; j++){
             if(prioritasStatus(paket[j].status) > prioritasStatus(paket[j+1].status)){
                 swap(paket[j], paket[j+1]);
             }
         }
     }
 }
+
+// =========================================================================
+// 🌟 PROSEDUR BANTUAN: Menggambar tabel antrean dengan lebar baru (Total 103)
+// =========================================================================
+void cetakTabelAntrean(const vector<int>& indeksPaketAktif) {
+    // Total lebar disesuaikan jadi 103 agar pas menutup semua kolom yang dilebarkan
+    cout << CYAN << BOLD << setfill('=') << setw(103) << "" << setfill(' ') << RESET << endl;
+    cout << BOLD << "                                      DAFTAR ANTREAN PAKET AKTIF                            " << RESET << endl;
+    cout << CYAN << BOLD << setfill('=') << setw(103) << "" << setfill(' ') << RESET << endl;
+    
+    // ✅ Resi diatur setw(12) agar muat "BELUM_RILIS"
+    // ✅ Status diatur setw(24) agar muat "Menunggu Validasi Admin"
+    cout << left << setw(4)  << "No" 
+         << "| " << setw(12) << "Resi" 
+         << "| " << setw(12) << "Pengirim" 
+         << "| " << setw(12) << "Penerima" 
+         << "| " << setw(12) << "Lokasi" 
+         << "| " << setw(8)  << "Berat" 
+         << "| " << setw(24) << "Status Saat Ini" << endl;
+         
+    cout << CYAN << setfill('-') << setw(103) << "" << setfill(' ') << RESET << endl;
+
+    int nomorTabel = 1;
+    for (int idx : indeksPaketAktif) {
+        cout << left << setw(4)  << nomorTabel++
+             << "| " << setw(12) << paket[idx].resi
+             << "| " << setw(12) << paket[idx].namaPengirim
+             << "| " << setw(12) << paket[idx].namaPenerima
+             << "| " << setw(12) << paket[idx].lokasi
+             << "| " << setw(8)  << (to_string(paket[idx].berat) + "g")
+             << "| " << BIRU << BOLD << setw(24) << paket[idx].status << RESET << endl;
+    }
+    cout << CYAN << BOLD << setfill('=') << setw(103) << "" << setfill(' ') << RESET << "\n\n";
+}
+
+// =========================================================================
+// 🌟 FUNGSI NAVIGASI: menuScrollUpdate yang sinkron dengan tabel di atasnya
+// =========================================================================
+int menuScrollUpdate(string judul, vector<string> pilihan, const vector<int>& indeksPaketAktif) {
+    int posisi = 0;
+    int key;
+    
+    while (true) {
+        bersihkanLayar(); // Hapus layar total Mac kamu biar tidak menumpuk/bertelur
+        
+        cetakTabelAntrean(indeksPaketAktif); // Gambar ulang tabel di posisi paling atas
+        
+        // Garis pembatas judul menu disamakan lebarnya menjadi 103 agar tegak lurus dengan tabel
+        cout << KUNING << BOLD << "=======================================================================================================" << RESET << endl;
+        cout << BOLD << "   " << judul << RESET << endl;
+        cout << KUNING << BOLD << "=======================================================================================================" << endl;
+        
+        for (size_t i = 0; i < pilihan.size(); i++) {
+            if (i == posisi) {
+                cout << BIRU << BOLD << "  > [ " << pilihan[i] << " ] <" << RESET << endl;
+            } else {
+                cout << "      " << pilihan[i] << endl;
+            }
+        }
+        cout << KUNING << "-------------------------------------------------------------------------------------------------------" << RESET << endl;
+        cout << "Gunakan Panah & Enter" << endl;
+
+        key = _getch();
+
+        // Deteksi tombol panah lintas platform
+        if (key == 27) { 
+            _getch(); 
+            key = _getch();
+            if (key == 65) key = 72;      
+            else if (key == 66) key = 80; 
+        }
+        else if (key == 224) { 
+            key = _getch(); 
+        }
+
+        // Logika hitung posisi navigasi
+        if (key == 72) { // Panah Atas
+            if (posisi > 0) posisi--;
+            else posisi = pilihan.size() - 1;
+        } 
+        else if (key == 80) { // Panah Bawah
+            if (posisi < pilihan.size() - 1) posisi++;
+            else posisi = 0;
+        } 
+        else if (key == 13 || key == 10) { // Tombol Enter
+            return posisi + 1; 
+        }
+    }
+}
+
+// =========================================================================
+// PROSEDUR UTAMA
+// =========================================================================
 void AntriandanUpdateStatus() {
     loadPaket();
     bubbleSortStatus();
@@ -323,7 +395,6 @@ void AntriandanUpdateStatus() {
     vector<int> indeksPaketAktif; 
     Paket *ptr = paket;
 
-    // 1. Filter dan kumpulkan data paket yang aktif
     for (int i = 0; i < jumlahPaket; i++) {
         if (paketaktif((ptr + i)->status)) {
             indeksPaketAktif.push_back(i); 
@@ -337,49 +408,24 @@ void AntriandanUpdateStatus() {
         return;
     }
 
-    // =========================================================================
-    // BAGIAN 1: TAMPILAN ANTREAN (Menggunakan setw agar sama seperti Lihat Riwayat)
-    // =========================================================================
-    cout << CYAN << BOLD << "=========================================================================================" << RESET << endl;
-    cout << BOLD << "                                   DAFTAR ANTREAN PAKET AKTIF                            " << RESET << endl;
-    cout << CYAN << BOLD << "=========================================================================================" << RESET << endl;
-    
-    // Cetak Header Tabel
-    cout << left << setw(4)  << "No" 
-         << "| " << setw(10) << "Resi" 
-         << "| " << setw(12) << "Pengirim" 
-         << "| " << setw(12) << "Penerima" 
-         << "| " << setw(12) << "Lokasi" 
-         << "| " << setw(8)  << "Berat" 
-         << "| " << setw(15) << "Status" << endl;
-         
-    cout << CYAN << "------------------------------------------------------------------------------------------" << RESET << endl;
-
-    int nomorTabel = 1;
+    // Meracik teks menu di bawah tabel
     vector<string> listPilihanMenu; 
-
-    // Cetak Isi Tabel
+    int nomorTabel = 1;
     for (int idx : indeksPaketAktif) {
-        cout << left << setw(4)  << nomorTabel++
-             << "| " << setw(10) << paket[idx].resi
-             << "| " << setw(12) << paket[idx].namaPengirim
-             << "| " << setw(12) << paket[idx].namaPenerima
-             << "| " << setw(12) << paket[idx].lokasi
-             << "| " << setw(8)  << (to_string(paket[idx].berat) + "g")
-             << "| " << BIRU << BOLD << setw(15) << paket[idx].status << RESET << endl;
+        string statusBerikutnya = "";
+        if (paket[idx].status == "Menunggu Validasi Admin") statusBerikutnya = "Diproses";
+        else if (paketdiproses(paket[idx].status)) statusBerikutnya = "Dikirim";
+        else if (paket[idx].status == "Dikirim") statusBerikutnya = "Selesai";
 
-        // Siapkan opsi vertikal kebawah untuk MenuScroll
-        string teksMenu = "Pilih Paket No. " + to_string(nomorTabel - 1) + " [" + paket[idx].resi + "]";
+        string teksMenu = "No. " + to_string(nomorTabel) + " [" + paket[idx].resi + "] " 
+                          + paket[idx].namaPengirim + " (" + paket[idx].status + " -> " + statusBerikutnya + ")";
         listPilihanMenu.push_back(teksMenu);
+        nomorTabel++;
     }
-    cout << CYAN << BOLD << "=========================================================================================" << RESET << "\n\n";
-
     listPilihanMenu.push_back("Kembali ke Menu Admin");
 
-    // =========================================================================
-    // BAGIAN 2: UPDATE STATUS (Pilihan ke bawah menggunakan MenuScroll)
-    // =========================================================================
-    int pilihan = MenuScroll("NAVIGASI PANAH UNTUK MEMILIH PAKET YANG AKAN DI-UPDATE:", listPilihanMenu);
+    // Jalankan menu navigasi scroll update status
+    int pilihan = menuScrollUpdate("NAVIGASI PANAH UNTUK MEMILIH PAKET YANG AKAN DI-UPDATE:", listPilihanMenu, indeksPaketAktif);
 
     if (pilihan == listPilihanMenu.size()) {
         bersihkanLayar();
@@ -388,7 +434,6 @@ void AntriandanUpdateStatus() {
         return;
     }
 
-    // 3. Ambil paket target berdasarkan pilihan
     int targetIndeks = indeksPaketAktif[pilihan - 1];
     Paket& pTarget = *(ptr + targetIndeks); 
 
@@ -399,15 +444,14 @@ void AntriandanUpdateStatus() {
     cout << "Status Lama : " << BIRU << BOLD << pTarget.status << RESET << endl;
     cout << KUNING << "------------------------------------------------" << RESET << endl;
 
-    // 4. Perubahan Status Otomatis
     if (pTarget.status == "Menunggu Validasi Admin") {
         if (pTarget.pembayaran == "Transfer") {
             pTarget.status = "Diproses";
             pTarget.resi = generateResiUnik(); 
             cout << HIJAU << BOLD << "VALIDASI BERHASIL -> Status: DIPROSES" << RESET << endl;
-            cout << CYAN << "Resi Baru: " << BOLD << pTarget.resi << RESET << endl;
+            cout << CYAN << "Resi Baru Otomatis Terbit: " << BOLD << pTarget.resi << RESET << endl;
         } else {
-            cout << MERAH << "Paket COD tidak memerlukan validasi manual." << RESET << endl;
+            cout << MERAH << "Paket COD tidak memerlukan validasi manual oleh admin." << RESET << endl;
             tekanEnter();
             return;
         }
@@ -418,11 +462,11 @@ void AntriandanUpdateStatus() {
     }
     else if (pTarget.status == "Dikirim") {
         pTarget.status = "Selesai";
-        cout << HIJAU << BOLD << "STATUS BERHASIL DIUBAH -> SELESAI" << RESET << endl;
+        cout << HIJAU << BOLD << "STATUS BERHASIL DIUBAH -> SELESAI (Paket Diterima)" << RESET << endl;
     }
 
     savePaket();
     cout << KUNING << "------------------------------------------------" << RESET << endl;
-    cout << HIJAU << BOLD << "Database Berhasil Diperbarui!" << RESET << endl;
+    cout << HIJAU << BOLD << "Data Berhasil Diperbarui di Database JSON!" << RESET << endl;
     tekanEnter();
 }

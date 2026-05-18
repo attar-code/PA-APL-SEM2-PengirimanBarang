@@ -89,10 +89,10 @@ void UpdatePaket_User() {
 
             paketDitemukan = true;
 
-            if (paket["status"] != "Menunggu Diproses") {
+            if (paket["status"] == "Dikirim") {
 
                 cout << "\nPaket tidak bisa diupdate!\n";
-                cout << "Status paket sudah diproses admin.\n";
+                cout << "Status paket sudah dikirim.\n";
 
                 tekanEnter();
                 return;
@@ -103,6 +103,7 @@ void UpdatePaket_User() {
             string alamatBaru;
             string tipeBaru;
             int beratBaru;
+            int opsiTipe;
 
             cout << "\nNama Pengirim Baru : ";
             getline(cin, namaPengirimBaru);
@@ -113,12 +114,66 @@ void UpdatePaket_User() {
             cout << "Alamat Baru : ";
             getline(cin, alamatBaru);
 
-            cout << "Tipe Barang Baru : ";
-            getline(cin, tipeBaru);
-
-            cout << "Berat Baru : ";
+            // BERAT DULU
+            cout << "\nMasukkan berat baru (gram): ";
             cin >> beratBaru;
+
+            while (cin.fail() || beratBaru <= 0) {
+
+                cout << "Input berat tidak valid!\n";
+
+                cin.clear();
+                cin.ignore(1000, '\n');
+
+                cout << "Masukkan berat baru (gram): ";
+                cin >> beratBaru;
+            }
+
+            cout << "\nPilihan tipe barang:" << endl;
+            cout << "1. Dokumen" << endl;
+            cout << "2. Elektronik" << endl;
+            cout << "3. Pecah Belah" << endl;
+            cout << "4. Lainnya" << endl;
+
+            while (true) {
+
+                cout << "Pilih tipe barang (1-4): ";
+                cin >> opsiTipe;
+
+                if (
+                    cin.fail() ||
+                    opsiTipe < 1 ||
+                    opsiTipe > 4
+                ) {
+
+                    cout << "Input tidak valid!\n";
+
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                }
+
+                else {
+                    break;
+                }
+            }
+
             cin.ignore();
+
+            if (opsiTipe == 1) {
+                tipeBaru = "Dokumen";
+            }
+
+            else if (opsiTipe == 2) {
+                tipeBaru = "Elektronik";
+            }
+
+            else if (opsiTipe == 3) {
+                tipeBaru = "Pecah Belah";
+            }
+
+            else {
+                tipeBaru = "Lainnya";
+            }
 
             paket["namaPengirim"] = namaPengirimBaru;
             paket["namaPenerima"] = namaPenerimaBaru;
