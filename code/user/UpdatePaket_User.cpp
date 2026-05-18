@@ -17,31 +17,34 @@ void UpdatePaket_User() {
 
     cout << "=== UPDATE PAKET ===\n";
 
-    ifstream inputFile("Database/paket.json");
-
-    if (!inputFile.is_open()) {
-
-        cout << "\nFile paket.json tidak ditemukan!\n";
-
-        tekanEnter();
-        return;
-    }
-
     json data;
 
-    if (inputFile.peek() == ifstream::traits_type::eof()) {
+    try {
 
-        cout << "\nBelum ada data paket!\n";
+        ifstream inputFile("Database/paket.json");
+
+        if (!inputFile.is_open()) {
+
+            throw runtime_error("File paket.json tidak ditemukan!");
+        }
+
+        if (inputFile.peek() == ifstream::traits_type::eof()) {
+
+            throw runtime_error("Belum ada data paket!");
+        }
+
+        inputFile >> data;
 
         inputFile.close();
+    }
+
+    catch (exception &e) {
+
+        cout << "\nError : " << e.what() << endl;
 
         tekanEnter();
         return;
     }
-
-    inputFile >> data;
-
-    inputFile.close();
 
     bool ditemukan = false;
 
