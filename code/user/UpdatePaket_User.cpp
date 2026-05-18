@@ -7,10 +7,13 @@
 using json = nlohmann::json;
 using namespace std;
 
+// VARIABEL GLOBAL
 extern string userAktif;
 
+//DEKLARASI FUNGSI
 void tekanEnter();
 
+// PROSEDUR
 void UpdatePaket_User() {
 
     system("cls");
@@ -19,8 +22,10 @@ void UpdatePaket_User() {
 
     json data;
 
+    //EXEPTION HANDLING
     try {
 
+        //FILE HANDLING
         ifstream inputFile("Database/paket.json");
 
         if (!inputFile.is_open()) {
@@ -38,6 +43,7 @@ void UpdatePaket_User() {
         inputFile.close();
     }
 
+    //EXCEPTION HANDLING
     catch (exception &e) {
 
         cout << "\nError : " << e.what() << endl;
@@ -46,10 +52,12 @@ void UpdatePaket_User() {
         return;
     }
 
+    // VARIABEL LOKAL
     bool ditemukan = false;
 
     cout << "\n=== DAFTAR PAKET ===\n";
 
+     //SEARCHING + LINEAR SEARCH
     for (auto paket : data) {
 
         if (paket["pemilik"] == userAktif) {
@@ -67,6 +75,7 @@ void UpdatePaket_User() {
         }
     }
 
+    // EERROR HANDLING
     if (!ditemukan) {
 
         cout << "\nBelum ada paket!\n";
@@ -82,6 +91,8 @@ void UpdatePaket_User() {
 
     bool paketDitemukan = false;
 
+    //SEARCHING + LINEAR SEARCH
+    //PASS BY REFERENCE
     for (auto &paket : data) {
 
         if (paket["resi"] == resiCari &&
@@ -89,6 +100,7 @@ void UpdatePaket_User() {
 
             paketDitemukan = true;
 
+            // PERCABANGAN
             if (paket["status"] == "Dikirim") {
 
                 cout << "\nPaket tidak bisa diupdate!\n";
@@ -98,6 +110,7 @@ void UpdatePaket_User() {
                 return;
             }
 
+            // VARIABEL LOKAL
             string namaPengirimBaru;
             string namaPenerimaBaru;
             string alamatBaru;
@@ -114,10 +127,11 @@ void UpdatePaket_User() {
             cout << "Alamat Baru : ";
             getline(cin, alamatBaru);
 
-            // BERAT DULU
+            // BERAT 
             cout << "\nMasukkan berat baru (gram): ";
             cin >> beratBaru;
 
+            // ERROR HANDLING
             while (cin.fail() || beratBaru <= 0) {
 
                 cout << "Input berat tidak valid!\n";
@@ -135,11 +149,13 @@ void UpdatePaket_User() {
             cout << "3. Pecah Belah" << endl;
             cout << "4. Lainnya" << endl;
 
+            //PERULANGAN
             while (true) {
 
                 cout << "Pilih tipe barang (1-4): ";
                 cin >> opsiTipe;
 
+                //EROR HANDLING
                 if (
                     cin.fail() ||
                     opsiTipe < 1 ||
@@ -159,6 +175,7 @@ void UpdatePaket_User() {
 
             cin.ignore();
 
+            // PERCABANGAN
             if (opsiTipe == 1) {
                 tipeBaru = "Dokumen";
             }
@@ -185,6 +202,7 @@ void UpdatePaket_User() {
         }
     }
 
+    // EROR HANDLING
     if (!paketDitemukan) {
 
         cout << "\nPaket tidak ditemukan!\n";
@@ -193,6 +211,7 @@ void UpdatePaket_User() {
         return;
     }
 
+    //FILE HANDLING
     ofstream outputFile("Database/paket.json");
 
     outputFile << data.dump(4);
