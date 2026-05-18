@@ -68,6 +68,9 @@ int prioritasStatus(string status){
     else if(status == "Selesai")
         return 4;
 
+    else if(status == "Dibatalkan")
+        return 5;
+
     return 999;
 }
 

@@ -17,10 +17,25 @@ bool LoginAdmin(string namaadmin, string passwordadmin){
         cout << "Sisa kesempatan : " << 3 - login << endl;
 
         cout << "Username : ";
-        cin >> username;
+        getline(cin, username);
+
+        while(username.empty()){
+
+            cout << "Username tidak boleh kosong!\n";
+            tekanEnter();
+            break;
+        }
 
         cout << "Password : ";
-        cin >> password;
+        getline(cin, password);
+
+        while(password.empty()){
+
+            cout << "Password tidak boleh kosong!\n";
+            cout << "Password : ";
+
+            getline(cin, password);
+        }
 
         if(username == namaadmin && password == passwordadmin){
             cout << endl << "==============================" << endl;
