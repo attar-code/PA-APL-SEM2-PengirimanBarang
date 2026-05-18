@@ -23,6 +23,7 @@ void loadPaket(){
         paket[i].namaPengirim = j[i]["namaPengirim"];
         paket[i].namaPenerima = j[i]["namaPenerima"];
         paket[i].alamat = j[i]["alamat"];
+        paket[i].lokasi = j[i]["lokasi"];
         paket[i].berat = j[i]["berat"];
         paket[i].tipe = j[i]["tipe"];
         paket[i].pembayaran = j[i]["pembayaran"];
@@ -42,6 +43,7 @@ void savePaket(){
             {"namaPengirim", paket[i].namaPengirim},
             {"namaPenerima", paket[i].namaPenerima},
             {"alamat", paket[i].alamat},
+            {"lokasi", paket[i].lokasi},
             {"berat", paket[i].berat},
             {"tipe", paket[i].tipe},
             {"pembayaran", paket[i].pembayaran},

@@ -234,6 +234,28 @@ int HitungOngkir(int beratGram, int opsiLokasi = 1, int opsiTipe = 2) {
     }
 }
 
+// =========================================================================
+// FUNGSI 2: Versi String (OVERLOADED - Dipakai saat baca database JSON)
+// =========================================================================
+int HitungOngkir(int beratGram, string lokasi, string tipe) {
+    // 1. Tentukan ongkir berdasarkan teks lokasi
+    int ongkirlokasi = (lokasi == "Dalam Kota") ? 10000 : 20000;
+    
+    // 2. Hitung total biaya berdasarkan teks tipe barang
+    if (tipe == "Elektronik") {
+        return (beratGram * ongkirlokasi / 1000) + 20000;
+    } 
+    else if (tipe == "Pecah Belah") {
+        return (beratGram * ongkirlokasi / 1000) + 15000;
+    } 
+    else if (tipe == "Lainnya") {
+        return (beratGram * ongkirlokasi / 1000) + 10000;
+    } 
+    else {
+        return (beratGram * ongkirlokasi / 1000); // Dokumen
+    }
+}
+
 void HeaderTambahPaket() {
     cout << HIJAU << BOLD << "======================" << RESET << endl;
     cout << HIJAU << BOLD << "   TAMBAH PAKET BARU  " << RESET << endl;

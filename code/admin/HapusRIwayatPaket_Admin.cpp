@@ -146,7 +146,7 @@ void HapusRiwayatPaket_Admin() {
             cout << HIJAU << BOLD << "          RIWAYAT BERHASIL DIHAPUS                " << RESET << endl;
             cout << HIJAU << BOLD << "==================================================" << RESET << endl;
             cout << " Data paket dengan Resi " << CYAN << BOLD << paketTarget.resi << RESET 
-                 << " telah dihapus permanen dari riwayat.\n" << endl;
+                << " telah dihapus permanen dari riwayat.\n" << endl;
         } else {
             cout << MERAH << BOLD << "\n[EROR] Gagal menyimpan perubahan database!" << RESET << endl;
         }
