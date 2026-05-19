@@ -1,1 +1,41 @@
-[]
+[
+    {
+        "alamat": "disitu",
+        "berat": 111,
+        "lokasi": "Dalam Kota",
+        "namaPenerima": "aaa",
+        "namaPengirim": "ok",
+        "ongkir": 16110,
+        "pembayaran": "COD",
+        "pemilik": "jaki",
+        "resi": "03RJHM26",
+        "status": "Diproses",
+        "tipe": "Pecah Belah"
+    },
+    {
+        "alamat": "disitu",
+        "berat": 12222,
+        "lokasi": "Luar Kota",
+        "namaPenerima": "oke",
+        "namaPengirim": "cuki",
+        "ongkir": 264440,
+        "pembayaran": "Transfer",
+        "pemilik": "jaki",
+        "resi": "BELUM_RILIS",
+        "status": "Menunggu Validasi Admin",
+        "tipe": "Elektronik"
+    },
+    {
+        "alamat": "123",
+        "berat": 1233,
+        "lokasi": "Luar Kota",
+        "namaPenerima": "aa",
+        "namaPengirim": "jakiii",
+        "ongkir": 39660,
+        "pembayaran": "COD",
+        "pemilik": "jaki",
+        "resi": "X431C5ZT",
+        "status": "Dibatalkan",
+        "tipe": "Pecah Belah"
+    }
+]
