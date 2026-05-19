@@ -1,1 +1,15 @@
-[]
+[
+    {
+        "alamat": "jl rumbia",
+        "berat": 888,
+        "lokasi": "Dalam Kota",
+        "namaPenerima": "jaki",
+        "namaPengirim": "attar",
+        "ongkir": 28880,
+        "pembayaran": "COD",
+        "pemilik": "attar2411",
+        "resi": "UNMEQ7QW",
+        "status": "Dikirim",
+        "tipe": "Elektronik"
+    }
+]
