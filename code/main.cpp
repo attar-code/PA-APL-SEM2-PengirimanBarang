@@ -75,7 +75,7 @@ int menuNavigasi(string menu[], int jumlahMenu, string judul){
         
         int tombol = _getch(); // Ubah ke int agar aman menampung kode tombol Mac
         
-        // --- FILTER PANAH TAMBAHAN UNTUK MACBOOK & WINDOWS ---
+        // panah untuk mac dan windows
         if (tombol == 27) { // Sinyal escape key khusus di Mac/Linux
             _getch(); 
             tombol = _getch();
