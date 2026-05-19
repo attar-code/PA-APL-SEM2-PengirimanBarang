@@ -283,7 +283,9 @@ string generateResiUnik() {
 
 int prioritasStatus(string status){
     if(status == "Menunggu Validasi Admin") return 1;
-    else if(status == "Diproses" || status == "Diproses (COD)" || status == "Diproses (Lunas)") 
+    else if(status == "Diproses" ||
+            status == "Diproses (COD)" || 
+            status == "Diproses (Lunas)") 
         return 2;
     else if(status == "Dikirim")
         return 3;

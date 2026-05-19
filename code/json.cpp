@@ -33,9 +33,7 @@ void loadPaket(){
 }
 
 void savePaket(){
- 
     json j = json::array();
-
     for(int i = 0; i < jumlahPaket; i++){
 
         j.push_back({
