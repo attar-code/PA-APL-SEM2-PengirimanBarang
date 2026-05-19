@@ -131,7 +131,6 @@
 
 using json = nlohmann::json;
 using namespace std;
-int _getch(); 
 
 
 bool bisaDibatalkan(string status) {

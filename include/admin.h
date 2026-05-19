@@ -15,6 +15,7 @@ void loadPaket();
 void savePaket();
 int MenuScroll(string judul, vector<string> pilihan);
 string generateResi();
+int _getch();
 
 
 #endif

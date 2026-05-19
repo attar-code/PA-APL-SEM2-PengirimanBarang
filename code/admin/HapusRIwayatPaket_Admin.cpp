@@ -17,7 +17,6 @@
 using json = nlohmann::json;
 using namespace std;
 
-int _getch(); 
 bool bisaDihapus(string status) {
     return (
         status == "Selesai" ||

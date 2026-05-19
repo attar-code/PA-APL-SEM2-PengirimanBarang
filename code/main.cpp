@@ -15,11 +15,14 @@
 
 
 #ifdef _WIN32
-    #include <conio.h>
+    // Jika dikompilasi di Windows, langsung pakai library bawaan Windows
+    #include <conio.h> 
 #else
+    // Jika di Mac / Linux, gunakan fungsi custom buatanmu
     #include <termios.h>
     #include <unistd.h>
-    int _getch() {
+
+    inline int _getch() {
         struct termios oldt, newt;
         int ch;
         tcgetattr(STDIN_FILENO, &oldt);
