@@ -19,14 +19,10 @@ string pilihanBatal[2] = {
 //DEKLARASI FUNGSI
 void tekanEnter();
 
-//FUNCTION + DEFAULT VALUE
-void tampilPesan(
-    string pesan = "Proses selesai"
-) {
-
+// FUNCTION + DEFAULT VALUE (Nilai default sudah diatur di user.h)
+void tampilPesan(string pesan = "Proses selesai") {
     cout << pesan << endl;
 }
-
 //FUNGSI REKURSIF
 int hitungJumlahData(int n) {
 
