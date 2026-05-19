@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <string>
 #include <limits>
@@ -6,9 +5,13 @@
 #include <cctype>
 #include <ctime>
 #include <cstdlib>
-#include <vector>    // 🌟 Wajib untuk menampung daftar pilihan menu scroll
+#include <vector>   
 #include "../include/data.h"
 #include "../database/json.hpp"
+
+#ifdef _WIN32
+#include <conio.h>
+#endif
 
 #define RESET   "\033[0m"
 #define MERAH   "\033[31m"
@@ -27,36 +30,77 @@ extern string userAktif;
 // DEKLARASI FUNGSI
 string generateResi();
 bool cekResiDiJson(const string& Cari);
-long long hitungOngkir(long beratGram, int opsiLokasi, int opsiTipe);
 void tekanEnter();
 void savePaketToJson(Paket p);
 
-// FUNGSI VALIDASI
-bool ValidasiInputUser(const string& input) {
+// FUNGSI VALIDASI FIELD
+void CekValidNAMA(const string& input, const string& namaField) {
     if (input.empty()) {
-        return false;
+        // Alokasikan string statis/aman agar saat di .c_str() tidak hilang di memori
+        throw "Input tidak boleh kosong!"; 
     }
+    if (isspace(input[0]) || isspace(input.back())) {
+        throw "Input tidak boleh diawali atau diakhiri oleh spasi!";
+    }
+    if (!isalpha(input[0]) || !isalpha(input.back())) {
+        throw "Nama harus diawali dan diakhiri oleh huruf!";
+    }
+
+    bool SpasiSebelum = false;
     for (char c : input) {
-        if (!isalnum(c) && !isspace(c) && c != '.' && c != ',') {
-            return false;
+        if (!isalpha(c) && !isspace(c)) {
+            throw "Nama hanya boleh mengandung huruf dan spasi!";
+        }
+        if (isspace(c)) {
+            if (SpasiSebelum) { 
+                throw "Tidak boleh ada spasi ganda di tengah nama!";
+            }
+            SpasiSebelum = true;
+        } else {
+            SpasiSebelum = false;
         }
     }
-    return true;
+}  
+
+void CekValidAlamat(const string& input) {
+    if (input.empty()) {
+        throw "Alamat tidak boleh kosong!";
+    }
+    if (isspace(input[0]) || isspace(input.back())) {
+        throw "Alamat tidak boleh diawali atau diakhiri oleh spasi!";
+    }
+
+    bool SpasiSebelum = false;
+    for (char c : input) {
+        if (!isalnum(c) && !isspace(c) && c != '.' && c != ',' && c != '/' && c != '-') {
+            throw "Alamat mengandung karakter simbol yang tidak valid!";
+        }
+        if (isspace(c)) {
+            if (SpasiSebelum) {
+                throw "Tidak boleh ada spasi ganda di tengah alamat!";
+            }
+            SpasiSebelum = true;
+        } else {
+            SpasiSebelum = false;
+        }
+    }
 }
 
-// FUNGSI VALIDASI FIELD
-void cekValiditasInputUser(const string& input, const string& namaField) {
+void ValidAngka(const string& input, const string& namaField) {
     if (input.empty()) {
         throw (namaField + " tidak boleh kosong!").c_str();
     }
-    if (!ValidasiInputUser(input)) {
-        throw (namaField + " mengandung karakter tidak valid!").c_str();
+    if (isspace(input[0]) || isspace(input.back())) {
+        throw (namaField + " tidak boleh diawali atau diakhiri oleh spasi!").c_str();
+    }
+    for (char c : input) {
+        // Logika membatasi hanya angka 0-9 dari kodemu
+        if (c < '0' || c > '9') {
+            throw (namaField + " hanya boleh mengandung angka positif murni!").c_str();
+        }
     }
 }
 
-// =========================================================================
-// 🌟 FUNGSI NAVIGASI: menuScrollInput (Sederhana, Bersih, Tanpa Pointer)
-// =========================================================================
 int menuScrollInput(string judul, vector<string> pilihan) {
     int posisi = 0;
     int key;
@@ -105,155 +149,260 @@ int menuScrollInput(string judul, vector<string> pilihan) {
     }
 }
 
-// FUNGSI HITUNG ONGKIR
-long long hitungOngkir(long beratGram, int opsiLokasi, int opsiTipe) {
-    long long hargaPerKg = (opsiLokasi == 1) ? 10000 : 20000;
-    long long tambahanTipe = 0;
-    
+int HitungOngkirUser(int beratGram, int opsiLokasi = 1, int opsiTipe = 1) {
+    int ongkirlokasi = (opsiLokasi == 1) ? 10000 : 20000;
+    int tarifBerat = (beratGram * ongkirlokasi) / 1000;
     switch (opsiTipe) {
-        case 1: tambahanTipe = 0; break;
-        case 2: tambahanTipe = 20000; break;
-        case 3: tambahanTipe = 15000; break;
-        case 4: tambahanTipe = 10000; break;
+        case 1: // Dokumen
+            return tarifBerat + 0; 
+        case 2: // Elektronik (+Rp 20.000)
+            return tarifBerat + 20000; 
+        case 3: // Pecah Belah (+Rp 15.000)
+            return tarifBerat + 15000; 
+        case 4: // Lainnya (+Rp 10.000)
+            return tarifBerat + 10000;
+        default:
+            return tarifBerat;      
     }
-    return ((beratGram / 1000.0) * hargaPerKg) + tambahanTipe;
 }
 
-// PROSEDUR UTAMA: TambahPaket_User (VERSI UPGRADE SCROLL MENU)
-// =========================================================================
+void tampilTambahPaket() {
+    cout << CYAN << BOLD << "==================================================" << RESET << endl;
+    cout << CYAN << BOLD << "                TAMBAH PAKET USER                 " << RESET << endl;
+    cout << CYAN << BOLD << "==================================================" << RESET << endl;
+}
 void TambahPaket_User() {
-    try {
-        static bool seeded = false;
-        if (!seeded) {
-            srand(time(0));
-            seeded = true;
-        }
+    static bool seeded = false;
+    if (!seeded) {
+        srand(time(0));
+        seeded = true;
+    }
 
-        bersihkanLayar();
-        cout << CYAN << BOLD << "==================================================" << RESET << endl;
-        cout << BOLD << "                 TAMBAH PAKET BARU                " << RESET << endl;
-        cout << CYAN << BOLD << "==================================================" << RESET << "\n\n";
+    Paket paketBaru;
+    string input;
+    string beratGram;
+    int opsiLokasi;
+    int opsiTipe;
+    string resiBaru;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+    // =========================================================================
+    // 1. INPUT NAMA PENGIRIM
+    // =========================================================================
+    do {
+        // Membersihkan sisa buffer dari menu sebelumnya agar getline tidak terlewat
+        bersihkanLayar();   
+        tampilTambahPaket(); 
+        cout << HIJAU << BOLD << "Nama Pengirim: " << RESET;
+        getline(cin, input);
         
-        Paket paketBaru;
+        try {
+            CekValidNAMA(input, "Nama pengirim");
+            paketBaru.namaPengirim = input;
+            break; // Lolos validasi, keluar loop menuju input selanjutnya
+        } catch (const char* msg) {
+            cout << MERAH << BOLD << "\n [ERROR]: " << msg << RESET << endl;
+            tekanEnter();
+        }
+    } while (true);
 
-        // 1. INPUT DATA TEKS
-        cout << " Nama Pengirim : ";
-        getline(cin, paketBaru.namaPengirim);
-        cekValiditasInputUser(paketBaru.namaPengirim, "Nama pengirim");
-
-        cout << " Nama Penerima : ";
-        getline(cin, paketBaru.namaPenerima);
-        cekValiditasInputUser(paketBaru.namaPenerima, "Nama penerima");
-
-        cout << " Alamat Tujuan : ";
-        getline(cin, paketBaru.alamat);
-        cekValiditasInputUser(paketBaru.alamat, "Alamat");
-
-        // 2. INPUT LOKASI (Ubah ke Scroll)
-        vector<string> menuLokasi = {
-            "Dalam Kota (Rp 10.000 / Kg)",
-            "Luar Kota  (Rp 20.000 / Kg)"
-        };
-        int opsiLokasi = menuScrollInput("PILIH LOKASI TUJUAN PAKET:", menuLokasi);
-        paketBaru.lokasi = (opsiLokasi == 1) ? "Dalam Kota" : "Luar Kota";
-
-        // 3. INPUT BERAT
+    // =========================================================================
+    // 2. INPUT NAMA PENERIMA
+    // =========================================================================
+    do {
         bersihkanLayar();
-        cout << CYAN << BOLD << "==================================================" << RESET << endl;
-        cout << BOLD << "                 INPUT BERAT PAKET                " << RESET << endl;
-        cout << CYAN << BOLD << "==================================================" << RESET << "\n\n";
-        cout << " Masukkan berat paket (gram): ";
-        cin >> paketBaru.berat;
-
-        if (cin.fail() || paketBaru.berat <= 0) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            throw "Berat harus angka positif!";
-        }
-        if (paketBaru.berat > 50000) {
-            throw "Berat melebihi batas maksimal (50 Kg)!";
-        }
-
-        // 4. INPUT TIPE BARANG (Ubah ke Scroll)
-        vector<string> menuTipe = {
-            "Dokumen",
-            "Elektronik (+Rp 20.000)",
-            "Pecah Belah (+Rp 15.000)",
-            "Lainnya     (+Rp 10.000)"
-        };
-        int opsiTipe = menuScrollInput("PILIH KATEGORI / TIPE BARANG:", menuTipe);
+        tampilTambahPaket();
+        cout << BIRU << BOLD << "Nama Pengirim : " << RESET << paketBaru.namaPengirim << endl; 
+        cout << BIRU << BOLD << "--------------------------------------" << RESET << endl;
+        cout << HIJAU << BOLD << "Nama Penerima: " << RESET;
+        getline(cin, input);
         
-        if (opsiTipe == 1) paketBaru.tipe = "Dokumen";
-        else if (opsiTipe == 2) paketBaru.tipe = "Elektronik";
-        else if (opsiTipe == 3) paketBaru.tipe = "Pecah Belah";
-        else paketBaru.tipe = "Lainnya";
+        try {
+            CekValidNAMA(input, "Nama penerima");
+            paketBaru.namaPenerima = input;
+            break;
+        } catch (const char* msg) {
+            cout << MERAH << BOLD << "\n [ERROR]: " << msg << RESET << endl;
+            tekanEnter();
+        }
+    } while (true);
 
-        // HITUNG ONGKIR otomatis
-        paketBaru.ongkir = hitungOngkir(paketBaru.berat, opsiLokasi, opsiTipe);
-
-        // 5. PILIHAN METODE PEMBAYARAN (Ubah ke Scroll)
-        vector<string> menuBayar = {
-            "COD (Bayar di Tempat)",
-            "Transfer Bank (Perlu Validasi Admin)"
-        };
-        int metodeBayar = menuScrollInput("PILIH METODE PEMBAYARAN:", menuBayar);
-
-        paketBaru.pemilik = userAktif;
-
+    // =========================================================================
+    // 3. INPUT ALAMAT
+    // =========================================================================
+    do {
         bersihkanLayar();
-        cout << HIJAU << BOLD << "==================================================" << RESET << endl;
-        cout << HIJAU << BOLD << "               RINGKASAN TRANSAKSI                " << RESET << endl;
-        cout << HIJAU << BOLD << "==================================================" << RESET << endl;
-        cout << " Pengirim   : " << paketBaru.namaPengirim << endl;
-        cout << " Penerima   : " << paketBaru.namaPenerima << endl;
-        cout << " Tujuan     : " << paketBaru.lokasi << " (" << paketBaru.alamat << ")" << endl;
-        cout << " Tipe       : " << paketBaru.tipe << " (" << paketBaru.berat << "g)" << endl;
-        cout << " Total Tarif: " << KUNING << BOLD << "Rp " << paketBaru.ongkir << RESET << endl;
-        cout << " Pembayaran : " << BOLD << (metodeBayar == 1 ? "COD" : "Transfer") << RESET << endl;
-        cout << HIJAU << "--------------------------------------------------" << RESET << endl;
+        tampilTambahPaket();
+        cout << BIRU << BOLD << "Nama Pengirim : " << RESET << paketBaru.namaPengirim << endl;
+        cout << BIRU << BOLD << "Nama Penerima : " << RESET << paketBaru.namaPenerima << endl;
+        cout << BIRU << BOLD << "--------------------------------------" << RESET << endl;
+        cout << HIJAU << BOLD << "Alamat: " << RESET;
+        getline(cin, input);
+        
+        try {
+            CekValidAlamat(input);
+            paketBaru.alamat = input;
+            break;
+        } catch (const char* msg) {
+            cout << MERAH << BOLD << "\n [ERROR]: " << msg << RESET << endl;
+            tekanEnter();
+        }
+    } while (true);
 
-        // Eksekusi Simpan Berdasarkan Metode Pembayaran
-        if (metodeBayar == 1) { // COD
-            paketBaru.pembayaran = "COD";
-            paketBaru.status = "Diproses";
+    // =========================================================================
+    // 4. INPUT LOKASI (Menu Scroll ala Admin, return 1 / 2)
+    // =========================================================================
+    bersihkanLayar();
+    tampilTambahPaket();
+    cout << BIRU << BOLD << "Nama Pengirim : " << RESET << paketBaru.namaPengirim << endl;
+    cout << BIRU << BOLD << "Nama Penerima : " << RESET << paketBaru.namaPenerima << endl;
+    cout << BIRU << BOLD << "Alamat        : " << RESET << paketBaru.alamat << endl;
+    cout << BIRU << BOLD << "--------------------------------------" << RESET << endl;
+    
+    vector<string> listLokasi = {
+        "Dalam Kota (Rp 10.000 / Kg)",
+        "Luar Kota  (Rp 20.000 / Kg)"
+    };
+    opsiLokasi = menuScrollInput("PILIH LOKASI PENGIRIMAN", listLokasi);
+    paketBaru.lokasi = (opsiLokasi == 1) ? "Dalam Kota" : "Luar Kota";
 
-            do {
-                paketBaru.resi = generateResi();
-            } while (cekResiDiJson(paketBaru.resi));
-
-            savePaketToJson(paketBaru);
-
-            cout << HIJAU << BOLD << " Transaksi Berhasil Dibuat!" << RESET << endl;
-            cout << " Nomor Resi Anda : " << CYAN << BOLD << paketBaru.resi << RESET << endl;
+    // =========================================================================
+    // 5. INPUT BERAT (ValidAngka Gayamu + Akumulasi Tampilan)
+    // =========================================================================
+    do {
+        bersihkanLayar();
+        tampilTambahPaket();
+        cout << BIRU << BOLD << "Nama Pengirim : " << RESET << paketBaru.namaPengirim << endl;
+        cout << BIRU << BOLD << "Nama Penerima : " << RESET << paketBaru.namaPenerima << endl;
+        cout << BIRU << BOLD << "Alamat        : " << RESET << paketBaru.alamat << endl;
+        cout << BIRU << BOLD << "Lokasi        : " << RESET << paketBaru.lokasi << endl;
+        cout << BIRU << BOLD << "--------------------------------------" << RESET << endl;
+        cout << HIJAU << BOLD << "Berat (gram) [Maks 50.000g]: " << RESET;
+        getline(cin, beratGram);
+        
+        try {
+            ValidAngka(beratGram, "Berat paket");
+            int berat = stoi(beratGram); 
+            
+            if (berat > 0 && berat <= 50000) {
+                paketBaru.berat = berat; 
+                break; 
+            } else {
+                cout << MERAH << BOLD << "\n [ERROR]: Berat harus antara 1 gram sampai 50.000 gram!" << RESET << endl;
+            }
         } 
-        else { // TRANSFER
-            paketBaru.pembayaran = "Transfer";
-            paketBaru.status = "Menunggu Validasi Admin";
-            paketBaru.resi = "BELUM_RILIS";
-
-            savePaketToJson(paketBaru);
-
-            cout << KUNING << BOLD << " Transaksi Berhasil Dikirim!" << RESET << endl;
-            cout << " Status: Menunggu Validasi Pembayaran oleh Admin.\n";
+        catch (const char* msg) {
+            cout << MERAH << BOLD << "\n [ERROR]: " << msg << RESET << endl;
         }
-        
-        cout << HIJAU << "==================================================" << RESET << "\n\n";
-        cin.ignore();
+        catch (const out_of_range&) {
+            cout << MERAH << BOLD << "\n [ERROR]: Angka terlalu besar, melebihi kapasitas!" << RESET << endl;
+        }
         tekanEnter();
-    }
-    catch (const char* msg) {
-        cout << MERAH << BOLD << "\n==================================================" << RESET << endl;
-        cerr << MERAH << BOLD << " [ERROR]: " << msg << RESET << endl;
-        cout << MERAH << BOLD << "==================================================" << RESET << "\n\n";
-        cin.ignore();
-        tekanEnter();
-    }
-}
+    } while (true);
 
-// PROSEDUR SIMPAN JSON (Murni Konvensional & Simpel)
+    // =========================================================================
+    // 6. INPUT TIPE PAKET (Urutan Dokumen di Atas agar Sinkron dengan HitungOngkir)
+    // =========================================================================
+    bersihkanLayar();
+    tampilTambahPaket();
+    cout << BIRU << BOLD << "Nama Pengirim : " << RESET << paketBaru.namaPengirim << endl;
+    cout << BIRU << BOLD << "Nama Penerima : " << RESET << paketBaru.namaPenerima << endl;
+    cout << BIRU << BOLD << "Alamat        : " << RESET << paketBaru.alamat << endl;
+    cout << BIRU << BOLD << "Lokasi        : " << RESET << paketBaru.lokasi << endl;
+    cout << BIRU << BOLD << "Berat         : " << RESET << paketBaru.berat << " gram" << endl;
+    cout << BIRU << BOLD << "--------------------------------------" << RESET << endl;
+
+    vector<string> listTipe = {
+        "Dokumen     (+Rp 0)",
+        "Elektronik (+Rp 20.000)", 
+        "Pecah Belah (+Rp 15.000)", 
+        "Lainnya     (+Rp 10.000)"
+    };
+
+    opsiTipe = menuScrollInput("PILIH TIPE PAKET", listTipe);
+
+    if (opsiTipe == 1) paketBaru.tipe = "Dokumen";
+    else if (opsiTipe == 2) paketBaru.tipe = "Elektronik";
+    else if (opsiTipe == 3) paketBaru.tipe = "Pecah Belah";
+    else paketBaru.tipe = "Lainnya";
+
+    // Hitung tarif otomatis menggunakan fungsi HitungOngkir User
+    paketBaru.ongkir = HitungOngkirUser(paketBaru.berat, opsiLokasi, opsiTipe);
+
+    // =========================================================================
+    // 7. INPUT METODE PEMBAYARAN (Opsi Khusus Menu User)
+    // =========================================================================
+    bersihkanLayar();
+    tampilTambahPaket();
+    cout << BIRU << BOLD << "Nama Pengirim  : " << RESET << paketBaru.namaPengirim << endl;
+    cout << BIRU << BOLD << "Nama Penerima  : " << RESET << paketBaru.namaPenerima << endl;
+    cout << BIRU << BOLD << "Alamat         : " << RESET << paketBaru.alamat << endl;
+    cout << BIRU << BOLD << "Lokasi         : " << RESET << paketBaru.lokasi << endl;
+    cout << BIRU << BOLD << "Berat          : " << RESET << paketBaru.berat << " gram" << endl;  
+    cout << BIRU << BOLD << "Tipe Paket     : " << RESET << paketBaru.tipe << endl;
+    cout << BIRU << BOLD << "------------------------------" << RESET << endl;
+    cout << BIRU << BOLD << "Total Ongkir         : Rp" << RESET << paketBaru.ongkir << endl;
+    cout << BIRU << BOLD << "=============================" << RESET << endl;
+    
+    vector<string> listBayar = {
+        "COD (Bayar di Tempat)",
+        "Transfer Bank (Perlu Validasi Admin)"
+    };
+    int opsiBayar = menuScrollInput("METODE PEMBAYARAN", listBayar);
+
+    // ⭐ LOGIKA INTINYA: Mengikat paket ke akun user yang sedang aktif login
+    paketBaru.pemilik = userAktif; 
+
+    // =========================================================================
+    // 8. GENERATE RESI & LOGIKA KONDISI STATUS DATA
+    // =========================================================================
+    if (opsiBayar == 1) { 
+        paketBaru.pembayaran = "COD";
+        paketBaru.status = "Diproses";
+
+        // Generate resi unik jika memilih COD
+        do {
+            resiBaru = generateResi();
+        } while (cekResiDiJson(resiBaru)); 
+        paketBaru.resi = resiBaru;
+    } 
+    else { 
+        paketBaru.pembayaran = "Transfer";
+        paketBaru.status = "Menunggu Validasi Admin";
+        paketBaru.resi = "BELUM_RILIS"; // Resi dikunci sampai di-acc Admin
+    }
+
+    // Simpan data paket baru ke database json
+    savePaketToJson(paketBaru);
+
+    // =========================================================================
+    // 9. TAMPILAN STRUK RINGKASAN SUKSES
+    // =========================================================================
+    bersihkanLayar();
+    cout << HIJAU << BOLD << "==========================================" << RESET << endl;
+    cout << HIJAU << BOLD << "         PAKET BERHASIL DISIMPAN          " << RESET << endl;
+    cout << HIJAU << BOLD << "==========================================" << RESET << endl;
+    cout << CYAN << " [1] " << BOLD << "No. Resi       : " << RESET << BOLD << paketBaru.resi << RESET << endl;
+    cout << CYAN << " [2] " << BOLD << "Pengirim       : " << RESET << paketBaru.namaPengirim << endl;
+    cout << CYAN << " [3] " << BOLD << "Penerima       : " << RESET << paketBaru.namaPenerima << endl;
+    cout << CYAN << " [4] " << BOLD << "Alamat         : " << RESET << paketBaru.alamat << endl;
+    cout << CYAN << " [5] " << BOLD << "Lokasi         : " << RESET << paketBaru.lokasi << endl;
+    cout << CYAN << " [6] " << BOLD << "Berat Paket    : " << RESET << paketBaru.berat << " gram" << endl;  
+    cout << CYAN << " [7] " << BOLD << "Tipe Barang    : " << RESET << paketBaru.tipe << endl;
+    cout << CYAN << " [8] " << BOLD << "Metode Bayar   : " << RESET << paketBaru.pembayaran << endl;
+    cout << CYAN << " [9] " << BOLD << "Status Paket   : " << RESET << HIJAU << paketBaru.status << RESET << endl;
+    cout << HIJAU << BOLD << " ==========================================" << RESET << endl;
+    cout << HIJAU << BOLD << "  TOTAL ONGKIR   : Rp " << paketBaru.ongkir << RESET << endl;
+    cout << HIJAU << BOLD << " ==========================================" << endl;
+    cout << "  " << HIJAU << BOLD << "Data telah tercatat atas pemilik: " << RESET << KUNING << BOLD << paketBaru.pemilik << RESET << endl;
+    cout << endl;
+    tekanEnter();
+}
+// =========================================================================
+// ⭐ FUNGSI SIMPAN KE JSON (Sudah Benar Seperti Posisimu)
+// =========================================================================
 void savePaketToJson(Paket p) {
     ifstream inputFile("database/paket.json");
-    json data = json::array();
+    json data = json::array(); 
 
     if (inputFile.is_open()) {
         if (inputFile.peek() != ifstream::traits_type::eof()) {
@@ -262,22 +411,25 @@ void savePaketToJson(Paket p) {
         inputFile.close();
     }
 
-    json paketBaru = {
-        {"resi", p.resi},
-        {"namaPengirim", p.namaPengirim},
-        {"namaPenerima", p.namaPenerima},
-        {"alamat", p.alamat},
-        {"lokasi", p.lokasi},
-        {"berat", p.berat},
-        {"tipe", p.tipe},
-        {"status", p.status},
-        {"pemilik", p.pemilik},
-        {"ongkir", p.ongkir},
-        {"pembayaran", p.pembayaran}
-    };
+    json paketBaruJson;
+    paketBaruJson["resi"] = p.resi;
+    paketBaruJson["namaPengirim"] = p.namaPengirim;
+    paketBaruJson["namaPenerima"] = p.namaPenerima;
+    paketBaruJson["alamat"] = p.alamat;
+    paketBaruJson["lokasi"] = p.lokasi;
+    paketBaruJson["berat"] = p.berat;
+    paketBaruJson["tipe"] = p.tipe;
+    paketBaruJson["ongkir"] = p.ongkir;
+    paketBaruJson["pembayaran"] = p.pembayaran;
+    paketBaruJson["status"] = p.status;
+    paketBaruJson["pemilik"] = p.pemilik;
 
-    data.push_back(paketBaru);
+    data.push_back(paketBaruJson);
+
     ofstream outputFile("database/paket.json");
-    outputFile << data.dump(4);
-    outputFile.close();
+    if (outputFile.is_open()) {
+        outputFile << data.dump(4);
+        outputFile.close();
+    }
 }
+
