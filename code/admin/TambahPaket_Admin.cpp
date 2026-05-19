@@ -110,7 +110,6 @@ bool ValidAngka(const string& input) {
     }
     return true;
 }
-extern int _getch();
 int MenuScroll(string judul, vector<string> pilihan) {
     int posisi = 0;
     int key;
@@ -132,7 +131,6 @@ int MenuScroll(string judul, vector<string> pilihan) {
         cout << "Gunakan Panah & Enter" << endl;
         key = _getch();
         if (key == 27) { 
-            _getch(); 
             key = _getch();
             if (key == 65) key = 72;     
             else if (key == 66) key = 80; 

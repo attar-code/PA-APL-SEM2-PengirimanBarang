@@ -253,7 +253,6 @@
 using json = nlohmann::json;
 using namespace std;
 
-int _getch(); 
 bool paketdiproses(string status) {
     return (status == "Diproses" || 
             status == "Diproses (COD)" ||

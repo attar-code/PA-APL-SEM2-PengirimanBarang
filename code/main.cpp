@@ -14,28 +14,6 @@
 #define BOLD "\033[1m"
 
 
-#ifdef _WIN32
-    // Jika dikompilasi di Windows, langsung pakai library bawaan Windows
-    #include <conio.h> 
-#else
-    // Jika di Mac / Linux, gunakan fungsi custom buatanmu
-    #include <termios.h>
-    #include <unistd.h>
-
-    inline int _getch() {
-        struct termios oldt, newt;
-        int ch;
-        tcgetattr(STDIN_FILENO, &oldt);
-        newt = oldt;
-        newt.c_lflag &= ~(ICANON | ECHO);
-        tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-        ch = getchar();
-        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-        return ch;
-    }
-#endif
-
-
 using namespace std;
 int JumlahUser = 0;
 User user[100];

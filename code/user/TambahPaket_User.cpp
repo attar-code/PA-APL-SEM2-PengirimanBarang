@@ -22,9 +22,6 @@
 using json = nlohmann::json;
 using namespace std;
 
-// _getch() didefinisikan di file utama kamu (main.cpp)
-int _getch(); 
-
 // VARIABEL GLOBAL
 extern string userAktif;
 
