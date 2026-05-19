@@ -40,10 +40,7 @@ void MenuUser() {
     }while(true);
 }
 
-
-
 void MenuUtamaUser() {
-
     string menu[] = {
         "Tambah Paket",
         "Lihat Riwayat Paket",
