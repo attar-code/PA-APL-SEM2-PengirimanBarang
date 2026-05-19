@@ -264,9 +264,6 @@ void UpdatePaket_User() {
     int opsiLokasi = 1; 
     int opsiTipe = 1;   
 
-    // =========================================================================
-    // TAHAP 1: INPUT NAMA PENGIRIM
-    // =========================================================================
     while (true) {
         bersihkanLayar();
         cout << KUNING << BOLD << "============= FORM PERUBAHAN DATA PAKET =============" << RESET << endl;
@@ -290,9 +287,6 @@ void UpdatePaket_User() {
         }
     }
 
-    // =========================================================================
-    // TAHAP 2: INPUT NAMA PENERIMA
-    // =========================================================================
     while (true) {
         bersihkanLayar();
         cout << KUNING << BOLD << "============= FORM PERUBAHAN DATA PAKET =============" << RESET << endl;
@@ -317,9 +311,6 @@ void UpdatePaket_User() {
         }
     }
 
-    // =========================================================================
-    // TAHAP 3: INPUT ALAMAT
-    // =========================================================================
     while (true) {
         bersihkanLayar();
         cout << KUNING << BOLD << "============= FORM PERUBAHAN DATA PAKET =============" << RESET << endl;
@@ -345,9 +336,6 @@ void UpdatePaket_User() {
         }
     }
 
-    // =========================================================================
-    // TAHAP 4: INPUT BERAT
-    // =========================================================================
     while (true) {
         bersihkanLayar();
         cout << KUNING << BOLD << "============= FORM PERUBAHAN DATA PAKET =============" << RESET << endl;
@@ -378,9 +366,6 @@ void UpdatePaket_User() {
         }
     }
 
-    // =========================================================================
-    // TAHAP 5: SCROLL LOKASI
-    // =========================================================================
     vector<string> listLokasi = {
         "Dalam Kota  (Tarif Normal)",
         "Luar Kota   (Tarif Luar)"
@@ -392,9 +377,6 @@ void UpdatePaket_User() {
     if (opsiLokasi == 1) lokasiBaru = "Dalam Kota";
     else lokasiBaru = "Luar Kota";
 
-    // =========================================================================
-    // TAHAP 6: SCROLL TIPE
-    // =========================================================================
     vector<string> listTipe = {
         "Dokumen     (+Rp 0)",
         "Elektronik (+Rp 20.000)", 
@@ -412,9 +394,6 @@ void UpdatePaket_User() {
     else if (opsiTipe == 3) tipeBaru = "Pecah Belah";
     else tipeBaru = "Lainnya";
 
-    // =========================================================================
-    // TAHAP 7: HITUNG ONGKIR BARU & SAVE DATA
-    // =========================================================================
     long long ongkirBaru = HitungOngkirUser(beratBaru, opsiLokasi, opsiTipe);
 
     paketTarget["namaPengirim"] = namaPengirimBaru;
@@ -429,9 +408,6 @@ void UpdatePaket_User() {
     outputFile << data.dump(4);
     outputFile.close();
 
-    // =========================================================================
-    // TAHAP FINAL: NOTA STRUK REKAP (VERSI BERSIH, PUTIH, & RAPI)
-    // =========================================================================
     bersihkanLayar();
     cout << KUNING << BOLD << "=====================================================" << RESET << endl;
     cout << HIJAU << BOLD  << "       [SUKSES] DATA PAKET BERHASIL DIUPDATE!        " << RESET << endl;
