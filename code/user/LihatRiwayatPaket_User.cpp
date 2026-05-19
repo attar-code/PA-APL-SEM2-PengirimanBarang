@@ -15,31 +15,23 @@
 using json = nlohmann::json;
 using namespace std;
 
-// VARIABEL GLOBAL
 extern string userAktif;
 
-// DEKLARASI FUNGSI
 void tekanEnter();
 
-// PROSEDUR LIHAT RIWAYAT PAKET USER (REVISI FIX GARIS & WARNA KONSISTEN)
-// =========================================================================
 void LihatRiwayatPaket_User() {
     bersihkanLayar(); 
 
-    // FILE HANDLING
     ifstream inputFile("database/paket.json");
     json data;
 
-    // Lebar tabel disesuaikan secara presisi agar menutup teks status yang panjang
     int lebarTabel = 150;
 
-    // 1. HEADER ATAS (Semua garis diseragamkan menjadi warna CYAN BOLD)
     cout << CYAN << BOLD << setfill('=') << setw(lebarTabel) << "" << "\n" << setfill(' ');
     cout << "                                                 RIWAYAT PENGIRIMAN PAKET                                                 \n";
     cout << "                                          (Urutan: Diproses -> Dikirim -> Selesai)                                        \n";
     cout << setfill('=') << setw(lebarTabel) << "" << "\n" << RESET << setfill(' ');
 
-    // VALIDASI: Jika file tidak ada atau kosong
     if (!inputFile.is_open() || inputFile.peek() == ifstream::traits_type::eof()) {
         cout << "                                      " << KUNING << "Belum ada riwayat paket terdaftar." << RESET << "\n";
         cout << CYAN << BOLD << setfill('=') << setw(lebarTabel) << "" << "\n" << RESET << setfill(' ');
@@ -51,7 +43,6 @@ void LihatRiwayatPaket_User() {
     inputFile >> data;
     inputFile.close();
 
-    // 2. HEADER KOLOM TABEL (Sesuai dengan ketukan lebar di layar kodemu)
     cout << BOLD << left 
          << setw(12) << "Resi" 
          << setw(16) << "Pengirim" 
@@ -63,12 +54,10 @@ void LihatRiwayatPaket_User() {
          << setw(12) << "Ongkir" 
          << "Status\n" << RESET;
          
-    // Garis tengah diubah menjadi CYAN BOLD agar senada dengan atas bawah
     cout << CYAN << BOLD << setfill('-') << setw(lebarTabel) << "" << "\n" << setfill(' ') << RESET;
 
     bool ditemukan = false;
 
-    // 3. LOOPING AMBIL DATA
     for (auto& item : data) {
         string pemilik = item.value("pemilik", "-");
 
@@ -85,14 +74,12 @@ void LihatRiwayatPaket_User() {
             long long ongkir    = item.value("ongkir", 0LL);   
             string status       = item.value("status", "-");
 
-            // Pewarnaan dinamis untuk teks status paket
             string warnaStatus = RESET;
             if (status == "Diproses") warnaStatus = KUNING;
             else if (status == "Dikirim") warnaStatus = BIRU;
             else if (status == "Selesai") warnaStatus = HIJAU;
             else if (status == "Dibatalkan" || status == "Menunggu Validasi Admin") warnaStatus = MERAH;
 
-            // Cetak Baris Data
             cout << left 
                  << setw(12) << resi
                  << setw(16) << namaPengirim

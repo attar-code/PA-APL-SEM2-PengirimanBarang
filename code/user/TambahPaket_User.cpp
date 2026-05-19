@@ -24,19 +24,15 @@
 using json = nlohmann::json;
 using namespace std;
 
-// VARIABEL GLOBAL
 extern string userAktif;
 
-// DEKLARASI FUNGSI
 string generateResi();
 bool cekResiDiJson(const string& Cari);
 void tekanEnter();
 void savePaketToJson(Paket p);
 
-// FUNGSI VALIDASI FIELD
 void CekValidNAMA(const string& input, const string& namaField) {
     if (input.empty()) {
-        // Alokasikan string statis/aman agar saat di .c_str() tidak hilang di memori
         throw "Input tidak boleh kosong!"; 
     }
     if (isspace(input[0]) || isspace(input.back())) {
@@ -106,7 +102,7 @@ int menuScrollInput(string judul, vector<string> pilihan) {
     int key;
     
     while (true) {
-        bersihkanLayar(); // Bersihkan layar agar tidak bertelur teksnya
+        bersihkanLayar();
         
         cout << CYAN << BOLD << "==================================================" << RESET << endl;
         cout << BOLD << "   " << judul << RESET << endl;
@@ -123,8 +119,6 @@ int menuScrollInput(string judul, vector<string> pilihan) {
         cout << "Gunakan Panah Atas/Bawah & Enter" << endl;
 
         key = _getch();
-
-        // Antisipasi tombol panah di Mac / Linux / Windows
         if (key == 27) { 
             _getch(); 
             key = _getch();
@@ -153,13 +147,13 @@ int HitungOngkirUser(int beratGram, int opsiLokasi = 1, int opsiTipe = 1) {
     int ongkirlokasi = (opsiLokasi == 1) ? 10000 : 20000;
     int tarifBerat = (beratGram * ongkirlokasi) / 1000;
     switch (opsiTipe) {
-        case 1: // Dokumen
+        case 1:
             return tarifBerat + 0; 
-        case 2: // Elektronik (+Rp 20.000)
+        case 2:
             return tarifBerat + 20000; 
-        case 3: // Pecah Belah (+Rp 15.000)
+        case 3:
             return tarifBerat + 15000; 
-        case 4: // Lainnya (+Rp 10.000)
+        case 4:
             return tarifBerat + 10000;
         default:
             return tarifBerat;      
@@ -185,11 +179,7 @@ void TambahPaket_User() {
     int opsiTipe;
     string resiBaru;
     cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
-    // =========================================================================
-    // 1. INPUT NAMA PENGIRIM
-    // =========================================================================
     do {
-        // Membersihkan sisa buffer dari menu sebelumnya agar getline tidak terlewat
         bersihkanLayar();   
         tampilTambahPaket(); 
         cout << HIJAU << BOLD << "Nama Pengirim: " << RESET;
@@ -198,16 +188,13 @@ void TambahPaket_User() {
         try {
             CekValidNAMA(input, "Nama pengirim");
             paketBaru.namaPengirim = input;
-            break; // Lolos validasi, keluar loop menuju input selanjutnya
+            break;
         } catch (const char* msg) {
             cout << MERAH << BOLD << "\n [ERROR]: " << msg << RESET << endl;
             tekanEnter();
         }
     } while (true);
 
-    // =========================================================================
-    // 2. INPUT NAMA PENERIMA
-    // =========================================================================
     do {
         bersihkanLayar();
         tampilTambahPaket();
@@ -226,9 +213,6 @@ void TambahPaket_User() {
         }
     } while (true);
 
-    // =========================================================================
-    // 3. INPUT ALAMAT
-    // =========================================================================
     do {
         bersihkanLayar();
         tampilTambahPaket();
@@ -248,9 +232,6 @@ void TambahPaket_User() {
         }
     } while (true);
 
-    // =========================================================================
-    // 4. INPUT LOKASI (Menu Scroll ala Admin, return 1 / 2)
-    // =========================================================================
     bersihkanLayar();
     tampilTambahPaket();
     cout << BIRU << BOLD << "Nama Pengirim : " << RESET << paketBaru.namaPengirim << endl;
@@ -265,9 +246,6 @@ void TambahPaket_User() {
     opsiLokasi = menuScrollInput("PILIH LOKASI PENGIRIMAN", listLokasi);
     paketBaru.lokasi = (opsiLokasi == 1) ? "Dalam Kota" : "Luar Kota";
 
-    // =========================================================================
-    // 5. INPUT BERAT (ValidAngka Gayamu + Akumulasi Tampilan)
-    // =========================================================================
     do {
         bersihkanLayar();
         tampilTambahPaket();
@@ -299,9 +277,6 @@ void TambahPaket_User() {
         tekanEnter();
     } while (true);
 
-    // =========================================================================
-    // 6. INPUT TIPE PAKET (Urutan Dokumen di Atas agar Sinkron dengan HitungOngkir)
-    // =========================================================================
     bersihkanLayar();
     tampilTambahPaket();
     cout << BIRU << BOLD << "Nama Pengirim : " << RESET << paketBaru.namaPengirim << endl;
@@ -325,12 +300,8 @@ void TambahPaket_User() {
     else if (opsiTipe == 3) paketBaru.tipe = "Pecah Belah";
     else paketBaru.tipe = "Lainnya";
 
-    // Hitung tarif otomatis menggunakan fungsi HitungOngkir User
     paketBaru.ongkir = HitungOngkirUser(paketBaru.berat, opsiLokasi, opsiTipe);
 
-    // =========================================================================
-    // 7. INPUT METODE PEMBAYARAN (Opsi Khusus Menu User)
-    // =========================================================================
     bersihkanLayar();
     tampilTambahPaket();
     cout << BIRU << BOLD << "Nama Pengirim  : " << RESET << paketBaru.namaPengirim << endl;
@@ -349,17 +320,12 @@ void TambahPaket_User() {
     };
     int opsiBayar = menuScrollInput("METODE PEMBAYARAN", listBayar);
 
-    // ⭐ LOGIKA INTINYA: Mengikat paket ke akun user yang sedang aktif login
     paketBaru.pemilik = userAktif; 
 
-    // =========================================================================
-    // 8. GENERATE RESI & LOGIKA KONDISI STATUS DATA
-    // =========================================================================
     if (opsiBayar == 1) { 
         paketBaru.pembayaran = "COD";
         paketBaru.status = "Diproses";
 
-        // Generate resi unik jika memilih COD
         do {
             resiBaru = generateResi();
         } while (cekResiDiJson(resiBaru)); 
@@ -368,15 +334,11 @@ void TambahPaket_User() {
     else { 
         paketBaru.pembayaran = "Transfer";
         paketBaru.status = "Menunggu Validasi Admin";
-        paketBaru.resi = "BELUM_RILIS"; // Resi dikunci sampai di-acc Admin
+        paketBaru.resi = "BELUM_RILIS";
     }
 
-    // Simpan data paket baru ke database json
     savePaketToJson(paketBaru);
 
-    // =========================================================================
-    // 9. TAMPILAN STRUK RINGKASAN SUKSES
-    // =========================================================================
     bersihkanLayar();
     cout << HIJAU << BOLD << "==========================================" << RESET << endl;
     cout << HIJAU << BOLD << "         PAKET BERHASIL DISIMPAN          " << RESET << endl;
@@ -397,9 +359,7 @@ void TambahPaket_User() {
     cout << endl;
     tekanEnter();
 }
-// =========================================================================
-// ⭐ FUNGSI SIMPAN KE JSON (Sudah Benar Seperti Posisimu)
-// =========================================================================
+
 void savePaketToJson(Paket p) {
     ifstream inputFile("database/paket.json");
     json data = json::array(); 

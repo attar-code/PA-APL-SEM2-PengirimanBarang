@@ -19,13 +19,10 @@
 using json = nlohmann::json;
 using namespace std;
 
-// VARIABEL GLOBAL EXTERNAL
 extern string userAktif;
 
-// DEKLARASI FUNGSI BANTUAN
 void tekanEnter();
 
-// FUNGSI REKURSIF
 int hitungData(int n) {
     if (n == 0) {
         return 0;
@@ -33,19 +30,14 @@ int hitungData(int n) {
     return 1 + hitungData(n - 1);
 }
 
-// POINTER SEBAGAI PARAMETER
 void tampilJumlah(int *jumlah) {
     cout << CYAN << "Jumlah data paket di database : " << BOLD << *jumlah << RESET << endl;
 }
 
-// POINTER PADA STRUCT
 void tampilResi(Paket *p) {
     cout << "Contoh akses pointer struct   : " << p->resi << endl;
 }
 
-// =========================================================================
-// FUNGSI SCROLL PILIHAN KONFIRMASI (VERSI LIST VERTIKAL)
-// =========================================================================
 int menuScrollKonfirmasiHapus(string judul, vector<string> pilihan) {
     int posisi = 0;
     while (true) {
@@ -84,9 +76,6 @@ int menuScrollKonfirmasiHapus(string judul, vector<string> pilihan) {
     }
 }
 
-// =========================================================================
-// FUNGSI TAMPILAN INTERAKTIF MENU SCROLL TABEL UTAMA (HAPUS RIWAYAT)
-// =========================================================================
 int menuScrollTabelHapus(string judul, const vector<int>& indeksPaketUser, const json& dataJson) {
     int posisi = 0;
     size_t totalPilihan = indeksPaketUser.size() + 1; 
@@ -159,14 +148,10 @@ int menuScrollTabelHapus(string judul, const vector<int>& indeksPaketUser, const
     }
 }
 
-// =========================================================================
-// PROSEDUR UTAMA
-// =========================================================================
 void HapusRiwayatPaket_User() {
     bersihkanLayar();
     json data;
 
-    // EXCEPTION HANDLING
     try {
         // FILE HANDLING
         ifstream inputFile("database/paket.json");
@@ -188,7 +173,6 @@ void HapusRiwayatPaket_User() {
         return;
     }
 
-    // FILTER STRATEGIS: Hanya tampilkan paket milik user aktif yang sudah "Selesai" atau "Dibatalkan"
     vector<int> indeksPaketUser;
     for (size_t i = 0; i < data.size(); i++) {
         string status = data[i].value("status", "-");
@@ -204,10 +188,8 @@ void HapusRiwayatPaket_User() {
         return;
     }
 
-    // Panggil menu tabel scroll interaktif langsung
     int pilihanTabel = menuScrollTabelHapus("PILIH DATA RIWAYAT PAKET YANG INGIN DIHAPUS PERMANEN:", indeksPaketUser, data);
 
-    // Opsi Kembali ke Menu Utama
     if (pilihanTabel == (int)indeksPaketUser.size() + 1) {
         bersihkanLayar();
         cout << MERAH << BOLD << "PROSES PENGHAPUSAN RIWAYAT PAKET DIBATALKAN." << RESET << endl;
@@ -218,7 +200,6 @@ void HapusRiwayatPaket_User() {
     int targetIndeks = indeksPaketUser[pilihanTabel - 1];
     auto &paketTarget = data[targetIndeks];
 
-    // DETAIL DATA TARGET SEBELUM DIHAPUS (PUTIH & LURUS PRESISI PAKAI LEFT)
     bersihkanLayar();
     cout << KUNING << BOLD << "================ DETAIL RIWAYAT PAKET YANG AKAN DIHAPUS ================" << RESET << endl;
     cout << left << setw(18) << " Nomor Resi"     << " : " << BOLD << paketTarget["resi"] << RESET << "\n";
@@ -231,15 +212,12 @@ void HapusRiwayatPaket_User() {
     cout << KUNING << "========================================================================" << RESET << endl;
     tekanEnter();
 
-    // PANGGIL MENU SCROLL PILIHAN YA / TIDAK
     vector<string> opsiHapus = {"Ya, Hapus Permanen Riwayat Ini", "Tidak, Kembali"};
     int konfirmasi = menuScrollKonfirmasiHapus("Apakah Anda yakin ingin menghapus data ini dari riwayat secara permanen?", opsiHapus);
 
     if (konfirmasi == 1) {
-        // Hapus data dari struktur json secara berurutan sesuai index asli di data
         data.erase(data.begin() + targetIndeks);
 
-        // FILE HANDLING - SIMPAN PERUBAHAN KE FILE JSON
         ofstream outputFile("database/paket.json");
         outputFile << data.dump(4);
         outputFile.close();
@@ -255,7 +233,6 @@ void HapusRiwayatPaket_User() {
         cout << KUNING << "\nPenghapusan riwayat paket dibatalkan oleh pengguna." << RESET << endl;
     }
 
-    // BLOCK MATERI KULIAH POINTER & REKURSIF
     cout << "\n--------------------------------------------------------\n";
     int jumlahData = data.size();
     tampilJumlah(&jumlahData);

@@ -1,7 +1,33 @@
 [
     {
-        "alamat": "disitu",
-        "berat": 111,
+        "alamat": "jl perjuangan 7 no 101, samarinda utara, kalimantan timur",
+        "berat": 1000,
+        "lokasi": "Dalam Kota",
+        "namaPenerima": "attar",
+        "namaPengirim": "ghina",
+        "ongkir": 20000,
+        "pembayaran": "COD (Bayar di Tujuan)",
+        "pemilik": "Admin",
+        "resi": "MNOJVHP9",
+        "status": "Dikirim",
+        "tipe": "Lainnya"
+    },
+    {
+        "alamat": "jl perjuangan 7 no 101, samarinda utara, kalimantan timur",
+        "berat": 1,
+        "lokasi": "Dalam Kota",
+        "namaPenerima": "attar",
+        "namaPengirim": "ghina",
+        "ongkir": 20010,
+        "pembayaran": "Bayar di Tempat",
+        "pemilik": "Admin",
+        "resi": "ICEXCVXO",
+        "status": "Diproses",
+        "tipe": "Elektronik"
+    },
+    {
+        "alamat": "lambung",
+        "berat": 560,
         "lokasi": "Dalam Kota",
         "namaPenerima": "aaa",
         "namaPengirim": "ok",

@@ -18,36 +18,29 @@
 using json = nlohmann::json;
 using namespace std;
 
-// VARIABEL GLOBAL EXTERNAL
 extern string userAktif;
 
-// DEKLARASI FUNGSI BANTUAN
 void tekanEnter();
 
-// FUNCTION + DEFAULT VALUE
 void tampilPesan(string pesan = "Proses selesai") {
     cout << HIJAU << BOLD << "\n[INFO] " << pesan << RESET << endl;
 }
 
-// FUNGSI REKURSIF 
 int hitungJumlahData(int n) {
     if (n == 0) return 0;
     return 1 + hitungJumlahData(n - 1);
 }
 
-// POINTER SEBAGAI PARAMETER
+// pointer sebagai parameter
 void tampilJumlahData(int *jumlah) {
     cout << CYAN << "Jumlah data paket di database : " << BOLD << *jumlah << RESET << endl;
 }
 
-// POINTER PADA STRUCT
+// pointer di struct
 void tampilContohStruct(Paket *p) {
     cout << "Contoh akses pointer struct   : " << p->resi << endl;
 }
 
-// =========================================================================
-// FUNGSI SCROLL PILIHAN KONFIRMASI (VERSI LIST VERTIKAL)
-// =========================================================================
 int menuScrollKonfirmasi(string judul, vector<string> pilihan) {
     int posisi = 0;
     while (true) {
@@ -86,9 +79,6 @@ int menuScrollKonfirmasi(string judul, vector<string> pilihan) {
     }
 }
 
-// =========================================================================
-// FUNGSI TAMPILAN INTERAKTIF MENU SCROLL TABEL UTAMA (PEMBATALAN)
-// =========================================================================
 int menuScrollTabelBatal(string judul, const vector<int>& indeksPaketUser, const json& dataJson) {
     int posisi = 0;
     size_t totalPilihan = indeksPaketUser.size() + 1; 
@@ -161,9 +151,7 @@ int menuScrollTabelBatal(string judul, const vector<int>& indeksPaketUser, const
     }
 }
 
-// =========================================================================
-// PROSEDUR UTAMA
-// =========================================================================
+// prosedur
 void BatalkanPaket_User() {
     bersihkanLayar();
     json data;
@@ -189,7 +177,6 @@ void BatalkanPaket_User() {
         return;
     }
 
-    // FILTER STRATEGIS: Hanya menampilkan paket milik user aktif yang statusnya "Diproses" atau "Menunggu Validasi"
     vector<int> indeksPaketUser;
     for (size_t i = 0; i < data.size(); i++) {
         string status = data[i].value("status", "-");
@@ -198,7 +185,6 @@ void BatalkanPaket_User() {
         }
     }
 
-    // Jika setelah di-filter ternyata kosong murni
     if (indeksPaketUser.empty()) {
         cout << KUNING << BOLD << "================ BATALKAN PAKET ================\n" << RESET;
         cout << MERAH << BOLD << "\nTidak ditemukan paket dengan status 'Diproses' atau 'Menunggu Validasi' yang bisa dibatalkan.\n" << RESET;
@@ -206,10 +192,8 @@ void BatalkanPaket_User() {
         return;
     }
 
-    // Panggil menu tabel scroll interaktif langsung
     int pilihanTabel = menuScrollTabelBatal("PILIH DATA PAKET YANG INGIN ANDA BATALKAN:", indeksPaketUser, data);
 
-    // Opsi Kembali ke Menu Utama
     if (pilihanTabel == (int)indeksPaketUser.size() + 1) {
         bersihkanLayar();
         cout << MERAH << BOLD << "PROSES PEMBATALAN PAKET DIBATALKAN." << RESET << endl;
@@ -220,7 +204,6 @@ void BatalkanPaket_User() {
     int targetIndeks = indeksPaketUser[pilihanTabel - 1];
     auto &paketTarget = data[targetIndeks];
 
-    // DETAIL DATA TARGET (PUTIH & LURUS PRESISI PAKAI LEFT)
     bersihkanLayar();
     cout << KUNING << BOLD << "================ DETAIL PAKET YANG AKAN DIBATALKAN ================" << RESET << endl;
     cout << left << setw(18) << " Nomor Resi"     << " : " << BOLD << paketTarget["resi"] << RESET << "\n";
@@ -233,15 +216,11 @@ void BatalkanPaket_User() {
     cout << KUNING << "===================================================================" << RESET << endl;
     tekanEnter();
 
-    // PANGGIL MENU SCROLL PILIHAN YA / TIDAK
     vector<string> opsiBatal = {"Ya, Batalkan Paket Ini", "Tidak, Kembali"};
     int konfirmasi = menuScrollKonfirmasi("Apakah Anda benar-benar yakin ingin membatalkan paket ini?", opsiBatal);
 
     if (konfirmasi == 1) {
-        // Update status paket menjadi Dibatalkan
         paketTarget["status"] = "Dibatalkan";
-
-        // SIMPAN PERUBAHAN KE FILE JSON
         ofstream outputFile("database/paket.json");
         outputFile << data.dump(4);
         outputFile.close();
@@ -257,8 +236,7 @@ void BatalkanPaket_User() {
     else {
         cout << KUNING << "\nPembatalan paket dianulir oleh pengguna." << RESET << endl;
     }
-
-    // BLOCK MATERI KULIAH POINTER & REKURSIF (Tetap Aman Terjaga)
+    
     cout << "\n-------------------------------------------------------\n";
     int jumlahData = data.size();
     tampilJumlahData(&jumlahData);
