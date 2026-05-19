@@ -1,46 +1,28 @@
 #include <iostream>
 #include <string>
-#include <limits>
 #include <fstream>
 #include <cctype>
-#include <ctime>
-#include <cstdlib>
 #include "../include/data.h"
 #include "../database/json.hpp"
 
 using json = nlohmann::json;
 using namespace std;
 
+//LIBRARY EXTERNAL
+//Menggunakan library json.hpp untuk database JSON
+
 //VARIABEL GLOBAL
-//mengambil data user login
-extern string userAktif;
+extern int JumlahUser;
+extern User user[100];
 
-//DEKLARASI FUNGSI
+//FUNGSI VALIDASI
 //Materi: Fungsi
-string generateResi();
-int inputAngka(string pesan);
-bool cekResiDiJson(const string& Cari);
-long long hitungOngkir(long beratGram, int opsiLokasi, int opsiTipe);
-void tekanEnter();
-void savePaketToJson(Paket p);
+bool validHurufAngka(string teks) {
 
-//materi: fungsi
-//FUNGSI UNTUK MENGECEK INPUT VALID ATAU TIDAK
-bool ValidasiInputUser(const string& input) {
+    for (char c : teks) {
 
-    if (input.empty()) {
-        return false;
-    }
-
-    for (char c : input) {
-
-        if (
-            !isalnum(c) &&
-            !isspace(c) &&
-            c != '.' &&
-            c != ','
-        ) {
-
+        //mengecek apakah karakter bukan huruf/angka
+        if (!isalnum(c)) {
             return false;
         }
     }
@@ -48,288 +30,167 @@ bool ValidasiInputUser(const string& input) {
     return true;
 }
 
-//materi: fungsi, exception handling
-//FUNGSI UNTUK MENANGANI ERROR
-void cekValiditasInputUser(
-    const string& input,
-    const string& namaField
-) {
+//PROSEDUR SIMPAN USER KE JSON
+//Materi: Prosedur, Pass by Value
+void saveUserToJson(User u) {
 
-    //ERROR HANDLING
-    if (input.empty()) {
-        throw (namaField + " tidak boleh kosong!").c_str();
+    ifstream inputFile("database/Users.json");
+
+    json data;
+
+    //jika file kosong
+    if (inputFile.peek() == ifstream::traits_type::eof()) {
+        data = json::array();
     }
 
-    if (!ValidasiInputUser(input)) {
-        throw (namaField + " mengandung karakter tidak valid!").c_str();
-    }
-}
-
-//materi: fungsi
-//FUNGSI HITUNG ONGKIR
-long long hitungOngkir(
-    long beratGram,
-    int opsiLokasi,
-    int opsiTipe
-) {
-
-    long long hargaPerKg;
-
-    if (opsiLokasi == 1) {
-        hargaPerKg = 10000;
-    }
-
+    //jika ada isi
     else {
-        hargaPerKg = 20000;
+        inputFile >> data;
     }
 
-    long long tambahanTipe = 0;
+    inputFile.close();
 
-    switch (opsiTipe) {
-        case 1:
-            tambahanTipe = 0;
-            break;
+    //STRUCT
+    json userBaru = {
+        {"username", u.username},
+        {"password", u.password}
+    };
 
-        case 2:
-            tambahanTipe = 20000;
-            break;
+    //menambahkan user baru
+    data.push_back(userBaru);
 
-        case 3:
-            tambahanTipe = 15000;
-            break;
-
-        case 4:
-            tambahanTipe = 10000;
-            break;
-    }
-
-    return ((beratGram / 1000.0) * hargaPerKg) + tambahanTipe;
+    //menyimpan kembali ke json
+    ofstream outputFile("database/Users.json");
+    outputFile << data.dump(4);
+    outputFile.close();
 }
 
-//materi: prosedur
-//PROSEDUR TAMBAH PAKET
-void TambahPaket_User() {
+//PROSEDUR REGISTER USER
+//Materi: Prosedur
+void RegisterUser() {
 
-    //EXCEPTION HANDLING
-    try {
-        static bool seeded = false;
+    //VARIABEL LOKAL
+    string inputUsername, inputPassword;
 
-        if (!seeded) {
-            srand(time(0));
-            seeded = true;
-        }
+    bool usernameAda;
+    bool inputValid;
+
+    do {
+        usernameAda = false;
+        inputValid = true;
 
         system("cls");
 
-        cout << "=== TAMBAH PAKET ===\n" << endl;
-        Paket paketBaru;
+        cout << "\n=== REGISTRASI USER ===\n";
+        //INPUT USERNAME
+        cout << "Username : ";
+        getline(cin, inputUsername);
 
-        cout << "Nama Pengirim : ";
-        getline(cin, paketBaru.namaPengirim);
+        //USERNAME KOSONG
+        if (inputUsername.empty()) {
+            cout << "\nERROR: Username tidak boleh kosong!\n";
+            cout << "\nTekan ENTER untuk melanjutkan...";
+            cin.get();
 
-        cekValiditasInputUser(
-            paketBaru.namaPengirim,
-            "Nama pengirim"
-        );
-
-        cout << "Nama Penerima : ";
-        getline(cin, paketBaru.namaPenerima);
-
-        cekValiditasInputUser(
-            paketBaru.namaPenerima,
-            "Nama penerima"
-        );
-
-        cout << "Alamat Tujuan : ";
-        getline(cin, paketBaru.alamat);
-
-        cekValiditasInputUser(
-            paketBaru.alamat,
-            "Alamat"
-        );
-
-        cout << "\nOPSI LOKASI TUJUAN:" << endl;
-        cout << "1. Dalam Kota (10.000 / Kg)" << endl;
-        cout << "2. Luar Kota (20.000 / Kg)" << endl;
-
-        int opsiLokasi;
-
-        while (true) {
-
-            cout << "Pilih opsi lokasi tujuan (1-2): ";
-            cin >> opsiLokasi;
-
-            //ERROR HANDLING
-            if (
-                cin.fail() ||
-                (opsiLokasi != 1 && opsiLokasi != 2)
-            ) {
-
-                cout << "Input tidak valid!\n";
-
-                cin.clear();
-                cin.ignore(1000, '\n');
-            }
-
-            else {
-                break;
-            }
+            inputValid = false;
+            continue;
         }
 
-        cout << "\nMasukkan berat (gram): ";
-        cin >> paketBaru.berat;
+        //USERNAME ADMIN
+        if (inputUsername == "admin") {
+            cout << "\nERROR: Username admin tidak boleh digunakan!\n";
+            cout << "\nTekan ENTER untuk melanjutkan...";
+            cin.get();
 
-        if (
-            cin.fail() ||
-            paketBaru.berat <= 0
-        ) {
-
-            cin.clear();
-            cin.ignore(1000, '\n');
-
-            throw "Berat harus angka positif!";
+            inputValid = false;
+            continue;
         }
 
-        if (paketBaru.berat > 50000) {
-            throw "Berat melebihi batas maksimal!";
+        //VALIDASI HURUF & ANGKA
+        if (!validHurufAngka(inputUsername)) {
+            cout << "\nERROR: Username hanya boleh huruf dan angka!\n";
+            cout << "\nTekan ENTER untuk melanjutkan...";
+            cin.get();
+
+            inputValid = false;
+            continue;
         }
 
-        cout << "\nPilihan tipe barang:" << endl;
-        cout << "1. Dokumen" << endl;
-        cout << "2. Elektronik" << endl;
-        cout << "3. Pecah Belah" << endl;
-        cout << "4. Lainnya" << endl;
+        //INPUT PASSWORD
+        cout << "Password : ";
+        getline(cin, inputPassword);
 
-        int opsiTipe;
+        //PASSWORD KOSONG
+        if (inputPassword.empty()) {
+            cout << "\nERROR: Password tidak boleh kosong!\n";
+            cout << "\nTekan ENTER untuk melanjutkan...";
+            cin.get();
 
-        while (true) {
-            cout << "Pilih tipe barang (1-4): ";
-            cin >> opsiTipe;
-
-            if (
-                cin.fail() ||
-                opsiTipe < 1 ||
-                opsiTipe > 4
-            ) {
-
-                cout << "Input tidak valid!\n";
-
-                cin.clear();
-                cin.ignore(1000, '\n');
-            }
-
-            else {
-                break;
-            }
+            inputValid = false;
+            continue;
         }
 
-        cin.ignore();
+        //PASSWORD HANYA HURUF & ANGKA
+        if (!validHurufAngka(inputPassword)) {
+            cout << "\nERROR: Password hanya boleh huruf dan angka!\n";
+            cout << "\nTekan ENTER untuk melanjutkan...";
+            cin.get();
 
-        if (opsiTipe == 1) {
-            paketBaru.tipe = "Dokumen";
+            inputValid = false;
+            continue;
         }
 
-        else if (opsiTipe == 2) {
-            paketBaru.tipe = "Elektronik";
+        //FILE HANDLING
+        ifstream inputFile("database/Users.json");
+        json data;
+
+        //jika file kosong
+        if (inputFile.peek() == ifstream::traits_type::eof()) {
+            data = json::array();
         }
 
-        else if (opsiTipe == 3) {
-            paketBaru.tipe = "Pecah Belah";
-        }
-
+        //jika ada data
         else {
-            paketBaru.tipe = "Lainnya";
-        }
-
-        //HITUNG ONGKIR
-        paketBaru.ongkir = hitungOngkir(
-            paketBaru.berat,
-            opsiLokasi,
-            opsiTipe
-        );
-
-        cout << "\n1. COD" << endl;
-        cout << "2. Transfer" << endl;
-
-        int metodeBayar;
-        cin >> metodeBayar;
-        paketBaru.pemilik = userAktif;
-
-        if (metodeBayar == 1) {
-            paketBaru.pembayaran = "COD";
-            paketBaru.status = "Diproses";
-
-            //SEARCHING & LINEAR SEARCH
-            do {
-                paketBaru.resi = generateResi();
-
-            } while (cekResiDiJson(paketBaru.resi));
-            savePaketToJson(paketBaru);
-
-            cout << "\nTransaksi berhasil!\n";
-            cout << "Nomor Resi : " << paketBaru.resi << endl;
-
-            tekanEnter();
-        }
-
-        else if (metodeBayar == 2) {
-            paketBaru.pembayaran = "Transfer";
-            paketBaru.status = "Menunggu Validasi Admin";
-            paketBaru.resi = "BELUM_RILIS";
-
-            savePaketToJson(paketBaru); //PASS BY VALUE
-
-            cout << "\nTransaksi berhasil dikirim!\n";
-
-            tekanEnter();
-        }
-    }
-
-    //EXCEPTION HANDLING
-    catch (const char* msg) {
-        cerr << "\nERROR: " << msg << endl;
-
-        tekanEnter();
-    }
-}
-
-//materi: prosedur + pass by value
-//PROSEDUR SIMPAN JSON
-void savePaketToJson(Paket p) {
-
-    //FILE HANDLING
-    ifstream inputFile("database/paket.json");
-
-    json data = json::array();
-
-    if (inputFile.is_open()) {
-        if (
-            inputFile.peek() !=
-            ifstream::traits_type::eof()
-        ) {
-
             inputFile >> data;
         }
 
         inputFile.close();
-    }
 
-    //STRUCT
-    json paketBaru = {
-        {"resi", p.resi},
-        {"namaPengirim", p.namaPengirim},
-        {"namaPenerima", p.namaPenerima},
-        {"alamat", p.alamat},
-        {"berat", p.berat},
-        {"tipe", p.tipe},
-        {"status", p.status},
-        {"pemilik", p.pemilik},
-        {"ongkir", p.ongkir},
-        {"pembayaran", p.pembayaran}
-    };
+        //LINEAR SEARCH
+        for (auto akun : data) {
 
-    data.push_back(paketBaru);
-    ofstream outputFile("database/paket.json");
-    outputFile << data.dump(4);
-    outputFile.close();
+            //cek username apakah sudah ada
+            if (akun["username"] == inputUsername) {
+                usernameAda = true;
+                break;
+            }
+        }
+
+        //USERNAME SUDAH DIGUNAKAN
+        if (usernameAda) {
+            cout << "\nERROR: Username sudah digunakan!\n";
+            cout << "Silakan gunakan username lain.\n";
+            cout << "\nTekan ENTER untuk melanjutkan...";
+            cin.get();
+
+            continue;
+        }
+
+    } while (usernameAda || !inputValid);
+
+    //ARRAY + STRUCT
+    user[JumlahUser].username = inputUsername;
+    user[JumlahUser].password = inputPassword;
+
+    JumlahUser++;
+
+    //SIMPAN KE DATABASE JSON
+    saveUserToJson(user[JumlahUser - 1]);
+
+    //OUTPUT BERHASIL
+    cout << "\nRegistrasi berhasil!\n";
+    cout << "Silakan login.\n";
+
+    cout << "\nTekan ENTER untuk melanjutkan...";
+    cin.get();
 }

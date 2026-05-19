@@ -110,14 +110,12 @@ bool ValidAngka(const string& input) {
     }
     return true;
 }
-
-extern int _getch();
-int MenuScroll(string judul, vector<string> pilihan) { // 'string' huruf kecil
+int MenuScroll(string judul, vector<string> pilihan) {
     int posisi = 0;
     int key;
     
     while (true) {
-bersihkanLayar();
+        bersihkanLayar();
         cout << KUNING << BOLD << "==============================" << RESET << endl;
         cout << BOLD << "   " << judul << RESET << endl;
         cout << KUNING << BOLD << "==============================" << RESET << endl;
@@ -131,21 +129,15 @@ bersihkanLayar();
         }
         cout << KUNING << "------------------------------" << RESET << endl;
         cout << "Gunakan Panah & Enter" << endl;
-
         key = _getch();
-
-        // 1. Logika Deteksi Input Lintas Platform
-        if (key == 27) { // Sinyal Mac/Linux
-            _getch(); 
+        if (key == 27) { 
             key = _getch();
-            if (key == 65) key = 72;      // Panah Atas
-            else if (key == 66) key = 80; // Panah Bawah
+            if (key == 65) key = 72;     
+            else if (key == 66) key = 80; 
         }
-        else if (key == 224) { // Sinyal Windows
+        else if (key == 224) { 
             key = _getch(); 
         }
-
-        // 2. Eksekusi Pergerakan (Sudah Seragam)
         if (key == 72) { // Atas
             if (posisi > 0) posisi--;
             else posisi = pilihan.size() - 1;
@@ -154,13 +146,12 @@ bersihkanLayar();
             if (posisi < pilihan.size() - 1) posisi++;
             else posisi = 0;
         } 
-        else if (key == 13 || key == 10) { // Enter
-            return posisi + 1; // Mengembalikan 1, 2, dst.
+        else if (key == 13 || key == 10) { 
+            return posisi + 1; 
         }
     }
 }
 
-// Fungsi untuk menyimpan satu objek paket ke database/paket.json
 void savePaketToJson(const Paket& paket) {
     ifstream inputFile("database/paket.json");
     json data = json::array();
@@ -193,7 +184,6 @@ void savePaketToJson(const Paket& paket) {
     }
 }
 
-// Fungsi untuk menghasilkan nomor resi acak sepanjang 8 karakter
 string generateResi() {
     string kumpulanKarakter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     string resi = "";
@@ -224,13 +214,30 @@ int HitungOngkir(int beratGram, int opsiLokasi = 1, int opsiTipe = 2) {
     int ongkirlokasi = (opsiLokasi == 1) ? 10000 : 20000;
     switch (opsiTipe) {
         case 1:
-            return (beratGram * ongkirlokasi / 1000) + 20000; // Elektronik
+            return (beratGram * ongkirlokasi / 1000) + 20000; 
         case 2:
-            return (beratGram * ongkirlokasi / 1000) + 15000; // Pecah Belah
+            return (beratGram * ongkirlokasi / 1000) + 15000; 
         case 3:
-            return (beratGram * ongkirlokasi / 1000) + 10000; // Lainnya
+            return (beratGram * ongkirlokasi / 1000) + 10000; 
         default:
-            return (beratGram * ongkirlokasi / 1000);         // Dokumen
+            return (beratGram * ongkirlokasi / 1000);      
+    }
+}
+
+int HitungOngkir(int beratGram, string lokasi, string tipe) {
+    int ongkirlokasi = (lokasi == "Dalam Kota") ? 10000 : 20000;
+    
+    if (tipe == "Elektronik") {
+        return (beratGram * ongkirlokasi / 1000) + 20000;
+    } 
+    else if (tipe == "Pecah Belah") {
+        return (beratGram * ongkirlokasi / 1000) + 15000;
+    } 
+    else if (tipe == "Lainnya") {
+        return (beratGram * ongkirlokasi / 1000) + 10000;
+    } 
+    else {
+        return (beratGram * ongkirlokasi / 1000); // Dokumen
     }
 }
 
@@ -254,7 +261,7 @@ void TambahPaketAdmin() {
     // Input Nama Pengirim
 
     do {
-        cin.ignore(1000, '\n'); // Membersihkan buffer input sebelum getline
+        cin.ignore(1000, '\n'); 
         bersihkanLayar();   
         HeaderTambahPaket();
         cout << HIJAU << BOLD << "Nama Pengirim: " << RESET;
@@ -342,7 +349,6 @@ void TambahPaketAdmin() {
         if (inputValid) {
             break;
         }
-        // Jalur penahan layar HANYA JIKA terjadi kesalahan input
         tekanEnter();
     } while (true);
 
@@ -364,10 +370,8 @@ void TambahPaketAdmin() {
         "Dokumen (Gratis)"
     };
 
-    // Panggil MenuScroll
     opsiTipe = MenuScroll("PILIH TIPE PAKET", listTipe);
 
-    // Simpan ke struct berdasarkan pilihan (1, 2, 3, atau 4)
     switch (opsiTipe) {
         case 1: 
             paketBaru.tipe = "Elektronik"; 
@@ -385,7 +389,6 @@ void TambahPaketAdmin() {
 
     paketBaru.ongkir = HitungOngkir(paketBaru.berat, opsiLokasi, opsiTipe);
 
-//metode pembayaran
     bersihkanLayar();
     HeaderTambahPaket();
     cout << BIRU << BOLD << "Nama Pengirim  : " << RESET << paketBaru.namaPengirim << endl;
@@ -402,15 +405,13 @@ void TambahPaketAdmin() {
         "Bayar di Tempat",
         "COD (Bayar di Tujuan)"
     };
-    // Panggil fungsi scroll
     int opsiBayar = MenuScroll("METODE PEMBAYARAN", listBayar);
-        // Simpan ke struct berdasarkan pilihan (1 atau 2)
     paketBaru.pembayaran = listBayar[opsiBayar - 1];
 
         // Generate Resi dan Cek Unik
     do {
         resiBaru = generateResi();
-    } while (cekResiDiJson(resiBaru)); // Pastikan resi unik di JSON
+    } while (cekResiDiJson(resiBaru)); 
 
     paketBaru.resi = resiBaru;
     paketBaru.status = "Diproses";

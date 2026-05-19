@@ -1,12 +1,10 @@
 #include <iostream>
-#include <fstream>
-#include <vector>
 #include <string>
-#include <sstream>
-#include <iomanip>
-#include "../database/json.hpp"
-#include "../include/admin.h"
+#include <vector>
+#include <iomanip>   
 #include "../include/data.h"
+#include "../include/admin.h"
+#include "../database/json.hpp"
 
 #define RESET   "\033[0m"
 #define MERAH   "\033[31m"
@@ -16,146 +14,147 @@
 #define CYAN    "\033[36m"
 #define BOLD    "\033[1m"
 
-using namespace std;
 using json = nlohmann::json;
+using namespace std;
+
+bool bisaDihapus(string status) {
+    return (
+        status == "Selesai" ||
+        status == "Dibatalkan"
+    );
+}
+
+void cetakTabelHapusRiwayat(const vector<int>& indeksBisaHapus) {
+    cout << CYAN << BOLD << setfill('=') << setw(103) << "" << setfill(' ') << RESET << endl;
+    cout << BOLD << "                                   DAFTAR RIWAYAT PAKET (FINAL)                               " << RESET << endl;
+    cout << CYAN << BOLD << setfill('=') << setw(103) << "" << setfill(' ') << RESET << endl;
+    
+    cout << left << setw(4)  << "No" 
+        << "| " << setw(12) << "Resi" 
+        << "| " << setw(12) << "Pengirim" 
+        << "| " << setw(12) << "Penerima" 
+        << "| " << setw(12) << "Lokasi" 
+        << "| " << setw(8)  << "Berat" 
+        << "| " << setw(24) << "Status Akhir" << endl;
+    cout << CYAN << setfill('-') << setw(103) << "" << setfill(' ') << RESET << endl;
+
+    int nomorTabel = 1;
+    for (int idx : indeksBisaHapus) {
+        string warnaStatus = (paket[idx].status == "Selesai") ? HIJAU : MERAH;
+        string namaPengirim = paket[idx].namaPengirim;
+        if (namaPengirim.length() > 11) namaPengirim = namaPengirim.substr(0, 9) + "..";
+        string namaPenerima = paket[idx].namaPenerima;
+        if (namaPenerima.length() > 11) namaPenerima = namaPenerima.substr(0, 9) + "..";
+        cout << left << setw(4)  << nomorTabel++
+            << "| " << setw(12) << paket[idx].resi
+            << "| " << setw(12) << namaPengirim
+            << "| " << setw(12) << namaPenerima
+            << "| " << setw(12) << paket[idx].lokasi
+            << "| " << setw(8)  << (to_string(paket[idx].berat) + "g")
+            << "| " << warnaStatus << BOLD << setw(24) << paket[idx].status << RESET << endl;
+    }
+    cout << CYAN << BOLD << setfill('=') << setw(103) << "" << setfill(' ') << RESET << "\n\n";
+}
+
+int menuScrollHapus(string judul, vector<string> pilihan, const vector<int>& indeksBisaHapus) {
+    int posisi = 0;
+    int key;
+    
+    while (true) {
+        bersihkanLayar(); 
+        cetakTabelHapusRiwayat(indeksBisaHapus); 
+        cout << KUNING << BOLD << "=======================================================================================================" << RESET << endl;
+        cout << BOLD << "   " << judul << RESET << endl;
+        cout << KUNING << BOLD << "=======================================================================================================" << endl;
+        for (size_t i = 0; i < pilihan.size(); i++) {
+            if (i == posisi) {
+                cout << MERAH << BOLD << "  > [ " << pilihan[i] << " ] <" << RESET << endl;
+            } else {
+                cout << "      " << pilihan[i] << endl;
+            }
+        }
+        cout << KUNING << "-------------------------------------------------------------------------------------------------------" << RESET << endl;
+        cout << "Gunakan Panah & Enter" << endl;
+        key = _getch();
+        if (key == 27) { 
+            _getch(); 
+            key = _getch();
+            if (key == 65) key = 72;      
+            else if (key == 66) key = 80; 
+        }
+        else if (key == 224) { 
+            key = _getch(); 
+        }
+        if (key == 72) { // Panah Atas
+            if (posisi > 0) posisi--;
+            else posisi = pilihan.size() - 1;
+        } 
+        else if (key == 80) { // Panah Bawah
+            if (posisi < pilihan.size() - 1) posisi++;
+            else posisi = 0;
+        } 
+        else if (key == 13 || key == 10) { // Enter
+            return posisi + 1; // Mengembalikan angka navigasi 1, 2, dst.
+        }
+    }
+}
 
 void HapusRiwayatPaket_Admin() {
-    ifstream file("database/paket.json");
-    json dataJson;
-
-    // 1. Validasi awal jika database kosong
-    if (!file.is_open() || file.peek() == ifstream::traits_type::eof()) {
-        bersihkanLayar();
-        cout << KUNING << BOLD << "==================================================" << RESET << endl;
-        cout << MERAH << BOLD << "            DATABASE RIWAYAT KOSONG!              " << RESET << endl;
-        cout << KUNING << BOLD << "==================================================" << RESET << endl;
-        cout << "Tidak ada riwayat paket yang bisa dihapus.\n" << endl;
-        tekanEnter();
-        return;
-    }
-
-    file >> dataJson;
-    file.close();
-
-    // 2. Filter data: Hanya ambil paket yang "Selesai" atau "Dibatalkan"
-    vector<Paket> listRiwayat;
-    vector<string> pilihanMenu; // Menampung baris tabel untuk dilempar ke MenuScroll
-
-    for (const auto& item : dataJson) {
-        string status = item.value("status", "-");
-        if (status == "Selesai" || status == "Dibatalkan") {
-            Paket p;
-            p.resi         = item.value("resi", "-");
-            p.namaPengirim = item.value("namaPengirim", "-");
-            p.namaPenerima = item.value("namaPenerima", "-");
-            p.alamat       = item.value("alamat", "-");
-            p.lokasi       = item.value("lokasi", "-");
-            p.berat        = item.value("berat", 0LL);
-            p.tipe         = item.value("tipe", "-");
-            p.ongkir       = item.value("ongkir", 0LL);
-            p.status       = status;
-            p.pemilik      = item.value("pemilik", "-");
-            
-            listRiwayat.push_back(p);
-
-            // Trik cerdas: Satukan data lengkap menjadi satu baris string dengan format tabel (setw)
-            stringstream ss;
-            ss << left 
-            << setw(10) << p.resi
-            << setw(14) << p.namaPengirim
-            << setw(14) << p.namaPenerima
-            << setw(25) << (p.alamat.length() > 22 ? p.alamat.substr(0, 22) + "..." : p.alamat)
-            << setw(12) << p.lokasi
-            << setw(8)  << (to_string(p.berat) + "g")
-            << setw(12) << p.tipe
-            << "Rp " << setw(9) << p.ongkir
-            << "[" << p.status << "]";
-            
-            pilihanMenu.push_back(ss.str());
-        }
-    }
-
-    // Jika tidak ada data riwayat sama sekali
-    if (listRiwayat.empty()) {
-        bersihkanLayar();
-        cout << KUNING << BOLD << "==================================================" << RESET << endl;
-        cout << KUNING << BOLD << "         TIDAK ADA RIWAYAT YANG SELESAI           " << RESET << endl;
-        cout << KUNING << BOLD << "==================================================" << RESET << endl;
-        cout << "Belum ada paket dengan status 'Selesai' atau 'Dibatalkan'.\n" << endl;
-        tekanEnter();
-        return;
-    }
-
-    // Tambahkan opsi kembali di paling bawah
-    pilihanMenu.push_back("<< Kembali ke Menu Utama >>");
-
-    // 3. Buat judul MenuScroll berbentuk Header Tabel agar pas dilempar ke MenuScroll posisinya presisi
-    stringstream headerSs;
-    headerSs << "HAPUS RIWAYAT PAKET (Gunakan Panah & Enter)\n"
-            << "   " << setfill('-') << setw(115) << "" << setfill(' ') << "\n"
-            << "   " << left 
-            << setw(10) << "Resi" 
-            << setw(14) << "Pengirim" 
-            << setw(14) << "Penerima" 
-            << setw(25) << "Alamat" 
-            << setw(12) << "Lokasi"
-            << setw(8)  << "Berat" 
-            << setw(12) << "Tipe"
-            << setw(12) << "Ongkir" 
-            << "Status\n"
-            << "   " << setfill('-') << setw(115) << "" << setfill(' ');
-
-    // 4. Panggil MenuScroll dengan header tabel lengkap
-    int indeksTerpilih = MenuScroll(headerSs.str(), pilihanMenu);
-
-    // Jika user memilih opsi paling bawah (Kembali)
-    if (indeksTerpilih == pilihanMenu.size()) {
-        return;
-    }
-
-    // Ambil paket asli yang dipilih berdasarkan indeks
-    Paket paketTarget = listRiwayat[indeksTerpilih - 1];
-
-    // 5. Menu Konfirmasi Penghapusan
+    loadPaket(); 
     bersihkanLayar();
-    vector<string> opsiKonfirmasi = {
-        "Ya, Hapus Permanen dari Riwayat",
-        "Tidak Jadi (Kembali)"
-    };
-    
-    int konfirmasi = MenuScroll("HAPUS RESI [" + paketTarget.resi + "] DARI RIWAYAT?", opsiKonfirmasi);
-
-    // 6. Eksekusi jika pilih "Ya"
-    if (konfirmasi == 1) {
-        json dataBaru = json::array();
-
-        // Cari dan eliminasi paket yang dipilih
-        for (const auto& item : dataJson) {
-            if (item.contains("resi") && item["resi"] == paketTarget.resi) {
-                continue; // Skip data yang dihapus
-            }
-            dataBaru.push_back(item);
+    vector<int> indeksBisaHapus;
+    for (int i = 0; i < jumlahPaket; i++) {
+        if (bisaDihapus(paket[i].status)) {
+            indeksBisaHapus.push_back(i); 
         }
-
-        // Tulis kembali ke file paket.json
-        ofstream outputFile("database/paket.json");
-        if (outputFile.is_open()) {
-            outputFile << dataBaru.dump(4);
-            outputFile.close();
-
-            bersihkanLayar();
-            cout << HIJAU << BOLD << "==================================================" << RESET << endl;
-            cout << HIJAU << BOLD << "          RIWAYAT BERHASIL DIHAPUS                " << RESET << endl;
-            cout << HIJAU << BOLD << "==================================================" << RESET << endl;
-            cout << " Data paket dengan Resi " << CYAN << BOLD << paketTarget.resi << RESET 
-                << " telah dihapus permanen dari riwayat.\n" << endl;
-        } else {
-            cout << MERAH << BOLD << "\n[EROR] Gagal membuka database untuk menyimpan perubahan!" << RESET << endl;
-        }
-    } else {
-        bersihkanLayar();
-        cout << KUNING << BOLD << "Penghapusan dibatalkan. Data riwayat tetap aman.\n" << RESET << endl;
     }
 
+    if (indeksBisaHapus.empty()) {
+        cout << KUNING << BOLD << "=========== HAPUS RIWAYAT PAKET ===========" << RESET << "\n\n";
+        cout << MERAH << BOLD << "TIDAK ADA RIWAYAT PAKET YANG BISA DIHAPUS SAAT INI." << RESET << "\n\n";
+        tekanEnter();
+        return;
+    }
+
+    vector<string> listPilihanMenu;
+    int nomorTabel = 1;
+    for (int idx : indeksBisaHapus) {
+        string teksMenu = "No. " + to_string(nomorTabel) + " [" + paket[idx].resi + "] " 
+                        + paket[idx].namaPengirim + " -> " + paket[idx].namaPenerima;
+        listPilihanMenu.push_back(teksMenu);
+        nomorTabel++;
+    }
+    listPilihanMenu.push_back("Kembali ke Menu Admin");
+    int pilihan = menuScrollHapus("PILIH RIWAYAT PAKET YANG INGIN DIHAPUS PERMANEN:", listPilihanMenu, indeksBisaHapus);
+    if (pilihan == listPilihanMenu.size()) {
+        bersihkanLayar();
+        cout << KUNING << BOLD << "KEMBALI KE MENU ADMIN." << RESET << endl;
+        tekanEnter();
+        return;
+    }
+    int targetIndeks = indeksBisaHapus[pilihan - 1];
+    bersihkanLayar();
+    cout << MERAH << BOLD << "============= KONFIRMASI HAPUS PERMANEN =============" << RESET << endl;
+    cout << "Resi        : " << paket[targetIndeks].resi << endl;
+    cout << "Pengirim    : " << paket[targetIndeks].namaPengirim << endl;
+    cout << "Penerima    : " << paket[targetIndeks].namaPenerima << endl;
+    cout << "Status Paket: " << BOLD << paket[targetIndeks].status << RESET << endl;
+    cout << MERAH << "-----------------------------------------------------" << RESET << endl;
+    vector<string> konfirmasi = {"YA, Hapus Permanen Dari Database", "TIDAK, Batalkan Penghapusan"};
+    int sScroll = menuScrollHapus("YAKIN DATA INI INGIN DIHAPUS? (AKSI TIDAK DAPAT DIURUNGKAN)", konfirmasi, indeksBisaHapus);
+
+    bersihkanLayar();
+    if (sScroll == 1) {
+        for (int i = targetIndeks; i < jumlahPaket - 1; i++) {
+            paket[i] = paket[i + 1];
+        }
+        jumlahPaket--;
+        
+        savePaket();
+        cout << HIJAU << BOLD << "SUKSES! Riwayat paket berhasil dihapus permanen dari database." << RESET << endl;
+    } else {
+        cout << KUNING << BOLD << "Penghapusan dibatalkan. Data riwayat tetap aman." << RESET << endl;
+    }
+    cout << MERAH << "-----------------------------------------------------" << endl;
     tekanEnter();
 }
