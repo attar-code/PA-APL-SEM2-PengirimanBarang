@@ -1,1 +1,54 @@
-[]
+[
+    {
+        "alamat": "jl perjuangan 7 no 101, samarinda utara, kalimantan timur",
+        "berat": 1000,
+        "lokasi": "Dalam Kota",
+        "namaPenerima": "attar",
+        "namaPengirim": "ghina",
+        "ongkir": 20000,
+        "pembayaran": "COD (Bayar di Tujuan)",
+        "pemilik": "Admin",
+        "resi": "MNOJVHP9",
+        "status": "Dikirim",
+        "tipe": "Lainnya"
+    },
+    {
+        "alamat": "jl perjuangan 7 no 101, samarinda utara, kalimantan timur",
+        "berat": 1,
+        "lokasi": "Dalam Kota",
+        "namaPenerima": "attar",
+        "namaPengirim": "ghina",
+        "ongkir": 20010,
+        "pembayaran": "Bayar di Tempat",
+        "pemilik": "Admin",
+        "resi": "ICEXCVXO",
+        "status": "Diproses",
+        "tipe": "Elektronik"
+    },
+    {
+        "alamat": "lambung",
+        "berat": 560,
+        "lokasi": "Dalam Kota",
+        "namaPenerima": "ipul",
+        "namaPengirim": "azril",
+        "ongkir": 15600,
+        "pembayaran": "Bayar di Tempat",
+        "pemilik": "Admin",
+        "resi": "APZ4KMFN",
+        "status": "Selesai",
+        "tipe": "Lainnya"
+    },
+    {
+        "alamat": "jl untung suropati",
+        "berat": 3333,
+        "lokasi": "Dalam Kota",
+        "namaPenerima": "ryad",
+        "namaPengirim": "attar",
+        "ongkir": 48330,
+        "pembayaran": "COD (Bayar di Tujuan)",
+        "pemilik": "Admin",
+        "resi": "WIVRUPV8",
+        "status": "Dibatalkan",
+        "tipe": "Pecah Belah"
+    }
+]
