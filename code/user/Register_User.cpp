@@ -8,15 +8,12 @@
 using json = nlohmann::json;
 using namespace std;
 
-//LIBRARY EXTERNAL
-//Menggunakan library json.hpp untuk database JSON
-
 //VARIABEL GLOBAL
 extern int JumlahUser;
 extern User user[100];
 
+//materi: fungsi
 //FUNGSI VALIDASI
-//Materi: Fungsi
 bool validHurufAngka(string teks) {
 
     for (char c : teks) {
@@ -30,8 +27,8 @@ bool validHurufAngka(string teks) {
     return true;
 }
 
+//materi: prosedur, pass by value
 //PROSEDUR SIMPAN USER KE JSON
-//Materi: Prosedur, Pass by Value
 void saveUserToJson(User u) {
 
     ifstream inputFile("database/Users.json");
@@ -43,7 +40,7 @@ void saveUserToJson(User u) {
         data = json::array();
     }
 
-    //jika ada isi
+    //jika ada data
     else {
         inputFile >> data;
     }
@@ -59,84 +56,83 @@ void saveUserToJson(User u) {
     //menambahkan user baru
     data.push_back(userBaru);
 
-    //menyimpan kembali ke json
+    //menyimpan kembali ke file json
     ofstream outputFile("database/Users.json");
+
     outputFile << data.dump(4);
+
     outputFile.close();
 }
 
+//materi: prosedur
 //PROSEDUR REGISTER USER
-//Materi: Prosedur
 void RegisterUser() {
 
     //VARIABEL LOKAL
     string inputUsername, inputPassword;
 
     bool usernameAda;
-    bool inputValid;
 
-    do {
+    while (true) {
         usernameAda = false;
-        inputValid = true;
 
         system("cls");
 
         cout << "\n=== REGISTRASI USER ===\n";
-        //INPUT USERNAME
         cout << "Username : ";
+        
         getline(cin, inputUsername);
 
-        //USERNAME KOSONG
+        //jika username kosong, loop ke menu
         if (inputUsername.empty()) {
-            cout << "\nERROR: Username tidak boleh kosong!\n";
-            cout << "\nTekan ENTER untuk melanjutkan...";
+            cout << "\nUsername tidak boleh kosong!\n";
+
+            cout << "\nTekan ENTER untuk kembali...";
             cin.get();
 
-            inputValid = false;
-            continue;
+            return;
         }
 
-        //USERNAME ADMIN
+        //jika username = admin
         if (inputUsername == "admin") {
             cout << "\nERROR: Username admin tidak boleh digunakan!\n";
+
             cout << "\nTekan ENTER untuk melanjutkan...";
             cin.get();
 
-            inputValid = false;
             continue;
         }
 
-        //VALIDASI HURUF & ANGKA
+        //validasi username
         if (!validHurufAngka(inputUsername)) {
             cout << "\nERROR: Username hanya boleh huruf dan angka!\n";
+
             cout << "\nTekan ENTER untuk melanjutkan...";
             cin.get();
 
-            inputValid = false;
             continue;
         }
 
-        //INPUT PASSWORD
         cout << "Password : ";
         getline(cin, inputPassword);
 
-        //PASSWORD KOSONG
+        //jika password kosong, kembali ke menu
         if (inputPassword.empty()) {
             cout << "\nERROR: Password tidak boleh kosong!\n";
-            cout << "\nTekan ENTER untuk melanjutkan...";
+
+            cout << "\nTekan ENTER untuk kembali...";
             cin.get();
 
-            inputValid = false;
-            continue;
+            return;
         }
 
-        //PASSWORD HANYA HURUF & ANGKA
+        //validasi password
         if (!validHurufAngka(inputPassword)) {
             cout << "\nERROR: Password hanya boleh huruf dan angka!\n";
+
             cout << "\nTekan ENTER untuk melanjutkan...";
             cin.get();
 
-            inputValid = false;
             continue;
         }
 
@@ -156,27 +152,30 @@ void RegisterUser() {
 
         inputFile.close();
 
-        //LINEAR SEARCH
+        //materi: linear search
+        //cek username apakah sudah digunakan
         for (auto akun : data) {
-
-            //cek username apakah sudah ada
             if (akun["username"] == inputUsername) {
                 usernameAda = true;
+
                 break;
             }
         }
 
-        //USERNAME SUDAH DIGUNAKAN
+        //jika username sudah ada
         if (usernameAda) {
             cout << "\nERROR: Username sudah digunakan!\n";
             cout << "Silakan gunakan username lain.\n";
+
             cout << "\nTekan ENTER untuk melanjutkan...";
             cin.get();
 
             continue;
         }
 
-    } while (usernameAda || !inputValid);
+        //jika semua valid, keluar dari loop
+        break;
+    }
 
     //ARRAY + STRUCT
     user[JumlahUser].username = inputUsername;
@@ -184,10 +183,9 @@ void RegisterUser() {
 
     JumlahUser++;
 
-    //SIMPAN KE DATABASE JSON
+    //simpan ke database
     saveUserToJson(user[JumlahUser - 1]);
 
-    //OUTPUT BERHASIL
     cout << "\nRegistrasi berhasil!\n";
     cout << "Silakan login.\n";
 

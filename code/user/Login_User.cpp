@@ -12,8 +12,7 @@ extern int JumlahUser;
 extern User user[100];
 extern string userAktif;
 
-//FUNGSI
-//materi: Fungsi
+//materi: fungsi
 bool LoginUser() {
 
     //FILE HANDLING
@@ -34,7 +33,7 @@ bool LoginUser() {
     //ERROR HANDLING
     if (data.empty()) {
         cout << "\nBelum ada user yang terdaftar!\n";
-        
+
         tekanEnter();
         return false;
     }
@@ -69,7 +68,7 @@ bool LoginUser() {
 
         bool loginBerhasil = false;
 
-        //SEARCHING + LINEAR SEARCH
+        //SEARCHING & LINEAR SEARCH
         for (auto akun : data) {
 
             if (

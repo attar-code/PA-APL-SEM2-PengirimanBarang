@@ -12,7 +12,6 @@ extern string userAktif;
 //DEKLARASI FUNGSI
 void tekanEnter();
 
-//PROSEDUR
 //Materi: Prosedur
 void LihatRiwayatPaket_User() {
     system("cls");
@@ -38,7 +37,7 @@ void LihatRiwayatPaket_User() {
 
     inputFile.close();
 
-    //SEARCHING + LINEAR SEARCH
+    //SEARCHING & LINEAR SEARCH
     for (auto paket : data) {
 
         if (paket["pemilik"] == userAktif) {
