@@ -1,1 +1,28 @@
-[]
+[
+    {
+        "alamat": "lambung",
+        "berat": 560,
+        "lokasi": "Dalam Kota",
+        "namaPenerima": "ipul",
+        "namaPengirim": "azril",
+        "ongkir": 15600,
+        "pembayaran": "Bayar di Tempat",
+        "pemilik": "Admin",
+        "resi": "APZ4KMFN",
+        "status": "Selesai",
+        "tipe": "Lainnya"
+    },
+    {
+        "alamat": "jl untung suropati",
+        "berat": 3333,
+        "lokasi": "Dalam Kota",
+        "namaPenerima": "ryad",
+        "namaPengirim": "attar",
+        "ongkir": 48330,
+        "pembayaran": "COD (Bayar di Tujuan)",
+        "pemilik": "Admin",
+        "resi": "WIVRUPV8",
+        "status": "Dibatalkan",
+        "tipe": "Pecah Belah"
+    }
+]

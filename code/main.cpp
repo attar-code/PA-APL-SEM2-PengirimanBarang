@@ -50,29 +50,26 @@ int menuNavigasi(string menu[], int jumlahMenu, string judul){
     int posisi = 0;
     int lebar = 35;
 
-    while(true){ // <-- Kurung kurawal buka yang sempat hilang sudah aman di sini
+    while(true){
 
         bersihkanLayar();
 
-        // Kasih warna KUNING & BOLD di pembatas atas
         cout << KUNING << BOLD << string(lebar, '=') << RESET << endl;
         int spasi = (lebar - judul.length()) / 2;
         if (spasi > 0) cout << string(spasi, ' ');
-        cout << BOLD << judul << RESET << endl; // Kasih BOLD di judul
+        cout << BOLD << judul << RESET << endl;
         cout << KUNING << BOLD << string(lebar, '=') << RESET << endl;
         
         for(int i=0;i<jumlahMenu;i++){
             
             if(i == posisi){
-                // Sesuaikan gaya penanda dengan menu tambah paket: BIRU, BOLD, dan > [ teks ] <
                 cout << BIRU << BOLD << "  > [ " << menu[i] << " ] <" << RESET << endl;
             }
             else{
-                cout << "      " << menu[i] << endl; // Sesuaikan spasi agar sejajar
+                cout << "      " << menu[i] << endl;
             }
         }
 
-        // Tambahkan info petunjuk di bawah menu
         cout << KUNING << string(lebar, '-') << RESET << endl;
         cout << "Gunakan Panah & Enter" << endl;
         
@@ -147,51 +144,3 @@ int main(){
         }
     }while(true);
 }
-
-// int main(){
-
-//     int utama;
-
-//     do{
-//         system("cls");
-
-//         cout << "=== SISTEM PENGIRIMAN BARANG ===\n";
-//         cout << "1. User\n";
-//         cout << "2. Admin\n";
-//         cout << "3. Cek Resi\n";
-//         cout << "4. Keluar\n";
-
-//         utama = inputAngka("Pilih menu : ");
-
-//         switch (utama){
-
-//             case 1:{
-//                 MenuUser();
-//                 break;
-//             }
-
-//             case 2:{
-//                 MenuAdmin();
-//                 break;
-//             }
-
-//             case 3:{
-//                 cekResi();
-//                 break;
-//             }
-
-//             case 4:{
-//                 cout << "\nTerima kasih telah menggunakan program.\n";
-//                 break;
-//             }
-
-//             default:{
-//                 cout << "\nMenu tidak valid!\n";
-//                 tekanEnter();   
-//             }   
-//         }
-
-//     } while(utama == -1 || utama != 4);
-
-//     return 0;
-// }
