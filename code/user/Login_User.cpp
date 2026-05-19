@@ -1,11 +1,21 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <windows.h>
 #include "../include/data.h"
 #include "../database/json.hpp"
 
 using json = nlohmann::json;
 using namespace std;
+
+//WARNA TERMINAL
+#define RESET   "\033[0m"
+#define MERAH   "\033[31m"
+#define HIJAU   "\033[32m"
+#define KUNING  "\033[33m"
+#define CYAN    "\033[36m"
+#define PUTIH   "\033[37m"
+#define BOLD    "\033[1m"
 
 //VARIABEL GLOBAL
 extern int JumlahUser;
@@ -15,60 +25,107 @@ extern string userAktif;
 //materi: fungsi
 bool LoginUser() {
 
+    //AKTIFKAN ANSI COLOR WINDOWS
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD dwMode = 0;
+
+    GetConsoleMode(hOut, &dwMode);
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hOut, dwMode);
+
     //FILE HANDLING
     ifstream inputFile("database/Users.json");
+
     json data;
 
     //ERROR HANDLING
+    //jika file kosong
     if (inputFile.peek() == ifstream::traits_type::eof()) {
         data = json::array();
     }
 
+    //jika ada data
     else {
         inputFile >> data;
     }
 
     inputFile.close();
 
-    //ERROR HANDLING
+    //jika belum ada user
     if (data.empty()) {
-        cout << "\nBelum ada user yang terdaftar!\n";
 
-        tekanEnter();
+        cout << MERAH;
+        cout << "\nBelum ada user yang terdaftar!\n";
+        cout << RESET;
+
+        cout << "\nTekan ENTER untuk kembali...";
+        cin.get();
+
         return false;
     }
 
     //VARIABEL LOKAL
     string inputUsername, inputPassword;
+
     int sisa = 3;
 
     while (sisa > 0) {
+
         system("cls");
 
-        cout << "\n=== LOGIN USER ===\n";
-        cout << "Username : ";
+        cout << CYAN;
+        cout << "====================================================\n";
+        cout << RESET;
+
+        cout << BOLD << PUTIH;
+        cout << "                   LOGIN USER\n";
+        cout << RESET;
+
+        cout << CYAN;
+        cout << "====================================================\n\n";
+        cout << RESET;
+
+        cout << KUNING;
+        cout << "Sisa Kesempatan Login : " << sisa << endl;
+        cout << RESET;
+
+        //INPUT USERNAME
+        cout << "\nUsername : ";
         getline(cin, inputUsername);
 
+        //jika username kosong → kembali ke menu
         if (inputUsername.empty()) {
-            cout << "\nERROR: Username tidak boleh kosong!\n";
 
-            tekanEnter();
-            continue;
+            cout << MERAH;
+            cout << "\nERROR: Username tidak boleh kosong!\n";
+            cout << RESET;
+
+            cout << "\nTekan ENTER untuk kembali...";
+            cin.get();
+
+            return false;
         }
 
+        //INPUT PASSWORD
         cout << "Password : ";
         getline(cin, inputPassword);
 
+        //jika password kosong → kembali ke menu
         if (inputPassword.empty()) {
-            cout << "\nERROR: Password tidak boleh kosong!\n";
 
-            tekanEnter();
-            continue;
+            cout << MERAH;
+            cout << "\nERROR: Password tidak boleh kosong!\n";
+            cout << RESET;
+
+            cout << "\nTekan ENTER untuk kembali...";
+            cin.get();
+
+            return false;
         }
 
         bool loginBerhasil = false;
 
-        //SEARCHING & LINEAR SEARCH
+        //SEARCHING + LINEAR SEARCH
         for (auto akun : data) {
 
             if (
@@ -76,31 +133,57 @@ bool LoginUser() {
                 akun["password"] == inputPassword
             ) {
 
+                //VARIABEL GLOBAL
                 userAktif = inputUsername;
+
                 loginBerhasil = true;
+
                 break;
             }
         }
 
+        //JIKA LOGIN BERHASIL
         if (loginBerhasil) {
-            cout << "\nLogin berhasil!\n";
 
-            tekanEnter();
+            cout << HIJAU;
+            cout << "\nLogin berhasil!\n";
+            cout << RESET;
+
+            cout << "Selamat datang, "
+                 << inputUsername << "!\n";
+
+            cout << "\nTekan ENTER untuk melanjutkan...";
+            cin.get();
+
             return true;
         }
 
+        //JIKA LOGIN GAGAL
         else {
+
             sisa--;
 
+            cout << MERAH;
             cout << "\nUsername atau password salah!\n";
-            cout << "Sisa percobaan : " << sisa << endl;
+            cout << RESET;
 
-            tekanEnter();
+            cout << "Sisa percobaan login : "
+                 << sisa << endl;
+
+            cout << "\nTekan ENTER untuk melanjutkan...";
+            cin.get();
         }
     }
 
+    //JIKA GAGAL LOGIN 3 KALI
+    cout << MERAH;
     cout << "\nAnda gagal login 3 kali.\n";
-    tekanEnter();
+    cout << RESET;
+
+    cout << "Kembali ke menu utama...\n";
+
+    cout << "\nTekan ENTER untuk melanjutkan...";
+    cin.get();
 
     return false;
 }
